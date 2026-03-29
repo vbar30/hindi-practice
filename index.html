@@ -1,0 +1,3199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Hindi">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Vijay's Hindi Practice Tool</title>
+<style>
+  :root {
+    --orange: #e8651a;
+    --orange-light: #f5902e;
+    --orange-pale: #fff4ed;
+    --green: #2e7d32;
+    --green-light: #e8f5e9;
+    --red: #c62828;
+    --red-light: #ffebee;
+    --blue: #1565c0;
+    --blue-light: #e3f2fd;
+    --grey: #f5f5f5;
+    --dark: #1a1a1a;
+    --mid: #555;
+    --border: #e0e0e0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #fafafa; color: var(--dark); }
+
+  /* NAV */
+  nav {
+    background: var(--orange);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 56px;
+    gap: 6px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  nav h1 { font-size: 1.1rem; font-weight: 700; margin-right: 12px; white-space: nowrap; }
+  nav button {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  nav button:hover, nav button.active { background: rgba(255,255,255,0.35); }
+
+  /* SECTIONS */
+  .section { display: none; padding: 24px 20px; max-width: 860px; margin: 0 auto; }
+  #home { display: block; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .card h2 { font-size: 1.1rem; color: var(--orange); margin-bottom: 12px; }
+  .card h3 { font-size: 0.95rem; color: var(--blue); margin: 12px 0 6px; }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.88rem; }
+  th { background: var(--orange); color: white; padding: 8px 10px; text-align: left; }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) td { background: var(--grey); }
+
+  /* TAGS */
+  .tag {
+    display: inline-block;
+    background: var(--orange-pale);
+    color: var(--orange);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin: 2px;
+  }
+  .tag.green { background: var(--green-light); color: var(--green); }
+  .tag.blue { background: var(--blue-light); color: var(--blue); }
+
+  /* PRACTICE */
+  .sentence-box {
+    background: var(--orange-pale);
+    border-left: 4px solid var(--orange);
+    padding: 14px 16px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+  }
+  .sentence-box .english { font-size: 1.1rem; font-weight: 600; color: var(--dark); }
+  .sentence-box .hint { font-size: 0.82rem; color: var(--mid); margin-top: 4px; }
+  .counter { font-size: 0.82rem; color: var(--mid); margin-bottom: 8px; }
+
+  textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    resize: vertical;
+    min-height: 70px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  textarea:focus { outline: none; border-color: var(--orange); }
+
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--orange); color: white; }
+  .btn-primary:hover { background: var(--orange-light); }
+  .btn-secondary { background: var(--grey); color: var(--dark); }
+  .btn-secondary:hover { background: #e0e0e0; }
+  .btn-green { background: var(--green); color: white; }
+  .btn-row { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+
+  .answer-box {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 8px;
+    display: none;
+  }
+  .answer-box.show { display: block; }
+  .answer-box.correct { background: var(--green-light); border-left: 4px solid var(--green); }
+  .answer-box.reveal { background: var(--blue-light); border-left: 4px solid var(--blue); }
+  .answer-box .label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .answer-box .hindi { font-size: 1.05rem; font-weight: 600; }
+  .answer-box .explanation { font-size: 0.85rem; color: var(--mid); margin-top: 8px; line-height: 1.5; }
+
+  /* PROGRESS BAR */
+  .progress-wrap { background: var(--border); border-radius: 8px; height: 8px; margin: 10px 0; }
+  .progress-bar { background: var(--orange); height: 8px; border-radius: 8px; transition: width 0.3s; }
+
+  /* FLASHCARDS */
+  .flashcard {
+    perspective: 1000px;
+    height: 180px;
+    margin: 16px 0;
+    cursor: pointer;
+  }
+  .flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+  }
+  .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+  .flashcard-front, .flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+  .flashcard-front {
+    background: var(--orange);
+    color: white;
+  }
+  .flashcard-back {
+    background: var(--green);
+    color: white;
+    transform: rotateY(180deg);
+  }
+  .flashcard-front .word { font-size: 1.6rem; font-weight: 700; }
+  .flashcard-front .category { font-size: 0.78rem; opacity: 0.8; margin-top: 6px; }
+  .flashcard-back .translation { font-size: 1.4rem; font-weight: 700; }
+  .flashcard-back .example { font-size: 0.82rem; opacity: 0.9; margin-top: 8px; }
+  .flashcard-hint { text-align: center; font-size: 0.8rem; color: var(--mid); }
+  .fc-nav { display: flex; gap: 10px; justify-content: center; align-items: center; margin-top: 10px; }
+  .fc-nav span { font-size: 0.85rem; color: var(--mid); }
+
+  /* QUIZ */
+  .quiz-question { font-size: 1rem; font-weight: 600; margin-bottom: 14px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-option {
+    padding: 10px 14px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    background: white;
+    text-align: left;
+  }
+  .quiz-option:hover { border-color: var(--orange); background: var(--orange-pale); }
+  .quiz-option.correct { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .quiz-option.wrong { border-color: var(--red); background: var(--red-light); color: var(--red); }
+  .quiz-feedback {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    display: none;
+    line-height: 1.5;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: var(--green-light); color: var(--green); }
+  .quiz-feedback.wrong { background: var(--red-light); color: var(--red); }
+  .score-display {
+    text-align: center;
+    padding: 20px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--orange);
+  }
+  .score-display small { display: block; font-size: 0.9rem; color: var(--mid); margin-top: 4px; }
+
+  /* HOMEWORK */
+  .hw-set { margin-bottom: 10px; }
+  .hw-toggle {
+    width: 100%;
+    text-align: left;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--dark);
+  }
+  .hw-toggle:hover { background: var(--orange-pale); }
+  .hw-toggle .badge {
+    background: var(--orange);
+    color: white;
+    border-radius: 10px;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+  }
+  .hw-content {
+    display: none;
+    background: white;
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 16px;
+  }
+  .hw-content.open { display: block; }
+  .hw-item {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    display: flex;
+    gap: 10px;
+  }
+  .hw-item:last-child { border-bottom: none; }
+  .hw-num { color: var(--orange); font-weight: 700; min-width: 22px; }
+  .hw-answer { font-size: 0.85rem; color: var(--mid); margin-top: 2px; font-style: italic; }
+
+  /* NOTES */
+  .note-rule {
+    background: var(--orange-pale);
+    border-left: 3px solid var(--orange);
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 0.88rem;
+    margin: 8px 0;
+    line-height: 1.6;
+  }
+  .note-example {
+    background: var(--blue-light);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin: 6px 0;
+    color: var(--blue);
+    font-weight: 500;
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media(max-width:600px) { .grid2 { grid-template-columns: 1fr; } }
+
+  /* VOCAB FILTER */
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .filter-btn {
+    padding: 5px 12px;
+    border-radius: 16px;
+    border: 2px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover { border-color: var(--orange); background: var(--orange-pale); color: var(--orange); }
+
+  /* HOME */
+  .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media(max-width:500px) { .home-grid { grid-template-columns: 1fr; } }
+  .home-card {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .home-card:hover { border-color: var(--orange); box-shadow: 0 4px 12px rgba(232,101,26,0.15); transform: translateY(-2px); }
+  .home-card .icon { font-size: 2rem; margin-bottom: 8px; }
+  .home-card h3 { font-size: 0.95rem; color: var(--dark); }
+  .home-card p { font-size: 0.78rem; color: var(--mid); margin-top: 4px; }
+  .welcome { font-size: 1.1rem; margin-bottom: 20px; color: var(--mid); }
+  .welcome strong { color: var(--orange); }
+
+  /* TENSE CHEATSHEET */
+  .tense-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media(max-width:600px) { .tense-grid { grid-template-columns: 1fr; } }
+  .tense-card {
+    background: white;
+    border-radius: 10px;
+    padding: 14px;
+    border: 2px solid var(--border);
+  }
+  .tense-card h4 { color: var(--orange); font-size: 0.9rem; margin-bottom: 8px; }
+  .tense-card .formula {
+    background: var(--dark);
+    color: #ffd54f;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.82rem;
+    margin: 6px 0;
+  }
+  .tense-card .ex { font-size: 0.8rem; color: var(--mid); margin-top: 4px; }
+
+  /* DAILY DRILL */
+  .drill-type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .drill-q {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+  .drill-opts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+  .drill-opt {
+    padding: 10px 14px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    background: white;
+    text-align: left;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .drill-opt:hover { border-color: var(--orange); background: var(--orange-pale); }
+  .drill-answer-box {
+    background: var(--green-light);
+    border-left: 4px solid var(--green);
+    border-radius: 8px;
+    padding: 14px;
+    margin: 12px 0;
+  }
+  .drill-ans-label { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--green); margin-bottom: 6px; }
+  .drill-ans-text { font-size: 1rem; font-weight: 700; color: var(--dark); }
+  .drill-hint { font-size: 0.82rem; color: var(--mid); margin-top: 6px; }
+  .drill-cat { font-size: 0.75rem; color: var(--mid); margin-top: 4px; font-style: italic; }
+  .drill-complete-card {
+    text-align: center;
+    padding: 30px 20px;
+    background: white;
+    border-radius: 16px;
+    border: 2px solid var(--green);
+  }
+  .drill-complete-score { font-size: 3rem; font-weight: 800; color: var(--orange); }
+  .drill-complete-pct { font-size: 1.1rem; color: var(--green); font-weight: 700; margin: 4px 0 12px; }
+
+</style>
+</head>
+<body>
+
+<nav>
+  <h1>🇮🇳 Hindi</h1>
+  <button class="active" onclick="showSection('home')">Home</button>
+  <button onclick="showSection('notes')">Grammar</button>
+  <button onclick="showSection('tenses')">Tenses</button>
+  <button onclick="showSection('practice')">Translate</button>
+  <button onclick="showSection('flashcards')">Vocab</button>
+  <button onclick="showSection('quiz')">Quiz</button>
+  <button onclick="showSection('homework')">Homework</button>
+  <button onclick="showSection('bollywood')">🎬 Bollywood</button>
+  <button onclick="showSection('daily')" style="background:rgba(255,255,255,0.35);font-weight:800;">⚡ Daily Drill</button>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="section active">
+  <p class="welcome">Namaste, <strong>Vijay!</strong> What would you like to practice today?</p>
+  <div class="home-grid">
+    <div class="home-card" onclick="showSection('notes')">
+      <div class="icon">📖</div>
+      <h3>Grammar Notes</h3>
+      <p>Pronouns, postpositions, Ko/Mujhe, Ne, conditionals, imperatives & more</p>
+    </div>
+    <div class="home-card" onclick="showSection('tenses')">
+      <div class="icon">⏰</div>
+      <h3>Tense Cheatsheet</h3>
+      <p>All tenses + Ko/Mujhe, Ergative Ne, Conditionals, Imperatives, Comparatives</p>
+    </div>
+    <div class="home-card" onclick="showSection('practice')">
+      <div class="icon">✍️</div>
+      <h3>Translation Practice</h3>
+      <p>200+ sentences across 15 topic sets — type and get instant feedback</p>
+    </div>
+    <div class="home-card" onclick="showSection('flashcards')">
+      <div class="icon">🃏</div>
+      <h3>Vocabulary Flashcards</h3>
+      <p>300+ words: verbs, colours, numbers, days, emotions, food & more</p>
+    </div>
+    <div class="home-card" onclick="showSection('quiz')">
+      <div class="icon">🧠</div>
+      <h3>Grammar Quiz</h3>
+      <p>40+ multiple choice questions — test your grammar rules</p>
+    </div>
+    <div class="home-card" onclick="showSection('homework')">
+      <div class="icon">📝</div>
+      <h3>Homework Sets</h3>
+      <p>All Prakash's homework with model answers</p>
+    </div>
+    <div class="home-card" onclick="showSection('bollywood')" style="border-color:var(--orange);background:var(--orange-pale);">
+      <div class="icon">🎬</div>
+      <h3>Bollywood Songs</h3>
+      <p>Learn Hindi through 7 classic Bollywood songs — vocab & translation practice</p>
+    </div>
+    <div class="home-card" onclick="showSection('daily')" style="border-color:var(--green);background:var(--green-light);">
+      <div class="icon">⚡</div>
+      <h3>Daily Drill</h3>
+      <p>5 random questions every session — sentences, vocab & tenses from all lessons</p>
+    </div>
+
+  <div class="card" style="margin-top:20px;">
+    <h2>⚡ Quick Reference — Tense Patterns</h2>
+    <table>
+      <tr><th>Tense</th><th>Pattern</th><th>Example</th></tr>
+      <tr><td>Present Habitual</td><td>root + ta/ti/te + hai/hain/hoon</td><td>Main jaata hoon</td></tr>
+      <tr><td>Past Habitual</td><td>root + ta/ti/te + tha/thi/the</td><td>Woh jaati thi</td></tr>
+      <tr><td>Present Progressive</td><td>root + raha/rahi/rahe + hai/hain/hoon</td><td>Hum ja rahe hain</td></tr>
+      <tr><td>Past Progressive</td><td>root + raha/rahi/rahe + tha/thi/the</td><td>Woh so rahi thi</td></tr>
+      <tr><td>Can (Sakna)</td><td>root + sakta/sakti/sakte + hai/hain/hoon</td><td>Main bol sakta hoon</td></tr>
+      <tr><td>Want (Chahna)</td><td>infinitive + chahta/chahti/chahte + hai/hoon</td><td>Main jaana chahta hoon</td></tr>
+      <tr><td>Future (hona)</td><td>hoga / hogi / honge</td><td>Woh kal hoga</td></tr>
+      <tr><td>Future (karna)</td><td>karunga / karegi / karenge</td><td>Main karunga</td></tr>
+      <tr><td>Managed to (Paana)</td><td>root + paya/payi/paye</td><td>Hum mil paye</td></tr>
+      <tr><td>About to (Wala)</td><td>infinitive + wala/wali/wale + hai</td><td>Woh aane wala hai</td></tr>
+      <tr><td>Already done (Chukna)</td><td>root + chuka/chuki/chuke + hai</td><td>Woh ja chuka hai</td></tr>
+      <tr><td>Need/Should (Chahiye)</td><td>person + ko + infinitive + chahiye</td><td>Mujhe jaana chahiye</td></tr>
+      <tr><td>Have to (Padna)</td><td>person + ko + infinitive + padega</td><td>Mujhe jaana padega</td></tr>
+      <tr><td>Completed past (Ne)</td><td>subject + ne + object + verb(past)</td><td>Maine khaana khaaya</td></tr>
+      <tr><td>If...Then (Agar...To)</td><td>Agar [condition], to [result]</td><td>Agar aaye, to batao</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🎯 Gender Agreement — The Golden Rule</h2>
+    <table>
+      <tr><th>Subject</th><th>-ta/-ti/-te</th><th>raha/rahi/rahe</th><th>tha/thi/the</th></tr>
+      <tr><td>Main (male)</td><td>ta</td><td>raha</td><td>tha</td></tr>
+      <tr><td>Main (female)</td><td>ti</td><td>rahi</td><td>thi</td></tr>
+      <tr><td>Woh (he)</td><td>ta</td><td>raha</td><td>tha</td></tr>
+      <tr><td>Woh (she)</td><td>ti</td><td>rahi</td><td>thi</td></tr>
+      <tr><td>Aap / Hum / They</td><td>te</td><td>rahe</td><td>the</td></tr>
+      <tr><td>Unknown / Kaun</td><td>ta</td><td>raha</td><td>tha</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- GRAMMAR NOTES -->
+<div id="notes" class="section">
+  <div class="card">
+    <h2>📐 Sentence Structure</h2>
+    <div class="note-rule">Hindi word order: <strong>Subject → Object → Postposition → Verb → To-be verb</strong><br>
+    English uses prepositions BEFORE nouns. Hindi uses postpositions AFTER nouns.</div>
+    <div class="note-example">Pihu Bharat <strong>se</strong> hai. (Pihu is FROM India — "se" comes AFTER "Bharat")</div>
+    <div class="note-example">Wah class <strong>mein</strong> hai. (He is IN class — "mein" comes AFTER "class")</div>
+    <h3>Questions</h3>
+    <div class="note-rule">Question words slot in where the answer would go.<br>
+    <strong>Kaun piano baja raha hai?</strong> — "Kaun" replaces the person's name.<br>
+    Both forms acceptable: <em>Piano kaun baja raha hai?</em> or <em>Kaun piano baja raha hai?</em></div>
+  </div>
+
+  <div class="card">
+    <h2>👤 Pronouns & To-Be Verbs</h2>
+    <table>
+      <tr><th>Pronoun</th><th>Meaning</th><th>To-Be (Present)</th><th>To-Be (Past)</th></tr>
+      <tr><td>Main</td><td>I</td><td>hoon</td><td>tha/thi</td></tr>
+      <tr><td>Hum/Ham</td><td>We</td><td>hain</td><td>the/thi</td></tr>
+      <tr><td>Wah/Woh</td><td>He/She/It (far)</td><td>hai</td><td>tha/thi</td></tr>
+      <tr><td>Yah/Yeh</td><td>He/She/It (near)</td><td>hai</td><td>tha/thi</td></tr>
+      <tr><td>Wehh</td><td>They (far)</td><td>hain</td><td>the/thi</td></tr>
+      <tr><td>Yehh</td><td>They (near)</td><td>hain</td><td>the/thi</td></tr>
+      <tr><td>Aap</td><td>You (formal)</td><td>hain</td><td>the/thi</td></tr>
+      <tr><td>Tum</td><td>You (familiar)</td><td>ho</td><td>the/thi</td></tr>
+      <tr><td>Tu</td><td>You (intimate)</td><td>hai</td><td>tha/thi</td></tr>
+    </table>
+    <div class="note-rule" style="margin-top:10px;"><strong>Key rule:</strong> "Hoon" is ONLY used with "Main". Aap always takes hain (plural/respectful).</div>
+  </div>
+
+  <div class="card">
+    <h2>📍 Postpositions</h2>
+    <div class="grid2">
+      <table>
+        <tr><th>Hindi</th><th>Meaning</th></tr>
+        <tr><td>mein</td><td>in</td></tr>
+        <tr><td>se</td><td>from / by / since</td></tr>
+        <tr><td>per</td><td>on</td></tr>
+        <tr><td>ke liye</td><td>for</td></tr>
+        <tr><td>ke saath</td><td>with</td></tr>
+        <tr><td>ke samne</td><td>in front of</td></tr>
+      </table>
+      <table>
+        <tr><th>Hindi</th><th>Meaning</th></tr>
+        <tr><td>ke piche</td><td>behind</td></tr>
+        <tr><td>ke niche</td><td>under</td></tr>
+        <tr><td>ke upar</td><td>on top of / above</td></tr>
+        <tr><td>ke andar</td><td>inside</td></tr>
+        <tr><td>ke baad</td><td>after</td></tr>
+        <tr><td>ke pahle</td><td>before</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>❓ Question Words (All start with K!)</h2>
+    <table>
+      <tr><th>Word</th><th>Meaning</th><th>Note</th></tr>
+      <tr><td>Kya</td><td>What / Yes-No marker</td><td>Used at start for yes/no questions too</td></tr>
+      <tr><td>Kyon</td><td>Why</td><td>Slots before the verb</td></tr>
+      <tr><td>Kahan</td><td>Where</td><td></td></tr>
+      <tr><td>Kaun</td><td>Who</td><td>Always masculine singular (kaun + ta/raha/tha)</td></tr>
+      <tr><td>Kab</td><td>When</td><td></td></tr>
+      <tr><td>Kaisa / Kaise / Kaisi</td><td>How / What kind</td><td>Masc. sing. / Masc. pl. / Fem.</td></tr>
+      <tr><td>Kitna / Kitne / Kitni</td><td>How much / many</td><td>Agrees with noun gender</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🏠 Possessives (ka / ke / ki)</h2>
+    <div class="note-rule">Possessives agree with the NOUN being possessed (not the possessor).<br>
+    <strong>ka</strong> = masculine singular | <strong>ke</strong> = masculine plural / oblique | <strong>ki</strong> = feminine</div>
+    <table>
+      <tr><th>Person</th><th>Masc. Sing.</th><th>Masc. Pl.</th><th>Feminine</th></tr>
+      <tr><td>My</td><td>mera</td><td>mere</td><td>meri</td></tr>
+      <tr><td>Our</td><td>hamara</td><td>hamare</td><td>hamari</td></tr>
+      <tr><td>Your (formal)</td><td>aapka</td><td>aapke</td><td>aapki</td></tr>
+      <tr><td>Your (familiar)</td><td>tumhara</td><td>tumhare</td><td>tumhari</td></tr>
+      <tr><td>His/Her</td><td>uska</td><td>uske</td><td>uski</td></tr>
+      <tr><td>Their</td><td>unka</td><td>unke</td><td>unki</td></tr>
+      <tr><td>Whose</td><td>kiska</td><td>kiske</td><td>kiski</td></tr>
+    </table>
+    <div class="note-rule" style="margin-top:10px;"><strong>Apna rule:</strong> When the subject refers to their OWN possession, use apna/apne/apni.<br>
+    <em>Woh apne papa ke saath rehti thi.</em> (She lived with HER OWN dad.)</div>
+    <div class="note-example">Anna ka bhai (Anna's brother — bhai is masc.) | Anna ki behen (Anna's sister — behen is fem.)</div>
+  </div>
+
+  <div class="card">
+    <h2>🎨 Adjectives</h2>
+    <div class="note-rule">Adjectives ending in -a agree with the noun in gender and number. Adjectives not ending in -a don't change.</div>
+    <div class="grid2">
+      <table>
+        <tr><th>English</th><th>Masc.</th><th>Fem.</th></tr>
+        <tr><td>Good</td><td>achha</td><td>achhi</td></tr>
+        <tr><td>Big/Old</td><td>bara</td><td>bari</td></tr>
+        <tr><td>Small/Young</td><td>chota</td><td>choti</td></tr>
+        <tr><td>Tired</td><td>thaka</td><td>thaki</td></tr>
+        <tr><td>Expensive</td><td>mahnga</td><td>mahgi</td></tr>
+        <tr><td>New</td><td>naya</td><td>nayi</td></tr>
+      </table>
+      <table>
+        <tr><th>English</th><th>All genders</th></tr>
+        <tr><td>Happy</td><td>khush</td></tr>
+        <tr><td>Sad</td><td>udas</td></tr>
+        <tr><td>Fast</td><td>tej</td></tr>
+        <tr><td>Slow</td><td>dheema</td></tr>
+        <tr><td>Hot</td><td>garm</td></tr>
+        <tr><td>Cold</td><td>thanda</td></tr>
+        <tr><td>Easy</td><td>aasan</td></tr>
+        <tr><td>Difficult</td><td>kathin</td></tr>
+        <tr><td>Beautiful</td><td>sundar</td></tr>
+        <tr><td>Intelligent</td><td>hoshiyaar</td></tr>
+        <tr><td>OK / Fine</td><td>theek</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🗣️ Demonstrative Pronouns</h2>
+    <table>
+      <tr><th>English</th><th>Hindi</th><th>Note</th></tr>
+      <tr><td>This</td><td>Yeh</td><td>Near you</td></tr>
+      <tr><td>That</td><td>Woh</td><td>Far from you</td></tr>
+      <tr><td>These</td><td>Ye</td><td>Near, plural</td></tr>
+      <tr><td>Those</td><td>Ve</td><td>Far, plural</td></tr>
+    </table>
+    <div class="note-rule" style="margin-top:8px;">Yeh/Woh also mean "he/she/it" — context tells you which. Yeh = near, Woh = far.</div>
+  </div>
+
+  <div class="card">
+    <h2>❓ Extended Question Words</h2>
+    <table>
+      <tr><th>Word</th><th>Meaning</th><th>Example</th></tr>
+      <tr><td>Kya</td><td>What / Yes-No marker</td><td>Kya aap theek hain?</td></tr>
+      <tr><td>Kaun</td><td>Who</td><td>Kaun aa raha hai?</td></tr>
+      <tr><td>Kahan</td><td>Where</td><td>Aap kahan ja rahe hain?</td></tr>
+      <tr><td>Kab</td><td>When</td><td>Woh kab aayega?</td></tr>
+      <tr><td>Kyon / Kyunki</td><td>Why / Because</td><td>Aap kyon aaye?</td></tr>
+      <tr><td>Kaise / Kaisa / Kaisi</td><td>How / What kind</td><td>Aap kaise hain?</td></tr>
+      <tr><td>Kise / Kisko</td><td>Whom (to/for whom)</td><td>Aap kisko jaante hain?</td></tr>
+      <tr><td>Kaunsa / Kaunsi</td><td>Which</td><td>Kaunsi kitab chahiye?</td></tr>
+      <tr><td>Kiska / Kiski</td><td>Whose</td><td>Kiska ghar hai?</td></tr>
+      <tr><td>Kitna / Kitne / Kitni</td><td>How much / many</td><td>Kitna paisa hai?</td></tr>
+      <tr><td>Kidhar</td><td>Which direction / where (motion)</td><td>Aap kidhar ja rahe hain?</td></tr>
+      <tr><td>Kitni door</td><td>How far</td><td>Station kitni door hai?</td></tr>
+      <tr><td>Kitni der</td><td>How long (time)</td><td>Kitni der lagegi?</td></tr>
+      <tr><td>Kitne baje</td><td>What time</td><td>Kitne baje hai?</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>📍 Extended Postpositions & Location Words</h2>
+    <h3>Standalone location words (no "ke" needed)</h3>
+    <div class="grid2">
+      <table>
+        <tr><th>Hindi</th><th>Meaning</th></tr>
+        <tr><td>aage</td><td>in front / ahead</td></tr>
+        <tr><td>peechhe</td><td>behind / back</td></tr>
+        <tr><td>neeche</td><td>below / under</td></tr>
+        <tr><td>upar</td><td>above / on top</td></tr>
+        <tr><td>andar</td><td>inside</td></tr>
+        <tr><td>bahar</td><td>outside</td></tr>
+        <tr><td>paas</td><td>near / close</td></tr>
+        <tr><td>door</td><td>far</td></tr>
+      </table>
+      <table>
+        <tr><th>Hindi</th><th>Meaning</th></tr>
+        <tr><td>beech mein</td><td>in between / middle</td></tr>
+        <tr><td>daayein</td><td>right side</td></tr>
+        <tr><td>baayein</td><td>left side</td></tr>
+        <tr><td>bagal mein</td><td>next to / beside</td></tr>
+        <tr><td>samne</td><td>opposite / facing</td></tr>
+        <tr><td>paar</td><td>across</td></tr>
+        <tr><td>saath</td><td>with / together</td></tr>
+      </table>
+    </div>
+    <h3>Compound postpositions (ke + word)</h3>
+    <div class="grid2">
+      <table>
+        <tr><th>Hindi</th><th>Meaning</th></tr>
+        <tr><td>ke saath</td><td>with</td></tr>
+        <tr><td>ke liye</td><td>for</td></tr>
+        <tr><td>ke baad</td><td>after</td></tr>
+        <tr><td>ke pahle</td><td>before</td></tr>
+        <tr><td>ke upar</td><td>on top of</td></tr>
+        <tr><td>ke niche</td><td>underneath</td></tr>
+      </table>
+      <table>
+        <tr><th>Hindi</th><th>Meaning</th></tr>
+        <tr><td>ke andar</td><td>inside</td></tr>
+        <tr><td>ke samne</td><td>in front of</td></tr>
+        <tr><td>ke peeche</td><td>behind</td></tr>
+        <tr><td>ke baare mein</td><td>about</td></tr>
+        <tr><td>ke bina</td><td>without</td></tr>
+        <tr><td>ki taraf</td><td>towards</td></tr>
+        <tr><td>ki jagah</td><td>instead of</td></tr>
+      </table>
+    </div>
+    <h3>Special uses of "se"</h3>
+    <div class="note-example">Delhi <strong>se</strong> = from Delhi (origin) | Bus <strong>se</strong> = by bus (by/via) | Pyaar <strong>se</strong> = with love (manner)</div>
+    <h3>"Saath" with pronouns</h3>
+    <table>
+      <tr><th>English</th><th>Hindi</th></tr>
+      <tr><td>With me</td><td>Mere saath</td></tr>
+      <tr><td>With you (formal)</td><td>Aapke saath</td></tr>
+      <tr><td>With him/her</td><td>Uske saath</td></tr>
+      <tr><td>With us</td><td>Hamare saath</td></tr>
+      <tr><td>With them</td><td>Unke saath</td></tr>
+    </table>
+    <div class="note-rule" style="margin-top:8px;">Notice: all pronouns before "saath" use the oblique form (mere not mera, uske not uska, etc.)</div>
+  </div>
+
+  <div class="card">
+    <h2>🔄 Apna / Apne Aap — "One's Own" / "By Oneself"</h2>
+    <div class="note-rule"><strong>Apna/Apni/Apne</strong> = one's own. Use when the subject refers to their OWN possession — NOT someone else's.<br>
+    The key question: <em>who owns it, and are they the subject of the sentence?</em></div>
+    <table>
+      <tr><th>Hindi</th><th>English</th><th>Why?</th></tr>
+      <tr><td>Woh <strong>apne</strong> papa ke saath rehti thi</td><td>She used to live with her own dad</td><td>She = subject, she owns the dad relationship</td></tr>
+      <tr><td>Woh <strong>uske</strong> papa ke saath rehti thi</td><td>She used to live with his/someone else's dad</td><td>Someone else's dad</td></tr>
+      <tr><td>Woh <strong>apna</strong> kaam karta hai</td><td>He does his own work</td><td>He = subject, his own work</td></tr>
+      <tr><td>Main <strong>apne</strong> ghar ja raha hoon</td><td>I am going to my own home</td><td>I = subject, my own home</td></tr>
+    </table>
+    <h3>Apne aap — "By oneself / By yourself"</h3>
+    <div class="note-example">Woh apne aap karta hai. — He does it by himself.</div>
+    <div class="note-example">Apne aap kar lo. — Do it yourself.</div>
+    <div class="note-example">Woh apne aap theek ho jayega. — It will get better on its own.</div>
+    <div class="note-example">Main apne aap khush hoon. — I am happy with myself.</div>
+  </div>
+
+  <div class="card">
+    <h2>🕐 Time Words</h2>
+    <h3>Adjectives of Time — Past</h3>
+    <table>
+      <tr><th>Hindi</th><th>Meaning</th></tr>
+      <tr><td>pichla / pichli</td><td>last (m/f) — pichla saal = last year, pichli raat = last night</td></tr>
+      <tr><td>pehle</td><td>before / previously / ago</td></tr>
+      <tr><td>purana / purani</td><td>old / previous</td></tr>
+      <tr><td>us waqt / tab</td><td>at that time / then</td></tr>
+      <tr><td>pichle hafte</td><td>last week</td></tr>
+    </table>
+    <h3>Adjectives of Time — Present</h3>
+    <table>
+      <tr><th>Hindi</th><th>Meaning</th></tr>
+      <tr><td>abhi</td><td>right now</td></tr>
+      <tr><td>aaj</td><td>today</td></tr>
+      <tr><td>is waqt</td><td>at this time</td></tr>
+      <tr><td>filhaal</td><td>currently / for now</td></tr>
+      <tr><td>ab</td><td>now</td></tr>
+    </table>
+    <h3>Adjectives of Time — Future</h3>
+    <table>
+      <tr><th>Hindi</th><th>Meaning</th></tr>
+      <tr><td>agle / agli</td><td>next (m/f) — agle hafte = next week</td></tr>
+      <tr><td>baad mein</td><td>later / after</td></tr>
+      <tr><td>aane wala</td><td>upcoming / about to come</td></tr>
+      <tr><td>jald</td><td>soon</td></tr>
+      <tr><td>kal</td><td>tomorrow (also yesterday — context tells you)</td></tr>
+    </table>
+    <h3>General Time Words (Frequency)</h3>
+    <table>
+      <tr><th>Hindi</th><th>Meaning</th></tr>
+      <tr><td>kabhi / kabhi kabhi</td><td>sometimes</td></tr>
+      <tr><td>hamesha</td><td>always</td></tr>
+      <tr><td>aksar</td><td>often</td></tr>
+      <tr><td>kabhi nahi</td><td>never</td></tr>
+      <tr><td>roz / rozana</td><td>daily / every day</td></tr>
+      <tr><td>jab</td><td>when</td></tr>
+      <tr><td>jab bhi</td><td>whenever</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>⏭️ Future Tense</h2>
+    <h3>Hona — Future "will be"</h3>
+    <table>
+      <tr><th>Subject</th><th>Future To-Be</th><th>Meaning</th></tr>
+      <tr><td>Main (m)</td><td>hounga</td><td>I will be</td></tr>
+      <tr><td>Main (f)</td><td>houngi</td><td>I will be</td></tr>
+      <tr><td>Woh (m)</td><td>hoga</td><td>He will be</td></tr>
+      <tr><td>Woh (f)</td><td>hogi</td><td>She will be</td></tr>
+      <tr><td>Hum</td><td>honge</td><td>We will be</td></tr>
+      <tr><td>Ve / Aap</td><td>honge</td><td>They / You will be</td></tr>
+    </table>
+    <h3>Karna — Future "will do"</h3>
+    <table>
+      <tr><th>Subject</th><th>Future Form</th><th>Meaning</th></tr>
+      <tr><td>Main (m)</td><td>karunga</td><td>I will do</td></tr>
+      <tr><td>Main (f)</td><td>karungi</td><td>I will do</td></tr>
+      <tr><td>Woh (m)</td><td>karega</td><td>He will do</td></tr>
+      <tr><td>Woh (f)</td><td>karegi</td><td>She will do</td></tr>
+      <tr><td>Hum</td><td>karenge</td><td>We will do</td></tr>
+      <tr><td>Ve / Aap</td><td>karenge</td><td>They / You will do</td></tr>
+    </table>
+    <div class="note-rule" style="margin-top:8px;"><strong>Future progressive:</strong> root + raha/rahi/rahe + hounga/hogi/honge<br>
+    Main ja raha hounga = I will be going | Woh so rahi hogi = She will be sleeping</div>
+    <h3>Past tense of Karna (kiya/ki/kiye)</h3>
+    <div class="note-rule">Completed past actions use kiya/ki/kiye. The subject takes the "ne" marker (maine, usne, humne, unhone).</div>
+    <table>
+      <tr><th>Subject</th><th>Form</th><th>Example</th></tr>
+      <tr><td>Maine (I)</td><td>kiya (m) / ki (f)</td><td>Maine kaam kiya. (I did the work.)</td></tr>
+      <tr><td>Usne (he/she)</td><td>kiya / ki</td><td>Usne khaana khaaya. (He/she ate food.)</td></tr>
+      <tr><td>Humne (we)</td><td>kiya</td><td>Humne milke kiya. (We did it together.)</td></tr>
+      <tr><td>Unhone (they)</td><td>kiya</td><td>Unhone kaam kiya. (They did the work.)</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🆕 Modal Verb Structures (from your notes!)</h2>
+    <h3>5. Paana — "Managed to / Was able to" (completed result)</h3>
+    <div class="note-rule">Use <strong>root verb + paya/payi/paye</strong>. Implies you actually succeeded (stronger than sakna).</div>
+    <div class="note-example">Main kar paya. — I managed to do it. (m)</div>
+    <div class="note-example">Woh ja nahi payi. — She couldn't go / didn't manage to go. (f)</div>
+    <div class="note-example">Hum mil paye. — We managed to meet.</div>
+    <h3>6. Dena — "Let / Allow"</h3>
+    <div class="note-rule">Use <strong>oblique infinitive (-ne form) + do/deta</strong>. Change -na → -ne before dena.</div>
+    <div class="note-example">Mujhe jaane do. — Let me go. (jaana → jaane)</div>
+    <div class="note-example">Woh karne deta hai. — He lets (someone) do (it).</div>
+    <div class="note-example">Mujhe bolne do. — Let me speak. (bolna → bolne)</div>
+    <h3>7. Lena — "Do for yourself"</h3>
+    <div class="note-rule">Use <strong>root verb + lo</strong>. Implies doing something for your own benefit.</div>
+    <div class="note-example">Kha lo. — Eat (for yourself). | Le lo. — Take (for yourself).</div>
+    <div class="note-example">Samajh lo. — Understand (for yourself / get it into your head).</div>
+    <h3>8. Wala/Wali/Wale — "About to / Going to"</h3>
+    <div class="note-rule">Use <strong>infinitive + wala/wali/wale + hoon/hai/hain</strong>. Expresses something is just about to happen.</div>
+    <div class="note-example">Woh aane wala hai. — He is about to come. (m)</div>
+    <div class="note-example">Barish aane wali hai. — Rain is about to come. (f)</div>
+    <div class="note-example">Hum jaane wale hain. — We are about to go.</div>
+    <h3>The "-ne" form (oblique infinitive)</h3>
+    <div class="note-rule">Used with Dena (let) and Paana (managed to). Simply change -na → -ne at the end of the infinitive.</div>
+    <table>
+      <tr><th>Infinitive</th><th>-ne form</th></tr>
+      <tr><td>jaana</td><td>jaane</td></tr>
+      <tr><td>karna</td><td>karne</td></tr>
+      <tr><td>bolna</td><td>bolne</td></tr>
+      <tr><td>sona</td><td>sone</td></tr>
+      <tr><td>likhna</td><td>likhne</td></tr>
+    </table>
+    <div class="note-rule" style="margin-top:8px;"><strong>Compare the three infinitive forms:</strong><br>
+    <strong>-na</strong> (full) → used with Chahna, Sakna: main <em>jaana</em> chahta hoon<br>
+    <strong>root stem</strong> → used with Sakna, progressive: main <em>ja</em> sakta hoon<br>
+    <strong>-ne</strong> (oblique) → used with Dena, Paana: mujhe <em>jaane</em> do</div>
+  </div>
+
+  <div class="card">
+    <h2>🎯 Ko / Mujhe — Dative Constructions</h2>
+    <div class="note-rule"><strong>Ko</strong> marks the indirect object ("to/for someone"). When combined with pronouns it creates special forms. These are essential for expressing feelings, needs and preferences.</div>
+    <table>
+      <tr><th>Pronoun + ko</th><th>Form</th><th>Meaning</th></tr>
+      <tr><td>Main + ko</td><td>mujhe / mujhko</td><td>to me / I feel</td></tr>
+      <tr><td>Tum + ko</td><td>tumhe / tumko</td><td>to you (familiar)</td></tr>
+      <tr><td>Aap + ko</td><td>aapko</td><td>to you (formal)</td></tr>
+      <tr><td>Woh + ko</td><td>use / usse</td><td>to him/her</td></tr>
+      <tr><td>Hum + ko</td><td>hamein / hame</td><td>to us</td></tr>
+      <tr><td>Ve + ko</td><td>unhe / unko</td><td>to them</td></tr>
+    </table>
+    <h3>Mujhe — Expressing feelings & needs</h3>
+    <div class="note-example">Mujhe bhook lagi hai. — I am hungry. (lit. hunger has attached to me)</div>
+    <div class="note-example">Mujhe pasand hai. — I like it. (lit. it is pleasing to me)</div>
+    <div class="note-example">Mujhe pata hai. — I know. (lit. knowledge is to me)</div>
+    <div class="note-example">Mujhe neend aa rahi hai. — I am feeling sleepy.</div>
+    <div class="note-example">Mujhe darr lag raha hai. — I am scared. (lit. fear is attaching to me)</div>
+    <div class="note-example">Mujhe chai chahiye. — I need/want tea.</div>
+    <div class="note-example">Mujhe abhi jaana hai. — I have to go now.</div>
+    <div class="note-example">Mujhe pata nahi. — I don't know.</div>
+    <div class="note-rule" style="margin-top:8px;"><strong>Key insight:</strong> In Hindi, feelings "happen to" you rather than you "having" them. You don't say "I am hungry" — you say "hunger came to me". This is why mujhe is so commonly used!</div>
+  </div>
+
+  <div class="card">
+    <h2>🔧 Ne Construction — Ergative Past</h2>
+    <div class="note-rule">For <strong>completed past actions with transitive verbs</strong> (verbs that take an object), the subject takes the "ne" marker and changes form. The verb agrees with the OBJECT not the subject.</div>
+    <table>
+      <tr><th>Subject</th><th>+ Ne form</th><th>Example</th></tr>
+      <tr><td>Main</td><td>maine</td><td>Maine khaana khaaya. (I ate food.)</td></tr>
+      <tr><td>Tum</td><td>tumne</td><td>Tumne kya kiya? (What did you do?)</td></tr>
+      <tr><td>Aap</td><td>aapne</td><td>Aapne achha kiya. (You did well.)</td></tr>
+      <tr><td>Woh</td><td>usne</td><td>Usne kitaab padhi. (He/she read the book.)</td></tr>
+      <tr><td>Hum</td><td>humne</td><td>Humne kaam kiya. (We did the work.)</td></tr>
+      <tr><td>Ve</td><td>unhone</td><td>Unhone khaana banaya. (They cooked food.)</td></tr>
+    </table>
+    <div class="note-rule" style="margin-top:8px;"><strong>⚠️ Intransitive verbs DON'T use ne:</strong> Jaana, aana, sona, uthna, bhaagna — these never take ne in past tense.<br>
+    ✅ Woh aaya. (He came.) — NO ne because jaana/aana is intransitive.<br>
+    ✅ Usne khaana khaaya. (He ate food.) — ne because khaana is transitive.</div>
+  </div>
+
+  <div class="card">
+    <h2>✅ Chahiye — Need / Should</h2>
+    <div class="note-rule">Chahiye expresses need or "should". It's invariable — it doesn't change for gender or number. The person who needs uses the dative form (mujhe/tumhe/aapko etc.)</div>
+    <div class="note-example">Mujhe chai chahiye. — I need/want tea.</div>
+    <div class="note-example">Aapko aaram chahiye. — You need rest.</div>
+    <div class="note-example">Kya chahiye? — What do you need?</div>
+    <div class="note-example">Aapko jaana chahiye. — You should go. (infinitive + chahiye)</div>
+    <div class="note-example">Hume milna chahiye. — We should meet.</div>
+    <div class="note-example">Use doctor ke paas jaana chahiye. — She should go to the doctor.</div>
+    <div class="note-rule" style="margin-top:8px;"><strong>With noun:</strong> mujhe [thing] chahiye = I need [thing]<br>
+    <strong>With infinitive:</strong> mujhe [jaana] chahiye = I should [go]</div>
+  </div>
+
+  <div class="card">
+    <h2>⚡ Obligation — "Have To" (Jaana + Hai/Tha)</h2>
+    <div class="note-rule">To express obligation ("have to / must"), use: <strong>dative pronoun + infinitive + hai/tha</strong><br>
+    This is different from chahiye — it expresses stronger obligation/necessity.</div>
+    <div class="note-example">Mujhe jaana hai. — I have to go.</div>
+    <div class="note-example">Mujhe jaana tha. — I had to go.</div>
+    <div class="note-example">Tumhe kaam karna hai. — You have to work.</div>
+    <div class="note-example">Use school jaana hai. — He/she has to go to school.</div>
+    <div class="note-example">Hamein milna hai. — We have to meet.</div>
+    <table style="margin-top:10px;">
+      <tr><th>Tense</th><th>Form</th><th>Example</th></tr>
+      <tr><td>Present (have to)</td><td>infinitive + hai</td><td>Mujhe jaana hai</td></tr>
+      <tr><td>Past (had to)</td><td>infinitive + tha/thi/the</td><td>Mujhe jaana tha</td></tr>
+      <tr><td>Future (will have to)</td><td>infinitive + hoga/hogi/honge</td><td>Mujhe jaana hoga</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🔀 Conditionals — Agar...To (If...Then)</h2>
+    <div class="note-rule"><strong>Agar</strong> = if | <strong>To</strong> = then (often optional in speech)<br>
+    Word order: Agar + [condition], to + [result]</div>
+    <div class="note-example">Agar tum aao, to main bhi aaunga. — If you come, I will also come.</div>
+    <div class="note-example">Agar baarish ho, to hum nahi jayenge. — If it rains, we won't go.</div>
+    <div class="note-example">Agar tumhe bhook hai, to kuch khao. — If you're hungry, eat something.</div>
+    <div class="note-example">Agar woh phone kare, to mujhe batao. — If she calls, tell me.</div>
+    <div class="note-example">Agar mere paas waqt hota, to main aata. — If I had time, I would come.</div>
+    <div class="note-example">Agar mujhe pata hota, to main tumhe batata. — If I knew, I would tell you.</div>
+    <div class="note-rule" style="margin-top:8px;"><strong>Warna</strong> = otherwise (alternative to agar): Jaldi jao, warna late ho jaoge. (Go quickly, otherwise you'll be late.)</div>
+  </div>
+
+  <div class="card">
+    <h2>📢 Commands — Imperatives</h2>
+    <div class="note-rule">Hindi has three levels of command based on formality. The verb stem is the base.</div>
+    <table>
+      <tr><th>Level</th><th>Pronoun</th><th>Form</th><th>Example</th></tr>
+      <tr><td>Informal (tu)</td><td>tu</td><td>root stem</td><td>Ja! Kha! Pi! Bol!</td></tr>
+      <tr><td>Familiar (tum)</td><td>tum</td><td>root + o</td><td>Jao! Khao! Peeyo! Bolo!</td></tr>
+      <tr><td>Formal (aap)</td><td>aap</td><td>root + iye/ijiye</td><td>Jaiye! Khaiye! Peejiye! Boliye!</td></tr>
+    </table>
+    <h3>Negative Commands</h3>
+    <div class="note-example">Mat + root = Mat ja! (Don't go!) | Mat kha! (Don't eat!) | Mat ro! (Don't cry!)</div>
+    <div class="note-example">Formal negative: Please don't go = Jaiye mat. / Mat jaiye.</div>
+    <h3>Polite Requests</h3>
+    <div class="note-example">Zara + verb = Please/just... → Zara bolo (Please say) | Zara ruko (Just wait)</div>
+    <div class="note-example">Thoda + verb = A little... → Thoda dhire bolo (Speak a little slowly)</div>
+    <h3>Common Commands</h3>
+    <div class="grid2">
+      <div>
+        <div class="note-example">Aao / Aaiye — Come</div>
+        <div class="note-example">Jao / Jaiye — Go</div>
+        <div class="note-example">Baitho / Baithiye — Sit</div>
+        <div class="note-example">Uthho / Uthiye — Get up</div>
+        <div class="note-example">Suno / Suniye — Listen</div>
+      </div>
+      <div>
+        <div class="note-example">Dekho / Dekhiye — Look/See</div>
+        <div class="note-example">Bolo / Boliye — Speak</div>
+        <div class="note-example">Ruko / Rukiye — Stop/Wait</div>
+        <div class="note-example">Chalo — Let's go/Come on</div>
+        <div class="note-example">Karo / Kariye — Do (it)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📊 Comparatives & Superlatives</h2>
+    <table>
+      <tr><th>Type</th><th>Structure</th><th>Example</th></tr>
+      <tr><td>More than</td><td>[A] [B] se zyada [adj/verb]</td><td>Woh mujhse zyada bolta hai. (He speaks more than me.)</td></tr>
+      <tr><td>Less than</td><td>[A] [B] se kam [adj]</td><td>Yeh usse kam mahnga hai. (This is cheaper than that.)</td></tr>
+      <tr><td>As...as</td><td>Jitna...utna</td><td>Jitna bada utna achha. (The bigger the better.)</td></tr>
+      <tr><td>The most (superlative)</td><td>Sabse [adj]</td><td>Woh sabse achha student hai. (He is the best student.)</td></tr>
+      <tr><td>The most of all</td><td>Sabse zyada</td><td>Woh sabse zyada kaam karta hai. (He works the most.)</td></tr>
+      <tr><td>Better</td><td>Behtar</td><td>Yeh behtar hai. (This is better.)</td></tr>
+      <tr><td>Best</td><td>Sabse behtar / Behtareen</td><td>Yeh sabse behtareen hai. (This is the best.)</td></tr>
+    </table>
+    <div class="note-example">London Manchester se bada hai. — London is bigger than Manchester.</div>
+    <div class="note-example">Mera bhai mujhse chota hai. — My brother is younger than me.</div>
+    <div class="note-example">Yeh sabse mahnga restaurant hai. — This is the most expensive restaurant.</div>
+  </div>
+
+  <div class="card">
+    <h2>⚡ Emphatic Particles — Hi & Bhi</h2>
+    <h3>Hi — Only / Exactly / Emphasis</h3>
+    <div class="note-rule">Hi follows the word it emphasises and can't easily be translated — it adds stress/exclusivity.</div>
+    <div class="note-example">Main hi karunga. — Only I will do it. (emphasises Main)</div>
+    <div class="note-example">Abhi hi jao. — Go right now. (emphasises abhi)</div>
+    <div class="note-example">Yahi hai. — This is exactly it. (yeh + hi)</div>
+    <div class="note-example">Wahi tha. — It was exactly that. (woh + hi)</div>
+    <div class="note-example">Tab hi aana. — Come at that exact time.</div>
+    <h3>Bhi — Also / Even / Too</h3>
+    <div class="note-rule">Bhi follows the word it applies to — it adds inclusion.</div>
+    <div class="note-example">Main bhi aaunga. — I will also come.</div>
+    <div class="note-example">Woh bhi nahi aaya. — He didn't come either.</div>
+    <div class="note-example">Yeh bhi theek hai. — This is also fine.</div>
+    <div class="note-example">Kuch bhi. — Anything at all.</div>
+    <div class="note-example">Kabhi bhi. — Anytime at all.</div>
+  </div>
+
+  <div class="card">
+    <h2>🔗 Conjunctions</h2>
+    <table>
+      <tr><th>Hindi</th><th>English</th><th>Example</th></tr>
+      <tr><td>aur</td><td>and</td><td>Main aur Vijay London mein hain.</td></tr>
+      <tr><td>ya</td><td>or</td><td>Chai ya coffee? (Tea or coffee?)</td></tr>
+      <tr><td>lekin / magar</td><td>but</td><td>Main chahta hoon lekin nahi kar sakta.</td></tr>
+      <tr><td>kyunki</td><td>because</td><td>Main nahi aaya kyunki bimaar tha.</td></tr>
+      <tr><td>isliye</td><td>so / therefore</td><td>Main bimaar hoon isliye nahi aa sakta.</td></tr>
+      <tr><td>taki</td><td>so that</td><td>Jaldi jao taki late na ho. (Go quickly so that you're not late.)</td></tr>
+      <tr><td>agar</td><td>if</td><td>Agar aao, to batao.</td></tr>
+      <tr><td>warna</td><td>otherwise</td><td>Jaldi karo warna choot jaoge.</td></tr>
+      <tr><td>phir bhi</td><td>even so / still / nevertheless</td><td>Woh bimaar tha, phir bhi aaya.</td></tr>
+      <tr><td>jabki</td><td>whereas / while</td><td>Woh khelna chahta hai jabki mujhe padhna hai.</td></tr>
+      <tr><td>jab</td><td>when</td><td>Jab woh aaya, main so raha tha.</td></tr>
+      <tr><td>jo</td><td>who / which / that (relative)</td><td>Jo aadmi aaya, woh mera dost hai.</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🔢 Numbers 1–20</h2>
+    <div class="grid2">
+      <table>
+        <tr><th>#</th><th>Hindi</th></tr>
+        <tr><td>1</td><td>ek</td></tr>
+        <tr><td>2</td><td>do</td></tr>
+        <tr><td>3</td><td>teen</td></tr>
+        <tr><td>4</td><td>chaar</td></tr>
+        <tr><td>5</td><td>paanch</td></tr>
+        <tr><td>6</td><td>chhe</td></tr>
+        <tr><td>7</td><td>saat</td></tr>
+        <tr><td>8</td><td>aath</td></tr>
+        <tr><td>9</td><td>nau</td></tr>
+        <tr><td>10</td><td>das</td></tr>
+      </table>
+      <table>
+        <tr><th>#</th><th>Hindi</th></tr>
+        <tr><td>11</td><td>gyaarah</td></tr>
+        <tr><td>12</td><td>baarah</td></tr>
+        <tr><td>13</td><td>terah</td></tr>
+        <tr><td>14</td><td>chaudah</td></tr>
+        <tr><td>15</td><td>pandrah</td></tr>
+        <tr><td>16</td><td>solah</td></tr>
+        <tr><td>17</td><td>satrah</td></tr>
+        <tr><td>18</td><td>athhaarah</td></tr>
+        <tr><td>19</td><td>unnis</td></tr>
+        <tr><td>20</td><td>bees</td></tr>
+      </table>
+    </div>
+    <h3>Higher numbers</h3>
+    <table>
+      <tr><td>25</td><td>pachees</td><td>30</td><td>tees</td><td>40</td><td>chaalis</td></tr>
+      <tr><td>50</td><td>pachaas</td><td>60</td><td>saath</td><td>70</td><td>sattar</td></tr>
+      <tr><td>80</td><td>assi</td><td>90</td><td>nabbe</td><td>100</td><td>sau / ek sau</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>📅 Days, Months & Colours</h2>
+    <h3>Days of the Week</h3>
+    <table>
+      <tr><th>Day</th><th>Hindi</th></tr>
+      <tr><td>Monday</td><td>Somvar</td></tr>
+      <tr><td>Tuesday</td><td>Mangalvar</td></tr>
+      <tr><td>Wednesday</td><td>Budhvar</td></tr>
+      <tr><td>Thursday</td><td>Guruvar / Brihaspativar</td></tr>
+      <tr><td>Friday</td><td>Shukravar</td></tr>
+      <tr><td>Saturday</td><td>Shanivar</td></tr>
+      <tr><td>Sunday</td><td>Ravivar / Itvar</td></tr>
+    </table>
+    <h3>Months</h3>
+    <table>
+      <tr><td>January</td><td>Januari</td><td>February</td><td>Farvari</td><td>March</td><td>Maarcha</td></tr>
+      <tr><td>April</td><td>Aprail</td><td>May</td><td>Mai</td><td>June</td><td>Joon</td></tr>
+      <tr><td>July</td><td>Julaai</td><td>August</td><td>Agast</td><td>September</td><td>Sitambar</td></tr>
+      <tr><td>October</td><td>Aktobar</td><td>November</td><td>Navambar</td><td>December</td><td>Disambar</td></tr>
+    </table>
+    <h3>Colours</h3>
+    <div class="grid2">
+      <table>
+        <tr><th>Colour</th><th>Hindi</th></tr>
+        <tr><td>Red</td><td>lal</td></tr>
+        <tr><td>Blue</td><td>neela (m) / neeli (f)</td></tr>
+        <tr><td>Yellow</td><td>peela (m) / peeli (f)</td></tr>
+        <tr><td>Green</td><td>hara (m) / hari (f)</td></tr>
+        <tr><td>Black</td><td>kala (m) / kali (f)</td></tr>
+        <tr><td>White</td><td>safed</td></tr>
+      </table>
+      <table>
+        <tr><th>Colour</th><th>Hindi</th></tr>
+        <tr><td>Orange</td><td>narangi</td></tr>
+        <tr><td>Pink</td><td>gulaabi</td></tr>
+        <tr><td>Brown</td><td>bhoora (m) / bhoori (f)</td></tr>
+        <tr><td>Golden</td><td>sunehra (m) / sunehri (f)</td></tr>
+        <tr><td>Purple</td><td>baingani</td></tr>
+        <tr><td>Grey</td><td>dhusra / slaeti</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💬 Common Expressions & Phrases</h2>
+    <table>
+      <tr><th>Hindi</th><th>Meaning</th></tr>
+      <tr><td>Theek hai</td><td>OK / Alright</td></tr>
+      <tr><td>Koi baat nahi</td><td>No problem / Never mind</td></tr>
+      <tr><td>Shukriya / Dhanyavaad</td><td>Thank you</td></tr>
+      <tr><td>Maafi chahiye / Maafi karna</td><td>Sorry / Excuse me</td></tr>
+      <tr><td>Bilkul</td><td>Absolutely / Of course</td></tr>
+      <tr><td>Zaroor</td><td>Definitely / Sure</td></tr>
+      <tr><td>Chalo / Chalte hain</td><td>Let's go / Come on</td></tr>
+      <tr><td>Haan</td><td>Yes</td></tr>
+      <tr><td>Nahi / Na</td><td>No</td></tr>
+      <tr><td>Waise</td><td>By the way / Anyway</td></tr>
+      <tr><td>Matlab</td><td>Meaning / I mean</td></tr>
+      <tr><td>Bas</td><td>Enough / Just / Only / Stop</td></tr>
+      <tr><td>Sirf</td><td>Only / Just</td></tr>
+      <tr><td>Kafi</td><td>Quite / Enough / A lot</td></tr>
+      <tr><td>Kya baat hai!</td><td>What a thing! / Wow! / Well done!</td></tr>
+      <tr><td>Acha? / Achha!</td><td>Really? / Oh I see! / Good!</td></tr>
+      <tr><td>Abhi bhi</td><td>Still (right now)</td></tr>
+      <tr><td>Phir bhi</td><td>Even so / Nevertheless / Still</td></tr>
+      <tr><td>Zara</td><td>A little / Just (for polite requests)</td></tr>
+      <tr><td>Thoda</td><td>A little / Some</td></tr>
+      <tr><td>Bahut achha</td><td>Very good</td></tr>
+      <tr><td>Mujhe samajh nahi aaya</td><td>I didn't understand</td></tr>
+      <tr><td>Phir milenge</td><td>See you again / We'll meet again</td></tr>
+      <tr><td>Kya haal hai?</td><td>How are you? (informal)</td></tr>
+      <tr><td>Theek hoon, shukriya</td><td>I'm fine, thank you</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>📝 "Pehle" — Alternative "Used To"</h2>
+    <div class="note-rule">Two ways to say "used to" in Hindi:<br>
+    <strong>1. Grammar form:</strong> root + ta/ti/te + tha/thi/the<br>
+    <strong>2. Word-based:</strong> pehle + root + ta/ti/te + hai (present tense!)</div>
+    <div class="note-example">They used to eat meat → Woh maas khate the (grammar form)</div>
+    <div class="note-example">They used to eat meat → Woh pehle maas khate the (with emphasis — "they PREVIOUSLY ate meat")</div>
+    <div class="note-example">He previously eats → Woh pehle khaata hai (current habit framed as "previously he does this")</div>
+    <div class="note-rule" style="margin-top:8px;">The pehle form adds emphasis — it stresses the contrast between then and now. Your tutor Prakash uses both — both are correct.</div>
+  </div>
+</div>
+
+<!-- TENSES -->
+<div id="tenses" class="section">
+  <div class="card">
+    <h2>⏰ All Tenses at a Glance</h2>
+    <div class="tense-grid">
+      <div class="tense-card">
+        <h4>1. Present Habitual — "Usually does"</h4>
+        <div class="formula">root + ta/ti/te + hai/hain/hoon</div>
+        <div class="ex">Main roz chai peeta hoon. (I drink tea every day.)</div>
+        <div class="ex">Woh kaam karti hai. (She works.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>2. Past Habitual — "Used to"</h4>
+        <div class="formula">root + ta/ti/te + tha/thi/the</div>
+        <div class="ex">Main Bharat mein rehta tha. (I used to live in India.)</div>
+        <div class="ex">Woh tennis khelta tha. (He used to play tennis.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>3. Present Progressive — "Is doing"</h4>
+        <div class="formula">root + raha/rahi/rahe + hai/hain/hoon</div>
+        <div class="ex">Main TV dekh raha hoon. (I am watching TV.)</div>
+        <div class="ex">Woh so rahi hai. (She is sleeping.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>4. Past Progressive — "Was doing"</h4>
+        <div class="formula">root + raha/rahi/rahe + tha/thi/the</div>
+        <div class="ex">Wahan kya ho raha tha? (What was happening there?)</div>
+        <div class="ex">Woh khaana bana rahi thi. (She was cooking food.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>5. Sakna — "Can / Is able to"</h4>
+        <div class="formula">root + sakta/sakti/sakte + hai/hain/hoon</div>
+        <div class="ex">Main Hindi bol sakta hoon. (I can speak Hindi.)</div>
+        <div class="ex">Woh aa sakti hai. (She can come.)</div>
+        <div class="ex" style="color:var(--red);">Negative: Main nahi bol sakta. (I cannot speak.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>6. Chahna — "Want to"</h4>
+        <div class="formula">infinitive + chahta/chahti/chahte + hoon/hai/hain</div>
+        <div class="ex">Main India jaana chahta hoon. (I want to go to India.)</div>
+        <div class="ex">Woh piano bajaana chahti hai. (She wants to play piano.)</div>
+        <div class="ex" style="color:var(--blue);">With noun: Main chai chahta hoon. (I want tea.)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔤 Sakna vs Chahna — Key Difference</h2>
+    <table>
+      <tr><th></th><th>Sakna (Can)</th><th>Chahna (Want)</th></tr>
+      <tr><td>Verb form</td><td>ROOT verb stem</td><td>FULL infinitive (-na)</td></tr>
+      <tr><td>Example</td><td>Main <strong>bol</strong> sakta hoon</td><td>Main <strong>bolna</strong> chahta hoon</td></tr>
+      <tr><td>Negative</td><td>Main nahi bol <strong>sakta</strong></td><td>Main nahi <strong>chahta</strong></td></tr>
+      <tr><td>Standalone</td><td>❌ Cannot stand alone</td><td>✅ Main chahta hoon (I want)</td></tr>
+    </table>
+    <div class="note-rule" style="margin-top:10px;"><strong>Pehle / Ab structure</strong> (Past vs Present contrast)<br>
+    Pehle main cricket khelta tha, ab nahin khel sakta.<br>
+    (I used to play cricket, now I cannot play.)</div>
+  </div>
+
+  <div class="card">
+    <h2>🏗️ Negative Sentences</h2>
+    <div class="note-rule">Add <strong>nahin/nahi</strong> before the main verb (or before sakta/chahta).</div>
+    <div class="note-example">Woh school nahi jaati. (She doesn't go to school.)</div>
+    <div class="note-example">Main meat nahi kha sakta. (I cannot eat meat.)</div>
+    <div class="note-example">Woh aaj nahi aa rahi. (She is not coming today.)</div>
+  </div>
+
+  <div class="card">
+    <h2>⏭️ Future Tense</h2>
+    <div class="tense-grid">
+      <div class="tense-card">
+        <h4>Future "Will be" — Hona</h4>
+        <div class="formula">hoga / hogi / honge</div>
+        <div class="ex">Main hounga (I will be, m) | Main houngi (f)</div>
+        <div class="ex">Woh hoga (he) | Woh hogi (she)</div>
+        <div class="ex">Hum / Ve honge (we/they will be)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Future "Will do" — Karna</h4>
+        <div class="formula">karunga / karegi / karenge</div>
+        <div class="ex">Main karunga (I will do, m) | Main karungi (f)</div>
+        <div class="ex">Woh karega (he) | Woh karegi (she)</div>
+        <div class="ex">Hum / Ve karenge (we/they will do)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Future Progressive — "Will be doing"</h4>
+        <div class="formula">root + raha/rahi/rahe + hounga/hogi/honge</div>
+        <div class="ex">Main ja raha hounga. (I will be going.)</div>
+        <div class="ex">Woh so rahi hogi. (She will be sleeping.)</div>
+        <div class="ex">Hum bol rahe honge. (We will be speaking.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Past Karna — Kiya/Ki/Kiye</h4>
+        <div class="formula">Subject + ne + object + kiya/ki/kiye</div>
+        <div class="ex">Maine kaam kiya. (I did the work.)</div>
+        <div class="ex">Usne khaana khaaya. (He/she ate food.)</div>
+        <div class="ex">Humne milke kiya. (We did it together.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Paana — "Managed to"</h4>
+        <div class="formula">root + paya / payi / paye</div>
+        <div class="ex">Main kar paya. (I managed to do it.)</div>
+        <div class="ex">Woh ja nahi payi. (She couldn't go.)</div>
+        <div class="ex">Hum mil paye. (We managed to meet.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Wala — "About to / Going to"</h4>
+        <div class="formula">infinitive + wala/wali/wale + hai/hain/hoon</div>
+        <div class="ex">Woh aane wala hai. (He is about to come.)</div>
+        <div class="ex">Barish aane wali hai. (Rain is about to come.)</div>
+        <div class="ex">Hum jaane wale hain. (We are about to go.)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🗝️ All Modal Structures — Side by Side</h2>
+    <table>
+      <tr><th>Structure</th><th>Verb form used</th><th>Example</th></tr>
+      <tr><td>Can (Sakna)</td><td>ROOT stem</td><td>Main bol sakta hoon</td></tr>
+      <tr><td>Want (Chahna)</td><td>FULL infinitive -na</td><td>Main bolna chahta hoon</td></tr>
+      <tr><td>Managed to (Paana)</td><td>ROOT stem</td><td>Main bol paya</td></tr>
+      <tr><td>Let/Allow (Dena)</td><td>OBLIQUE -ne form</td><td>Mujhe bolne do</td></tr>
+      <tr><td>Do for yourself (Lena)</td><td>ROOT stem</td><td>Bol lo</td></tr>
+      <tr><td>About to (Wala)</td><td>FULL infinitive -na</td><td>Woh bolne wala hai</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>🎯 Ko / Mujhe Constructions — "To me / For me"</h2>
+    <div class="tense-grid">
+      <div class="tense-card">
+        <h4>Ko — Direction / Need / Feeling</h4>
+        <div class="formula">Person + ko + [noun/feeling/need]</div>
+        <div class="ex">Mujhe bhookh lagi hai. (I am hungry.)</div>
+        <div class="ex">Usse pyaas lagi hai. (He/she is thirsty.)</div>
+        <div class="ex">Mujhe nahi pata. (I don't know.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Chahiye — "Need / Should have"</h4>
+        <div class="formula">Person + ko + noun/infinitive + chahiye</div>
+        <div class="ex">Mujhe chai chahiye. (I need/want tea.)</div>
+        <div class="ex">Usse doctor ke paas jaana chahiye. (He should go to the doctor.)</div>
+        <div class="ex">Humko khaana chahiye. (We need food.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Accha Lagna — "Like / Feel good"</h4>
+        <div class="formula">Person + ko + [thing] + accha lagta/lagti hai</div>
+        <div class="ex">Mujhe chai acchi lagti hai. (I like tea.)</div>
+        <div class="ex">Usse Bollywood movies acche lagte hain. (He likes Bollywood movies.)</div>
+        <div class="ex">Mujhe yeh gana accha lagta hai. (I like this song.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Ko Pronoun Table</h4>
+        <div class="formula">Direct → Ko form</div>
+        <div class="ex">Main → Mujhe | Hum → Hume/Humko</div>
+        <div class="ex">Aap → Aapko | Tum → Tumhe</div>
+        <div class="ex">Woh → Use/Usse | Ve → Unhe/Unko</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔄 Ergative Construction — Ne (Completed Past)</h2>
+    <div class="tense-grid">
+      <div class="tense-card">
+        <h4>When to use Ne</h4>
+        <div class="formula">Subject + ne + object + verb (past)</div>
+        <div class="ex">Maine khaana khaaya. (I ate food.)</div>
+        <div class="ex">Usne letter likha. (He/she wrote a letter.)</div>
+        <div class="ex">Humne kaam kiya. (We did the work.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Ne Pronoun Changes</h4>
+        <div class="formula">Main → Maine | Hum → Humne</div>
+        <div class="ex">Maine → I (completed action)</div>
+        <div class="ex">Tumne → You | Aapne → You (formal)</div>
+        <div class="ex">Usne → He/She | Unhone → They</div>
+      </div>
+      <div class="tense-card">
+        <h4>Verb agrees with OBJECT (not subject)</h4>
+        <div class="formula">No -ta/-ti — use kiya/ki/kiye etc.</div>
+        <div class="ex">Maine chai pi. (I drank tea — chai=f → pi)</div>
+        <div class="ex">Usne gana gaaya. (He sang a song — gana=m → gaaya)</div>
+        <div class="ex">Humne movies dekhi. (We watched films — f → dekhi)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Ne NOT used with</h4>
+        <div class="formula">Motion/intransitive verbs — no Ne!</div>
+        <div class="ex">Main gaya. (I went — NOT Maine gaya)</div>
+        <div class="ex">Woh aayi. (She came — NOT Usne aayi)</div>
+        <div class="ex">Hum soe. (We slept — NOT Humne soe)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>❓ Conditionals — Agar...To (If...Then)</h2>
+    <div class="tense-grid">
+      <div class="tense-card">
+        <h4>Real Conditional (likely)</h4>
+        <div class="formula">Agar [present/future], to [future/present]</div>
+        <div class="ex">Agar kal barish hogi, to main nahi aaunga. (If it rains tomorrow, I won't come.)</div>
+        <div class="ex">Agar aap padenge, to aap pass ho jayenge. (If you study, you will pass.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Habitual Conditional</h4>
+        <div class="formula">Jab bhi [habitual], tab [habitual]</div>
+        <div class="ex">Jab bhi main Bharat jaata hoon, main dosa khaata hoon. (Whenever I go to India, I eat dosa.)</div>
+        <div class="ex">Jab tum aaoge, tab milenge. (When you come, we'll meet.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Key Conditional Words</h4>
+        <div class="formula">agar = if | to = then | warna = otherwise</div>
+        <div class="ex">Agar tum nahi aaye, to woh chali jayegi. (If you don't come, she will leave.)</div>
+        <div class="ex">Jaldi aao, warna late ho jaoge. (Come quickly, otherwise you'll be late.)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📢 Commands & Imperatives</h2>
+    <div class="tense-grid">
+      <div class="tense-card">
+        <h4>Tum (informal) — Root verb</h4>
+        <div class="formula">ROOT (no ending)</div>
+        <div class="ex">Ja! (Go!) | Aa! (Come!) | Kha! (Eat!)</div>
+        <div class="ex">Bol! (Speak!) | Dekh! (Look!) | Sun! (Listen!)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Aap (formal) — Root + iye/iye</h4>
+        <div class="formula">Root + iye/ijiye</div>
+        <div class="ex">Jaiye/Jaiye! (Please go!) | Aaiye! (Please come!)</div>
+        <div class="ex">Boliye! (Please speak!) | Dekhiye! (Please look!)</div>
+        <div class="ex">Baitiye! (Please sit!) | Lijiye! (Please take!)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Negative Commands — Mat</h4>
+        <div class="formula">Mat + root verb (or Mat + infinitive)</div>
+        <div class="ex">Mat ja! (Don't go!) | Mat bol! (Don't speak!)</div>
+        <div class="ex">Mat karo. (Don't do it.) | Mat khao. (Don't eat.)</div>
+        <div class="ex">Chinta mat karo. (Don't worry.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Soft Requests — Zara / Please</h4>
+        <div class="formula">Zara + command = softer request</div>
+        <div class="ex">Zara ruko. (Wait a moment.)</div>
+        <div class="ex">Zara suniye. (Please listen a moment.)</div>
+        <div class="ex">Kripya + command = very formal please</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⚖️ Comparatives & Superlatives</h2>
+    <div class="tense-grid">
+      <div class="tense-card">
+        <h4>Comparative — "More than" (Se)</h4>
+        <div class="formula">[A] [B] se zyada/bada/accha hai</div>
+        <div class="ex">Woh mujhse zyada khaata hai. (He eats more than me.)</div>
+        <div class="ex">Delhi Mumbai se bada hai. (Delhi is bigger than Mumbai.)</div>
+        <div class="ex">Yeh usse accha hai. (This is better than that.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Superlative — "Most / Best" (Sabse)</h4>
+        <div class="formula">Sabse + adjective</div>
+        <div class="ex">Woh sabse accha hai. (He is the best.)</div>
+        <div class="ex">Yeh sabse mehnga hotel hai. (This is the most expensive hotel.)</div>
+        <div class="ex">Main sabse chota hoon. (I am the youngest.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Key Comparison Words</h4>
+        <div class="formula">Adjective pairs</div>
+        <div class="ex">bada/chota — big/small | accha/bura — good/bad</div>
+        <div class="ex">zyada/kam — more/less | lamba/chota — tall/short</div>
+        <div class="ex">purana/naya — old/new | sasta/mehnga — cheap/expensive</div>
+      </div>
+      <div class="tense-card">
+        <h4>Equally as... (Jitna...Utna)</h4>
+        <div class="formula">Jitna [A], utna [B]</div>
+        <div class="ex">Jitna kaam, utna paisa. (More work, more money.)</div>
+        <div class="ex">Woh utna hi accha hai jitna uska bhai. (He is just as good as his brother.)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📋 Obligation — "Have to / Must"</h2>
+    <div class="tense-grid">
+      <div class="tense-card">
+        <h4>Weak Obligation — Chahiye</h4>
+        <div class="formula">Infinitive + chahiye (should)</div>
+        <div class="ex">Aapko samay par aana chahiye. (You should come on time.)</div>
+        <div class="ex">Usse Hindi seekhni chahiye. (She should learn Hindi.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Strong Obligation — Padna / Parega</h4>
+        <div class="formula">Mujhe/Usse + infinitive + padega/padegi/padenge (have to)</div>
+        <div class="ex">Mujhe jaana padega. (I will have to go.)</div>
+        <div class="ex">Usse kaam karna padega. (He/she will have to work.)</div>
+        <div class="ex">Humko yahan rehna padega. (We will have to stay here.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Must / Compulsory — Zaroori Hai</h4>
+        <div class="formula">Infinitive + zaroori hai (it's necessary)</div>
+        <div class="ex">Yahan rehna zaroori hai. (It is necessary to stay here.)</div>
+        <div class="ex">Usse doctor ke paas jaana zaroori hai. (It's essential he sees a doctor.)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⏮️ Perfect Tenses — "Has done / Had done"</h2>
+    <div class="tense-grid">
+      <div class="tense-card">
+        <h4>Present Perfect — "Has done"</h4>
+        <div class="formula">Subject + verb (past form) + hai/hain/hoon</div>
+        <div class="ex">Main Bharat gaya hoon. (I have been to India.)</div>
+        <div class="ex">Usne khaana khaaya hai. (He/she has eaten.)</div>
+        <div class="ex">Kya aap kabhi London gaye hain? (Have you ever been to London?)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Past Perfect — "Had done"</h4>
+        <div class="formula">Subject + verb (past form) + tha/thi/the</div>
+        <div class="ex">Main ja chuka tha. (I had already gone.)</div>
+        <div class="ex">Woh khaana kha chuki thi. (She had already eaten.)</div>
+        <div class="ex">Hum mil chuke the. (We had already met.)</div>
+      </div>
+      <div class="tense-card">
+        <h4>Chukna — "Already completed"</h4>
+        <div class="formula">root + chuka/chuki/chuke + hai/tha</div>
+        <div class="ex">Woh ja chuka hai. (He has already gone.)</div>
+        <div class="ex">Main khaana kha chuka hoon. (I have already eaten.)</div>
+        <div class="ex">Hum so chuke hain. (We have already slept.)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRACTICE -->
+<div id="practice" class="section">
+  <div class="card">
+    <h2>✍️ Translation Practice</h2>
+    <p style="font-size:0.85rem;color:var(--mid);margin-bottom:14px;">Type your Hindi answer in romanised form, then reveal the answer to check.</p>
+
+    <div class="filter-row" id="practice-filters">
+      <button class="filter-btn active" onclick="setPracticeSet('all', this)">All</button>
+      <button class="filter-btn" onclick="setPracticeSet('basic', this)">Basic Structure</button>
+      <button class="filter-btn" onclick="setPracticeSet('habitual', this)">Habitual</button>
+      <button class="filter-btn" onclick="setPracticeSet('progressive', this)">Progressive</button>
+      <button class="filter-btn" onclick="setPracticeSet('sakna', this)">Sakna</button>
+      <button class="filter-btn" onclick="setPracticeSet('chahna', this)">Chahna</button>
+      <button class="filter-btn" onclick="setPracticeSet('possessive', this)">Possessives</button>
+      <button class="filter-btn" onclick="setPracticeSet('future', this)">Future</button>
+      <button class="filter-btn" onclick="setPracticeSet('modals', this)">Paana/Dena/Wala</button>
+      <button class="filter-btn" onclick="setPracticeSet('time', this)">Time Words</button>
+      <button class="filter-btn" onclick="setPracticeSet('ko_mujhe', this)">Ko/Mujhe</button>
+      <button class="filter-btn" onclick="setPracticeSet('conditionals', this)">Conditionals</button>
+      <button class="filter-btn" onclick="setPracticeSet('imperatives', this)">Commands</button>
+      <button class="filter-btn" onclick="setPracticeSet('comparatives', this)">Comparatives</button>
+      <button class="filter-btn" onclick="setPracticeSet('ergative', this)">Ne (Ergative)</button>
+    </div>
+
+    <div class="counter" id="practice-counter">Sentence 1 of 1</div>
+    <div class="progress-wrap"><div class="progress-bar" id="practice-progress" style="width:0%"></div></div>
+
+    <div class="sentence-box">
+      <div class="english" id="practice-english">Loading...</div>
+      <div class="hint" id="practice-hint"></div>
+    </div>
+
+    <textarea id="practice-input" placeholder="Type your Hindi answer here (romanised)..."></textarea>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="revealAnswer()">Reveal Answer</button>
+      <button class="btn btn-secondary" onclick="nextSentence()">Next →</button>
+      <button class="btn btn-secondary" onclick="shufflePractice()">🔀 Shuffle</button>
+    </div>
+
+    <div class="answer-box reveal" id="practice-answer">
+      <div class="label" style="color:var(--blue);">✅ Model Answer</div>
+      <div class="hindi" id="answer-hindi"></div>
+      <div class="explanation" id="answer-explanation"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FLASHCARDS -->
+<div id="flashcards" class="section">
+  <div class="card">
+    <h2>🃏 Vocabulary Flashcards</h2>
+    <div class="filter-row" id="vocab-filters">
+      <button class="filter-btn active" onclick="setVocabSet('all', this)">All</button>
+      <button class="filter-btn" onclick="setVocabSet('verbs', this)">Verbs</button>
+      <button class="filter-btn" onclick="setVocabSet('postpositions', this)">Postpositions</button>
+      <button class="filter-btn" onclick="setVocabSet('location', this)">Location</button>
+      <button class="filter-btn" onclick="setVocabSet('connectors', this)">Connectors</button>
+      <button class="filter-btn" onclick="setVocabSet('timewords', this)">Time Words</button>
+      <button class="filter-btn" onclick="setVocabSet('nouns', this)">Nouns</button>
+      <button class="filter-btn" onclick="setVocabSet('colours', this)">Colours</button>
+      <button class="filter-btn" onclick="setVocabSet('numbers', this)">Numbers</button>
+      <button class="filter-btn" onclick="setVocabSet('daysmonths', this)">Days &amp; Months</button>
+      <button class="filter-btn" onclick="setVocabSet('expressions', this)">Expressions</button>
+      <button class="filter-btn" onclick="setVocabSet('emotions', this)">Emotions</button>
+      <button class="filter-btn" onclick="setVocabSet('bodyparts', this)">Body Parts</button>
+      <button class="filter-btn" onclick="setVocabSet('food', this)">Food &amp; Drink</button>
+    </div>
+
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="word" id="fc-front">—</div>
+          <div class="category" id="fc-category">—</div>
+        </div>
+        <div class="flashcard-back">
+          <div class="translation" id="fc-back">—</div>
+          <div class="example" id="fc-example">—</div>
+        </div>
+      </div>
+    </div>
+    <p class="flashcard-hint">Click card to flip • Use arrows to navigate</p>
+
+    <div class="fc-nav">
+      <button class="btn btn-secondary" onclick="prevCard()">← Prev</button>
+      <span id="fc-counter">1 / 1</span>
+      <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+      <button class="btn btn-secondary" onclick="shuffleCards()">🔀</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="section">
+  <div class="card">
+    <h2>🧠 Grammar Quiz</h2>
+    <div class="progress-wrap"><div class="progress-bar" id="quiz-progress" style="width:0%"></div></div>
+    <div class="counter" id="quiz-counter">Question 1 of 1</div>
+
+    <div id="quiz-content">
+      <div class="quiz-question" id="quiz-question">Loading...</div>
+      <div class="quiz-options" id="quiz-options"></div>
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+      <div class="btn-row" style="margin-top:14px;">
+        <button class="btn btn-primary" id="quiz-next-btn" onclick="nextQuiz()" style="display:none;">Next Question →</button>
+      </div>
+    </div>
+
+    <div id="quiz-complete" style="display:none;">
+      <div class="score-display">
+        <span id="quiz-score">0/0</span>
+        <small id="quiz-score-msg">—</small>
+      </div>
+      <div class="btn-row" style="justify-content:center;">
+        <button class="btn btn-primary" onclick="restartQuiz()">Try Again</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOMEWORK -->
+<div id="homework" class="section">
+  <div class="card">
+    <h2>📝 All Homework Sets with Answers</h2>
+    <p style="font-size:0.85rem;color:var(--mid);margin-bottom:14px;">Click each set to expand. Try to translate before revealing answers!</p>
+    <div id="hw-list"></div>
+  </div>
+</div>
+
+<!-- BOLLYWOOD -->
+<div id="bollywood" class="section">
+  <div class="card">
+    <h2>🎬 Bollywood Hindi — Learn Through Classic Songs</h2>
+    <p style="font-size:0.88rem;color:var(--mid);margin-bottom:12px;">Each song below teaches key Hindi vocabulary through its theme and mood. Select a song to explore the vocabulary it uses — then try the translation exercise.</p>
+    <div class="filter-row" id="bw-filters">
+      <button class="filter-btn active" onclick="setBwSong(0)">Kal Ho Na Ho</button>
+      <button class="filter-btn" onclick="setBwSong(1)">Tum Hi Ho</button>
+      <button class="filter-btn" onclick="setBwSong(2)">Chaiyya Chaiyya</button>
+      <button class="filter-btn" onclick="setBwSong(3)">Dil Chahta Hai</button>
+      <button class="filter-btn" onclick="setBwSong(4)">Rang De Basanti</button>
+      <button class="filter-btn" onclick="setBwSong(5)">Kabhi Khushi Kabhie Gham</button>
+      <button class="filter-btn" onclick="setBwSong(6)">Tujhe Dekha To</button>
+    </div>
+  </div>
+
+  <div id="bw-song-card" class="card">
+    <!-- filled by JS -->
+  </div>
+
+  <div class="card">
+    <h2>🔤 Vocabulary Practice</h2>
+    <p style="font-size:0.85rem;color:var(--mid);margin-bottom:10px;">Words drawn from this song's theme. Tap a card to reveal meaning.</p>
+    <div id="bw-vocab-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>✍️ Translate the Theme Sentences</h2>
+    <p style="font-size:0.85rem;color:var(--mid);margin-bottom:10px;">These sentences use vocabulary inspired by the song. Translate from English into Hindi.</p>
+    <div id="bw-practice">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+
+const practiceData = {
+  basic: [
+    { en: "I am from the USA.", hi: "Main USA se hoon.", ex: "Main = I | se = from | hoon = am (only with Main)" },
+    { en: "We are in the class.", hi: "Hum class mein hain.", ex: "mein = in | hain = are (with Hum)" },
+    { en: "He is inside the car.", hi: "Woh gaadi ke andar hai.", ex: "ke andar = inside" },
+    { en: "She is not a teacher. She is a student.", hi: "Woh teacher nahi hai. Woh student hai.", ex: "nahi = not" },
+    { en: "The book is on the table.", hi: "Kitab mez per hai.", ex: "per = on" },
+    { en: "The boy is behind the tree.", hi: "Ladka ped ke piche hai.", ex: "ke piche = behind" },
+    { en: "They are in front of the university.", hi: "Woh university ke samne hain.", ex: "ke samne = in front of" },
+    { en: "The cow is under the tree.", hi: "Gaay ped ke niche hai.", ex: "ke niche = under" },
+    { en: "How are you? (masculine)", hi: "Aap kaise hain?", ex: "kaise = how (masculine/respectful)" },
+    { en: "They are not from Canada. They are from the USA.", hi: "Woh Canada se nahi hain. Woh USA se hain.", ex: "se = from" },
+    { en: "Are you from India?", hi: "Kya aap Bharat se hain?", ex: "Kya at start = yes/no question" },
+    { en: "Where is she? She is in India.", hi: "Woh kahan hai? Woh Bharat mein hai.", ex: "kahan = where" },
+  ],
+  habitual: [
+    { en: "I speak Hindi.", hi: "Main Hindi bolta hoon.", ex: "bolna → bol + ta + hoon (masculine)" },
+    { en: "We understand French.", hi: "Hum French samajhte hain.", ex: "samajhna → samajh + te + hain" },
+    { en: "She doesn't work in Google.", hi: "Woh Google mein kaam nahi karti.", ex: "karti = feminine form" },
+    { en: "Every day that boy plays tennis.", hi: "Roz woh ladka tennis khelta hai.", ex: "roz = every day" },
+    { en: "Every week, my family goes to Park.", hi: "Har hafte mera parivaar park jaata hai.", ex: "har hafte = every week" },
+    { en: "Every Sunday, we meet in Park.", hi: "Har Ravivar hum park mein milte hain.", ex: "Har Ravivar = every Sunday" },
+    { en: "She watches Bollywood movies.", hi: "Woh Bollywood movies dekhti hai.", ex: "dekhna → dekh + ti (feminine)" },
+    { en: "Do you know Hindi?", hi: "Kya aap Hindi jaante hain?", ex: "Aap → jaante hain (formal/plural)" },
+    { en: "He goes to school in NYC.", hi: "Woh NYC mein school jaata hai.", ex: "jaana → ja + ta (masculine)" },
+    { en: "I used to live in India.", hi: "Main Bharat mein rehta tha.", ex: "rehna → reh + ta + tha (past habitual)" },
+    { en: "Her dad used to play tennis.", hi: "Uske papa tennis khelte the.", ex: "Papa = masculine plural (respectful) → khelte the" },
+    { en: "They used to eat meat, now they don't.", hi: "Woh meat khate the, ab nahi khate.", ex: "Past habitual + present negative" },
+    { en: "Every year, my wife used to go to India.", hi: "Har saal, meri patni Bharat jaati thi.", ex: "patni = feminine → jaati thi" },
+    { en: "Zach's son used to work in India.", hi: "Zach ka beta Bharat mein kaam karta tha.", ex: "beta = masculine → karta tha" },
+    { en: "Why did you use to learn Hindi?", hi: "Aap Hindi kyon seekhte the?", ex: "kyon slots before verb" },
+    { en: "Who used to play chess with you?", hi: "Aap ke saath chess kaun khelta tha?", ex: "kaun = masculine singular → khelta tha" },
+    { en: "His mom used to drink a lot of coffee.", hi: "Uski amma bahut coffee peeti thi.", ex: "amma = feminine → uski, peeti thi" },
+    { en: "She used to live with her dad.", hi: "Woh apne papa ke saath rehti thi.", ex: "apne = reflexive possessive" },
+    { en: "They used to study in this university.", hi: "Woh is university mein padhte the.", ex: "is = this (oblique form)" },
+    { en: "She used to drink coffee, now she drinks tea.", hi: "Woh coffee peeti thi, ab chai peeti hai.", ex: "Contrast: past hab → present hab" },
+  ],
+  progressive: [
+    { en: "Today we are going to India.", hi: "Aaj hum Bharat ja rahe hain.", ex: "jaana → ja + rahe + hain (mixed group)" },
+    { en: "What are you doing? I am watching TV.", hi: "Aap kya kar rahe hain? Main TV dekh raha hoon.", ex: "kya = what in info questions" },
+    { en: "They are working in the garden.", hi: "Woh garden mein kaam kar rahe hain.", ex: "rahe = masculine plural/mixed" },
+    { en: "That girl is not playing cricket.", hi: "Woh ladki cricket nahi khel rahi.", ex: "ladki = feminine → rahi" },
+    { en: "What is happening there?", hi: "Wahan kya ho raha hai?", ex: "hona → ho | kya = masculine → raha" },
+    { en: "Who is playing piano? Zach is playing piano.", hi: "Kaun piano baja raha hai? Zach piano baja raha hai.", ex: "kaun = masculine → raha" },
+    { en: "Ram and I are coming to the party.", hi: "Ram aur main party mein aa rahe hain.", ex: "Two people = mixed → rahe hain" },
+    { en: "Where are we eating today?", hi: "Aaj hum kahan khaana kha rahe hain?", ex: "kahan slots in mid-sentence" },
+    { en: "He is not making food today.", hi: "Woh aaj khaana nahi bana raha.", ex: "nahi before raha" },
+    { en: "Perhaps he was watching news.", hi: "Shayad woh news dekh raha tha.", ex: "shayad = perhaps | past progressive" },
+    { en: "What was happening there?", hi: "Wahan kya ho raha tha?", ex: "Past: tha not hai" },
+    { en: "She was sleeping, now she wants to play piano.", hi: "Woh so rahi thi, ab woh piano bajaana chahti hai.", ex: "Past prog + chahna" },
+    { en: "What was he telling? He was telling about India.", hi: "Woh kya bata raha tha? Woh Bharat ke baare mein bata raha tha.", ex: "ke baare mein = about" },
+    { en: "What is happening in USA?", hi: "USA mein kya ho raha hai?", ex: "Present progressive with hona" },
+    { en: "Who was studying in the room?", hi: "Kamre mein kaun padh raha tha?", ex: "kaun = masculine → raha tha" },
+  ],
+  sakna: [
+    { en: "I can understand Hindi and French.", hi: "Main Hindi aur French samajh sakta hoon.", ex: "samajhna → samajh (root) + sakta" },
+    { en: "Can you come tomorrow?", hi: "Kya aap kal aa sakte hain?", ex: "aap → sakte hain (formal plural)" },
+    { en: "She is not coming today but she can come tomorrow.", hi: "Woh aaj nahi aa rahi, lekin woh kal aa sakti hai.", ex: "lekin = but | sakti (feminine)" },
+    { en: "Who can do this work?", hi: "Yeh kaam kaun kar sakta hai?", ex: "kaun = masculine → sakta" },
+    { en: "Because of covid we cannot go to India.", hi: "Covid ke karan hum Bharat nahi ja sakte.", ex: "ke karan = because of | sakte (plural)" },
+    { en: "Where can we play soccer?", hi: "Hum soccer kahan khel sakte hain?", ex: "kahan before sakte" },
+    { en: "I am sick so I cannot cook dinner.", hi: "Main bimaar hoon isliye main raat ka khaana nahi bana sakta.", ex: "isliye = so/therefore" },
+    { en: "I can speak Hindi.", hi: "Main Hindi bol sakta hoon.", ex: "bolna → bol (root) + sakta hoon" },
+    { en: "My friend can play cricket.", hi: "Mera dost cricket khel sakta hai.", ex: "dost = masculine → sakta" },
+    { en: "Her dad cannot speak Hindi.", hi: "Uske papa Hindi nahi bol sakte.", ex: "papa = masculine plural → sakte" },
+  ],
+  chahna: [
+    { en: "I want to meet tomorrow.", hi: "Main kal milna chahta hoon.", ex: "milna = full infinitive | chahta hoon (masculine)" },
+    { en: "Where do you want to go this summer?", hi: "Aap is garmi mein kahan jaana chahte hain?", ex: "jaana = full infinitive | chahte hain (Aap)" },
+    { en: "Mr Tim wants to play tennis.", hi: "Mr Tim tennis khelna chahte hain.", ex: "Respectful → chahte hain" },
+    { en: "Does she want to work here?", hi: "Kya woh yahan kaam karna chahti hai?", ex: "chahti = feminine" },
+    { en: "Who wants to drink tea?", hi: "Chai kaun peena chahta hai?", ex: "kaun = masculine → chahta" },
+    { en: "I want to go to India.", hi: "Main Bharat jaana chahta hoon.", ex: "jaana = infinitive before chahta" },
+    { en: "We want to go to India tomorrow.", hi: "Hum kal Bharat jaana chahte hain.", ex: "Hum → chahte hain" },
+    { en: "I want to work in London but I cannot.", hi: "Main London mein kaam karna chahta hoon lekin nahi kar sakta.", ex: "Chahna + sakna together" },
+    { en: "I want some mangoes.", hi: "Main kuch aam chahta hoon.", ex: "With noun (not infinitive): direct object" },
+    { en: "I want to eat some mangoes.", hi: "Main kuch aam khaana chahta hoon.", ex: "With infinitive: khaana before chahta" },
+  ],
+  possessive: [
+    { en: "My brother does not study English.", hi: "Mera bhai English nahi padhta.", ex: "mera = my (bhai is masculine singular)" },
+    { en: "My dad is cooking dinner.", hi: "Mere papa raat ka khaana bana rahe hain.", ex: "mere (oblique) | rahe hain = respectful" },
+    { en: "Our friends are going to USA next week.", hi: "Hamare dost agle hafte USA ja rahe hain.", ex: "hamare = our (masc. pl.)" },
+    { en: "His mom is buying a new house.", hi: "Uski maa naya ghar khareed rahi hai.", ex: "uski = his/her (maa = feminine)" },
+    { en: "What is your name? My name is Prakash.", hi: "Aapka naam kya hai? Mera naam Prakash hai.", ex: "aapka naam (naam = masc.)" },
+    { en: "Her son plays video games a lot.", hi: "Uska beta bahut video games khelta hai.", ex: "uska = her (beta = masc. sing.)" },
+    { en: "Whose son is playing piano?", hi: "Kiska beta piano baja raha hai?", ex: "kiska = whose (beta = masc.)" },
+    { en: "Does his daughter drink coffee?", hi: "Kya uski beti coffee peeti hai?", ex: "uski = his (beti = feminine)" },
+    { en: "Their house is in California.", hi: "Unka ghar California mein hai.", ex: "unka = their (ghar = masc.)" },
+    { en: "John's kids are running in the garden.", hi: "John ke bachche garden mein daud rahe hain.", ex: "John ke = John's (oblique before plural)" },
+    { en: "Why is she coming in our office?", hi: "Woh hamare office mein kyon aa rahi hai?", ex: "hamare = our | kyon before verb" },
+  ]
+};
+
+// Build 'all' set
+practiceData.future = [
+  { en: "I will be in India tomorrow.", hi: "Main kal Bharat mein hounga.", ex: "hounga = I will be (masculine)" },
+  { en: "She will be at home.", hi: "Woh ghar mein hogi.", ex: "hogi = she will be (feminine)" },
+  { en: "We will go to India next year.", hi: "Hum agle saal Bharat jayenge.", ex: "Future: jaana → jayenge (we/they)" },
+  { en: "He will do this work.", hi: "Woh yeh kaam karega.", ex: "karega = he will do" },
+  { en: "I will speak Hindi.", hi: "Main Hindi bolunga.", ex: "bolna → bolunga (I will speak, masculine)" },
+  { en: "She will not come tomorrow.", hi: "Woh kal nahi aayegi.", ex: "aayegi = she will come (negative: nahi before)" },
+  { en: "They will be happy.", hi: "Ve khush honge.", ex: "honge = they will be" },
+  { en: "What will happen?", hi: "Kya hoga?", ex: "hoga = will happen/be (masculine/unknown)" },
+  { en: "I was going. (past progressive)", hi: "Main ja raha tha.", ex: "ja raha tha = was going (masculine)" },
+  { en: "I will be going. (future progressive)", hi: "Main ja raha hounga.", ex: "ja raha hounga = will be going" },
+  { en: "She will be sleeping.", hi: "Woh so rahi hogi.", ex: "so rahi hogi = will be sleeping (feminine)" },
+  { en: "I did the work.", hi: "Maine kaam kiya.", ex: "Maine (I + ne) kiya = completed past action" },
+  { en: "She ate food.", hi: "Usne khaana khaaya.", ex: "Usne = he/she + ne for completed past" },
+  { en: "We managed to meet.", hi: "Hum mil paye.", ex: "mil paye = managed to meet (plural)" },
+  { en: "I will be at the party.", hi: "Main party mein hounga.", ex: "hounga = will be (masculine)" },
+];
+
+practiceData.modals = [
+  { en: "I managed to do it.", hi: "Main kar paya.", ex: "Paana (managed to): root + paya (masculine)" },
+  { en: "She couldn't go.", hi: "Woh ja nahi payi.", ex: "payi = managed to (feminine) | nahi = couldn't" },
+  { en: "We managed to meet.", hi: "Hum mil paye.", ex: "paye = managed to (plural)" },
+  { en: "Let me go.", hi: "Mujhe jaane do.", ex: "Dena (let): jaana → jaane (oblique -ne form) + do" },
+  { en: "He lets others do (it).", hi: "Woh karne deta hai.", ex: "karna → karne + deta hai" },
+  { en: "Let me speak.", hi: "Mujhe bolne do.", ex: "bolna → bolne + do" },
+  { en: "Eat it (for yourself).", hi: "Kha lo.", ex: "Lena (for yourself): root + lo" },
+  { en: "Take it (for yourself).", hi: "Le lo.", ex: "lena → le + lo" },
+  { en: "Understand it (for yourself).", hi: "Samajh lo.", ex: "samajhna → samajh + lo" },
+  { en: "He is about to come.", hi: "Woh aane wala hai.", ex: "Wala (about to): aana + wala (masculine) + hai" },
+  { en: "Rain is about to come.", hi: "Barish aane wali hai.", ex: "barish = feminine → wali" },
+  { en: "We are about to go.", hi: "Hum jaane wale hain.", ex: "jaana + wale (plural) + hain" },
+  { en: "She is about to sleep.", hi: "Woh sone wali hai.", ex: "sona → sone + wali (feminine)" },
+  { en: "Do it yourself.", hi: "Apne aap kar lo.", ex: "apne aap = by yourself + kar lo" },
+  { en: "He does it by himself.", hi: "Woh apne aap karta hai.", ex: "apne aap = by himself" },
+  { en: "It will get better on its own.", hi: "Woh apne aap theek ho jayega.", ex: "apne aap = on its own" },
+];
+
+practiceData.time = [
+  { en: "I went to India last year.", hi: "Main pichle saal Bharat gaya.", ex: "pichle saal = last year (oblique)" },
+  { en: "Last night was cold.", hi: "Pichli raat thandi thi.", ex: "pichli = last (feminine, raat is feminine)" },
+  { en: "Last week we were in London.", hi: "Pichle hafte hum London mein the.", ex: "pichle hafte = last week" },
+  { en: "I am going right now.", hi: "Main abhi ja raha hoon.", ex: "abhi = right now" },
+  { en: "What are you doing currently?", hi: "Aap filhaal kya kar rahe hain?", ex: "filhaal = currently/for now" },
+  { en: "Next week we are going to India.", hi: "Agle hafte hum Bharat ja rahe hain.", ex: "agle hafte = next week" },
+  { en: "He will come soon.", hi: "Woh jald aayega.", ex: "jald = soon" },
+  { en: "Sometimes I speak Hindi.", hi: "Main kabhi kabhi Hindi bolta hoon.", ex: "kabhi kabhi = sometimes" },
+  { en: "She always drinks coffee.", hi: "Woh hamesha coffee peeti hai.", ex: "hamesha = always" },
+  { en: "He often goes to the park.", hi: "Woh aksar park jaata hai.", ex: "aksar = often" },
+  { en: "They never eat meat.", hi: "Ve kabhi nahi maas khaate.", ex: "kabhi nahi = never" },
+  { en: "I go to the gym daily.", hi: "Main rozana gym jaata hoon.", ex: "rozana = daily" },
+  { en: "When are you coming?", hi: "Aap kab aa rahe hain?", ex: "kab = when" },
+  { en: "Whenever I go, I call him.", hi: "Jab bhi main jaata hoon, main use phone karta hoon.", ex: "jab bhi = whenever" },
+  { en: "I will do it later.", hi: "Main baad mein karunga.", ex: "baad mein = later" },
+];
+
+practiceData.ko_mujhe = [
+  { en: "I am hungry.", hi: "Mujhe bhookh lagi hai.", ex: "Hunger uses ko construction: Mujhe (to me) + bhookh lagi hai" },
+  { en: "She is thirsty.", hi: "Usse pyaas lagi hai.", ex: "Woh → Usse (ko form). Pyaas = thirst" },
+  { en: "I don't know.", hi: "Mujhe nahi pata.", ex: "Pata = knowledge/information. Mujhe nahi pata = lit. to-me not known" },
+  { en: "Do you know? (formal)", hi: "Aapko pata hai?", ex: "Aap → Aapko (ko form)" },
+  { en: "I need tea.", hi: "Mujhe chai chahiye.", ex: "Chahiye = needed/wanted. Mujhe = to me" },
+  { en: "He needs to sleep.", hi: "Usse sona chahiye.", ex: "Usse = to him/her + sona (infinitive) + chahiye" },
+  { en: "I like this song.", hi: "Mujhe yeh gana accha lagta hai.", ex: "Liking: Mujhe + thing + accha/acchi + lagta/lagti hai" },
+  { en: "She likes tea.", hi: "Usse chai acchi lagti hai.", ex: "Chai is feminine → acchi lagti. Usse = to her" },
+  { en: "We like Bollywood movies.", hi: "Hume Bollywood movies acchi lagti hain.", ex: "Hume = to us. Movies = feminine plural → acchi lagti hain" },
+  { en: "I feel cold.", hi: "Mujhe thand lag rahi hai.", ex: "Feeling cold uses ko: Mujhe thand lag rahi hai" },
+  { en: "He needs money.", hi: "Usse paisa chahiye.", ex: "Paisa = money. Usse chahiye = he needs" },
+  { en: "I need to go to India.", hi: "Mujhe Bharat jaana padega.", ex: "Obligation: Mujhe + jaana + padega = I will have to go" },
+  { en: "She will have to work.", hi: "Usse kaam karna padega.", ex: "Padega = will have to. Usse = she (ko form)" },
+  { en: "We will have to stay here.", hi: "Hume yahan rehna padega.", ex: "Hume = we (ko form). Rehna + padega" },
+  { en: "It seems there is rain.", hi: "Lagta hai barish hogi.", ex: "Lagta hai = seems/feels. Barish hogi = rain will be" },
+];
+
+practiceData.conditionals = [
+  { en: "If it rains, I won't go.", hi: "Agar barish hogi, to main nahi jaaunga.", ex: "Agar...to = if...then. Future tense in both parts" },
+  { en: "If you study, you will pass.", hi: "Agar aap padhenge, to aap pass ho jayenge.", ex: "Padh + enge = you will study. Ho jayenge = will pass" },
+  { en: "If I have time, I will call.", hi: "Agar mujhe time milega, to main phone karunga.", ex: "Milega = will get. Karunga = I will call" },
+  { en: "Whenever I go to India, I eat dosa.", hi: "Jab bhi main Bharat jaata hoon, main dosa khaata hoon.", ex: "Jab bhi = whenever (habitual condition)" },
+  { en: "Come quickly, otherwise you'll be late.", hi: "Jaldi aao, warna late ho jaoge.", ex: "Warna = otherwise. Ho jaoge = will become" },
+  { en: "If she calls, tell her I'm busy.", hi: "Agar woh phone kare, to use batao main busy hoon.", ex: "Subjunctive: kare (may call). Batao = tell (imperative)" },
+  { en: "When you come, I'll make chai.", hi: "Jab tum aaoge, main chai banaaunga.", ex: "Jab = when (future event). Banaaunga = will make" },
+  { en: "If not now, then when?", hi: "Agar abhi nahi, to kab?", ex: "Agar + negative + to kab = if not...then when" },
+  { en: "If I were in India, I'd speak Hindi every day.", hi: "Agar main Bharat mein hota, to main roz Hindi bolta.", ex: "Hypothetical: hota...bolta (would be, would speak)" },
+  { en: "He won't come unless you call him.", hi: "Jab tak aap use phone nahi karenge, woh nahi aayega.", ex: "Jab tak...nahi = unless/until" },
+];
+
+practiceData.imperatives = [
+  { en: "Come here! (informal)", hi: "Idhar aa!", ex: "Tum form: bare root verb. Aa = come" },
+  { en: "Sit down, please. (formal)", hi: "Baitiye.", ex: "Aap form: root + iye. Baith + iye" },
+  { en: "Don't go! (informal)", hi: "Mat ja!", ex: "Negative command: mat + root verb" },
+  { en: "Please wait a moment. (formal)", hi: "Zara ruk jaiye.", ex: "Zara = a moment/please. Ruk + jaiye (formal)" },
+  { en: "Don't worry!", hi: "Chinta mat karo!", ex: "Chinta mat karo = standard phrase. Karo = do (tum form)" },
+  { en: "Speak slowly please.", hi: "Dhire boliye.", ex: "Dhire = slowly. Bol + iye (formal request)" },
+  { en: "Stop! (informal)", hi: "Ruk!", ex: "Rukna → Ruk (bare root for tum)" },
+  { en: "Please say it again. (formal)", hi: "Phir se boliye.", ex: "Phir se = again. Bol + iye" },
+  { en: "Listen carefully.", hi: "Dhyan se suno.", ex: "Dhyan se = carefully. Suno = listen (tum form with -o ending)" },
+  { en: "Don't shout!", hi: "Chillaao mat!", ex: "Chillaana → Chillaao + mat. Command with -o is tum level" },
+  { en: "Please come in. (formal)", hi: "Andar aaiye.", ex: "Andar = inside. Aa + iye (formal)" },
+  { en: "Eat something! (caring tone)", hi: "Kuch kha lo.", ex: "Kha lo = eat (for yourself). Kuch = something" },
+];
+
+practiceData.comparatives = [
+  { en: "He eats more than me.", hi: "Woh mujhse zyada khaata hai.", ex: "Se zyada = more than. Mujhse = than me (oblique)" },
+  { en: "Delhi is bigger than Mumbai.", hi: "Delhi Mumbai se bada hai.", ex: "Se + adjective = comparative. Bada = big" },
+  { en: "She is taller than her brother.", hi: "Woh apne bhai se zyada lambi hai.", ex: "Se zyada lambi = taller than. Lambi = tall (feminine)" },
+  { en: "He is the best player.", hi: "Woh sabse accha khiladi hai.", ex: "Sabse = most/best. Accha khiladi = good player" },
+  { en: "This is the most expensive hotel.", hi: "Yeh sabse mehnga hotel hai.", ex: "Sabse mehnga = most expensive" },
+  { en: "My brother is younger than me.", hi: "Mera bhai mujhse chota hai.", ex: "Mujhse chota = younger than me. Chota = small/young" },
+  { en: "Hindi is easier than Mandarin.", hi: "Hindi Mandarin se aasaan hai.", ex: "Se aasaan = easier than. Aasaan = easy" },
+  { en: "London is more expensive than Mumbai.", hi: "London Mumbai se mehnga hai.", ex: "Se mehnga = more expensive than" },
+  { en: "She speaks Hindi better than him.", hi: "Woh usse zyada acchi Hindi bolti hai.", ex: "Usse zyada acchi = better than him" },
+  { en: "I am the youngest in my family.", hi: "Main apne parivaar mein sabse chota hoon.", ex: "Sabse chota = the youngest. Apne parivaar mein = in my family" },
+];
+
+practiceData.ergative = [
+  { en: "I ate food. (completed)", hi: "Maine khaana khaaya.", ex: "Completed past transitive: Main → Maine. Khaaya = ate (masculine, agrees with khaana)" },
+  { en: "She drank tea.", hi: "Usne chai pi.", ex: "Usne = she (ne form). Chai = feminine → pi (not pi-ya)" },
+  { en: "He wrote a letter.", hi: "Usne letter likha.", ex: "Letter = masculine → likha. Usne = he (ne form)" },
+  { en: "We watched a film.", hi: "Humne film dekhi.", ex: "Humne = we (ne form). Film = feminine → dekhi" },
+  { en: "I did the work.", hi: "Maine kaam kiya.", ex: "Kaam = masculine → kiya. Maine = I (ne form)" },
+  { en: "She sang a song.", hi: "Usne gana gaaya.", ex: "Gana = masculine → gaaya. Usne = she/he (ne form)" },
+  { en: "They watched movies.", hi: "Unhone movies dekhi.", ex: "Unhone = they (ne form). Movies = feminine → dekhi" },
+  { en: "You (formal) did it.", hi: "Aapne yeh kiya.", ex: "Aapne = you formal (ne form). Kiya = did" },
+  { en: "I went to India. (motion — no Ne!)", hi: "Main Bharat gaya.", ex: "Motion verb: no ne! Main (not Maine). Gaya = went (masculine)" },
+  { en: "She came home. (motion — no Ne!)", hi: "Woh ghar aayi.", ex: "Aana = motion verb: no ne! Woh (not Usne). Aayi = came (feminine)" },
+  { en: "My son ate his dinner.", hi: "Mere bete ne khaana khaaya.", ex: "Bete ne = son (ne form). Oblique bete + ne" },
+  { en: "Did you (formal) see this film?", hi: "Kya aapne yeh film dekhi?", ex: "Aapne + film (feminine) → dekhi" },
+];
+
+practiceData.all = [];
+Object.values(practiceData).forEach(arr => { if(Array.isArray(arr)) practiceData.all.push(...arr); });
+
+const vocabData = {
+  verbs: [
+    { front: "jaana", back: "to go", cat: "Verb", example: "Main Bharat jaata hoon." },
+    { front: "aana", back: "to come", cat: "Verb", example: "Woh aa rahi hai." },
+    { front: "rehna", back: "to live / stay", cat: "Verb", example: "Main London mein rehta hoon." },
+    { front: "khaana", back: "to eat", cat: "Verb", example: "Hum khaana kha rahe hain." },
+    { front: "peena", back: "to drink", cat: "Verb", example: "Woh chai peeti hai." },
+    { front: "dekhna", back: "to see / watch", cat: "Verb", example: "Main TV dekh raha hoon." },
+    { front: "sunna", back: "to hear / listen", cat: "Verb", example: "Woh gaana sun rahi hai." },
+    { front: "khelna", back: "to play (sport/game)", cat: "Verb", example: "Beta cricket khelta hai." },
+    { front: "bajaana", back: "to play (instrument)", cat: "Verb", example: "Woh guitar bajaati hai." },
+    { front: "kaam karna", back: "to work", cat: "Verb", example: "Main London mein kaam karta hoon." },
+    { front: "padhna", back: "to read / study", cat: "Verb", example: "Woh Hindi padhta hai." },
+    { front: "likhna", back: "to write", cat: "Verb", example: "Main letter likh raha hoon." },
+    { front: "bolna", back: "to speak", cat: "Verb", example: "Main Hindi bol sakta hoon." },
+    { front: "samajhna", back: "to understand", cat: "Verb", example: "Kya aap Hindi samajhte hain?" },
+    { front: "jaanna", back: "to know", cat: "Verb", example: "Main Hindi jaanta hoon." },
+    { front: "milna", back: "to meet", cat: "Verb", example: "Hum park mein milte hain." },
+    { front: "kharidna", back: "to buy", cat: "Verb", example: "Woh ghar khareed rahi hai." },
+    { front: "bechna", back: "to sell", cat: "Verb", example: "Woh car bech raha hai." },
+    { front: "dena", back: "to give", cat: "Verb", example: "Mujhe paani dena." },
+    { front: "lena", back: "to take", cat: "Verb", example: "Woh chai le rahi hai." },
+    { front: "laana", back: "to bring", cat: "Verb", example: "Khaana laao." },
+    { front: "sona", back: "to sleep", cat: "Verb", example: "Woh so rahi hai." },
+    { front: "uthna", back: "to get up / wake up", cat: "Verb", example: "Main subah uthta hoon." },
+    { front: "banana / pakana", back: "to cook / make", cat: "Verb", example: "Maa khaana bana rahi hai." },
+    { front: "sikhna", back: "to learn (a skill)", cat: "Verb", example: "Main Hindi seekh raha hoon." },
+    { front: "seekhna", back: "to learn", cat: "Verb", example: "Aap kyon Hindi seekhte the?" },
+    { front: "hona", back: "to be / happen / occur", cat: "Verb", example: "Wahan kya ho raha tha?" },
+    { front: "baat karna", back: "to talk", cat: "Verb", example: "Woh phone per baat kar rahi hai." },
+    { front: "chalana", back: "to walk / move", cat: "Verb", example: "Woh park mein chal rahi hai." },
+    { front: "daudna", back: "to run", cat: "Verb", example: "Bachche garden mein daud rahe hain." },
+    { front: "chadhna", back: "to climb", cat: "Verb", example: "Woh pahar chadh raha hai." },
+    { front: "aaram karna", back: "to rest", cat: "Verb", example: "Main ghar mein aaram kar raha hoon." },
+    { front: "yatra karna", back: "to travel", cat: "Verb", example: "Hum Bharat yatra karte hain." },
+    { front: "palan karna", back: "to follow", cat: "Verb", example: "" },
+    { front: "nahaana", back: "to take a bath", cat: "Verb", example: "Main subah nahaata hoon." },
+  ],
+  postpositions: [
+    { front: "mein", back: "in", cat: "Postposition", example: "Woh class mein hai." },
+    { front: "se", back: "from / by / since", cat: "Postposition", example: "Main USA se hoon." },
+    { front: "per", back: "on", cat: "Postposition", example: "Kitab mez per hai." },
+    { front: "ke liye", back: "for", cat: "Postposition", example: "Yeh tumhare liye hai." },
+    { front: "ke saath", back: "with", cat: "Postposition", example: "Main Vijay ke saath hoon." },
+    { front: "ke samne", back: "in front of", cat: "Postposition", example: "Woh gate ke samne hai." },
+    { front: "ke piche", back: "behind", cat: "Postposition", example: "Billi car ke piche hai." },
+    { front: "ke niche", back: "under", cat: "Postposition", example: "Gaay ped ke niche hai." },
+    { front: "ke upar", back: "on top of / above", cat: "Postposition", example: "Kitab mez ke upar hai." },
+    { front: "ke andar", back: "inside", cat: "Postposition", example: "Woh car ke andar hai." },
+    { front: "ke baad", back: "after", cat: "Postposition", example: "Khaane ke baad." },
+    { front: "ke pahle", back: "before", cat: "Postposition", example: "Class ke pahle." },
+    { front: "ke baare mein", back: "about", cat: "Postposition", example: "Woh Bharat ke baare mein bata raha tha." },
+    { front: "ke karan", back: "because of", cat: "Postposition", example: "Covid ke karan hum nahi ja sakte." },
+  ],
+  connectors: [
+    { front: "aur", back: "and", cat: "Connector", example: "Main aur Vijay." },
+    { front: "lekin", back: "but", cat: "Connector", example: "Main chahta hoon lekin nahi kar sakta." },
+    { front: "isliye", back: "so / therefore", cat: "Connector", example: "Main bimaar hoon isliye nahi aa sakta." },
+    { front: "kyonki", back: "because", cat: "Connector", example: "Main nahi aaya kyonki bimaar tha." },
+    { front: "shayad", back: "perhaps / maybe", cat: "Connector", example: "Shayad woh aa sakta hai." },
+    { front: "koi", back: "someone / anyone / no one", cat: "Connector", example: "Kya koi hai?" },
+    { front: "kuch", back: "some / something / anything", cat: "Connector", example: "Kya aap kuch chahte hain?" },
+    { front: "bahut", back: "a lot / many / very", cat: "Connector", example: "Woh bahut achha hai." },
+    { front: "phir se", back: "again", cat: "Connector", example: "Phir se boliye." },
+    { front: "pehle", back: "before / previously", cat: "Connector", example: "Pehle main cricket khelta tha." },
+    { front: "ab", back: "now", cat: "Connector", example: "Ab main nahi khel sakta." },
+  ],
+  location: [
+    { front: "aage", back: "in front / ahead", cat: "Location", example: "Woh aage chal raha hai." },
+    { front: "peechhe", back: "behind / back", cat: "Location", example: "Billi car ke peechhe hai." },
+    { front: "neeche", back: "below / under", cat: "Location", example: "Kitab mez ke neeche hai." },
+    { front: "upar", back: "above / on top", cat: "Location", example: "Pankha upar hai." },
+    { front: "andar", back: "inside", cat: "Location", example: "Woh andar hai." },
+    { front: "bahar", back: "outside", cat: "Location", example: "Main bahar hoon." },
+    { front: "paas", back: "near / close", cat: "Location", example: "School mere ghar ke paas hai." },
+    { front: "door", back: "far", cat: "Location", example: "Station bahut door hai." },
+    { front: "beech mein", back: "in between / middle", cat: "Location", example: "Woh beech mein baitha hai." },
+    { front: "daayein", back: "right side", cat: "Location", example: "Daayein jaao." },
+    { front: "baayein", back: "left side", cat: "Location", example: "Baayein mudo." },
+    { front: "bagal mein", back: "next to / beside", cat: "Location", example: "Woh mere bagal mein baitha hai." },
+    { front: "samne", back: "opposite / facing", cat: "Location", example: "Woh mere samne hai." },
+    { front: "paar", back: "across", cat: "Location", example: "Nadi ke paar gaon hai." },
+    { front: "ke bina", back: "without", cat: "Location", example: "Paise ke bina nahi ja sakta." },
+    { front: "ki taraf", back: "towards", cat: "Location", example: "Woh ghar ki taraf ja raha hai." },
+    { front: "ki jagah", back: "instead of", cat: "Location", example: "Coffee ki jagah chai lo." },
+  ],
+  timewords: [
+    { front: "kabhi kabhi", back: "sometimes", cat: "Time", example: "Main kabhi kabhi Hindi bolta hoon." },
+    { front: "hamesha", back: "always", cat: "Time", example: "Woh hamesha late aati hai." },
+    { front: "aksar", back: "often", cat: "Time", example: "Woh aksar park jaata hai." },
+    { front: "kabhi nahi", back: "never", cat: "Time", example: "Main kabhi nahi jaata." },
+    { front: "rozana / roz", back: "daily / every day", cat: "Time", example: "Main rozana gym jaata hoon." },
+    { front: "jab", back: "when", cat: "Time", example: "Jab woh aaya, main so raha tha." },
+    { front: "jab bhi", back: "whenever", cat: "Time", example: "Jab bhi woh aata hai, hum milte hain." },
+    { front: "filhaal", back: "currently / for now", cat: "Time", example: "Filhaal main London mein hoon." },
+    { front: "abhi", back: "right now", cat: "Time", example: "Main abhi aa raha hoon." },
+    { front: "pichla / pichli", back: "last (m/f)", cat: "Time", example: "Pichli raat = last night | Pichla saal = last year" },
+    { front: "agle / agli", back: "next (m/f)", cat: "Time", example: "Agle hafte = next week | Agli baar = next time" },
+    { front: "us waqt / tab", back: "at that time / then", cat: "Time", example: "Tab main Bharat mein tha." },
+    { front: "jald", back: "soon", cat: "Time", example: "Woh jald aa jayega." },
+    { front: "baad mein", back: "later / after", cat: "Time", example: "Main baad mein karunga." },
+    { front: "pehle", back: "before / previously", cat: "Time", example: "Pehle main Bharat mein rehta tha." },
+  ],
+  nouns: [
+    { front: "bagicha (m)", back: "garden", cat: "Noun", example: "Bachche bagicha mein khel rahe hain." },
+    { front: "kamra (m)", back: "room", cat: "Noun", example: "Mera kamra saaf hai." },
+    { front: "rasoi (f)", back: "kitchen", cat: "Noun", example: "Maa rasoi mein hai." },
+    { front: "ped (m)", back: "tree", cat: "Noun", example: "Billi ped ke neeche hai." },
+    { front: "joote (m pl)", back: "shoes", cat: "Noun", example: "Mere joote saaf hain." },
+    { front: "raat ka khaana", back: "dinner", cat: "Noun", example: "Main raat ka khaana bana raha hoon." },
+    { front: "subah ka khaana", back: "breakfast", cat: "Noun", example: "Subah ka khaana taiyaar hai." },
+    { front: "mausam (m)", back: "weather", cat: "Noun", example: "Aaj mausam achha hai." },
+    { front: "tabiyat (f)", back: "health", cat: "Noun", example: "Uski tabiyat theek nahi hai." },
+    { front: "naam (m)", back: "name", cat: "Noun", example: "Aapka naam kya hai?" },
+    { front: "ghar (m)", back: "house / home", cat: "Noun", example: "Main ghar ja raha hoon." },
+    { front: "dost (m)", back: "friend", cat: "Noun", example: "Mera dost London mein rehta hai." },
+    { front: "behen (f)", back: "sister", cat: "Noun", example: "Meri behen doctor hai." },
+    { front: "bhai (m)", back: "brother", cat: "Noun", example: "Mera bhai London mein hai." },
+    { front: "baccha / bachche", back: "child / children", cat: "Noun", example: "Bachche school ja rahe hain." },
+    { front: "parivaar (m)", back: "family", cat: "Noun", example: "Mera parivaar Bharat mein hai." },
+  ],
+  time: [
+    { front: "aaj", back: "today", cat: "Time", example: "Aaj kya ho raha hai?" },
+    { front: "kal", back: "tomorrow / yesterday", cat: "Time", example: "Kal main aaunga." },
+    { front: "har din", back: "every day", cat: "Time", example: "Har din main exercise karta hoon." },
+    { front: "har saal", back: "every year", cat: "Time", example: "Har saal hum Bharat jaate hain." },
+    { front: "har hafte", back: "every week", cat: "Time", example: "Har hafte hum park jaate hain." },
+    { front: "har Ravivar", back: "every Sunday", cat: "Time", example: "Har Ravivar hum milte hain." },
+    { front: "agle saal", back: "next year", cat: "Time", example: "Agle saal main London jaaunga." },
+    { front: "agle hafte", back: "next week", cat: "Time", example: "Agle hafte hum USA ja rahe hain." },
+    { front: "kab", back: "when", cat: "Time", example: "Aap kab aa rahe hain?" },
+    { front: "abhi", back: "right now", cat: "Time", example: "Main abhi khaana kha raha hoon." },
+  ],
+  colours: [
+    { front: "laal", back: "red", cat: "Colour", example: "Uski saree laal hai." },
+    { front: "neela", back: "blue", cat: "Colour", example: "Aasman neela hai." },
+    { front: "hara", back: "green", cat: "Colour", example: "Ghaas hari hoti hai." },
+    { front: "peela", back: "yellow", cat: "Colour", example: "Yeh phool peela hai." },
+    { front: "kala", back: "black", cat: "Colour", example: "Uski gaadi kali hai." },
+    { front: "safed", back: "white", cat: "Colour", example: "Doodh safed hota hai." },
+    { front: "narangi", back: "orange", cat: "Colour", example: "Narangi mujhe pasand hai." },
+    { front: "gulabi", back: "pink", cat: "Colour", example: "Uska kurta gulabi hai." },
+    { front: "bhura", back: "brown", cat: "Colour", example: "Bhura rang mujhe accha lagta hai." },
+    { front: "baingani", back: "purple", cat: "Colour", example: "Woh baingani kapde pehne hai." },
+    { front: "sunehra", back: "golden", cat: "Colour", example: "Sunehra rang bahut accha lagta hai." },
+    { front: "chandi jaisa", back: "silver", cat: "Colour", example: "Chandi jaisi gaadi." },
+  ],
+  numbers: [
+    { front: "ek (1)", back: "one", cat: "Number", example: "Ek cup chai dijiye." },
+    { front: "do (2)", back: "two", cat: "Number", example: "Do bachche hain." },
+    { front: "teen (3)", back: "three", cat: "Number", example: "Teen baje. (3 o'clock)" },
+    { front: "chaar (4)", back: "four", cat: "Number", example: "Chaar log hain." },
+    { front: "paanch (5)", back: "five", cat: "Number", example: "Paanch din mein aaunga." },
+    { front: "chheh (6)", back: "six", cat: "Number", example: "Chheh baj gaye." },
+    { front: "saat (7)", back: "seven", cat: "Number", example: "Saat baje milte hain." },
+    { front: "aath (8)", back: "eight", cat: "Number", example: "Aath ghante soye." },
+    { front: "nau (9)", back: "nine", cat: "Number", example: "Nau mahine ka." },
+    { front: "das (10)", back: "ten", cat: "Number", example: "Das rupaye." },
+    { front: "gyarah (11)", back: "eleven", cat: "Number", example: "Gyarah baje." },
+    { front: "barah (12)", back: "twelve", cat: "Number", example: "Barah mahine mein ek saal." },
+    { front: "tera (13)", back: "thirteen", cat: "Number", example: "Tera saal ka baccha." },
+    { front: "chaudah (14)", back: "fourteen", cat: "Number", example: "Chaudah April." },
+    { front: "pandrah (15)", back: "fifteen", cat: "Number", example: "Pandrah minute." },
+    { front: "solah (16)", back: "sixteen", cat: "Number", example: "Solah saal ka." },
+    { front: "satrah (17)", back: "seventeen", cat: "Number", example: "Satrah." },
+    { front: "atharah (18)", back: "eighteen", cat: "Number", example: "Atharah saal." },
+    { front: "unnis (19)", back: "nineteen", cat: "Number", example: "Unnis." },
+    { front: "bees (20)", back: "twenty", cat: "Number", example: "Bees log." },
+    { front: "tees (30)", back: "thirty", cat: "Number", example: "Tees saal." },
+    { front: "chaalees (40)", back: "forty", cat: "Number", example: "Chaalees rupaye." },
+    { front: "pachaas (50)", back: "fifty", cat: "Number", example: "Pachaas." },
+    { front: "sau (100)", back: "one hundred", cat: "Number", example: "Ek sau rupaye." },
+    { front: "hazaar (1000)", back: "one thousand", cat: "Number", example: "Ek hazaar rupaye." },
+  ],
+  daysmonths: [
+    { front: "Somvaar", back: "Monday", cat: "Days", example: "Somvaar ko office jaata hoon." },
+    { front: "Mangalvaar", back: "Tuesday", cat: "Days", example: "Mangalvaar ko meeting hai." },
+    { front: "Budhvaar", back: "Wednesday", cat: "Days", example: "Budhvaar." },
+    { front: "Guruvaar", back: "Thursday", cat: "Days", example: "Guruvaar ko bazar jaana hai." },
+    { front: "Shukravaar", back: "Friday", cat: "Days", example: "Shukravaar = TGIF!" },
+    { front: "Shanivaar", back: "Saturday", cat: "Days", example: "Shanivaar ko tennis khelenge." },
+    { front: "Ravivar", back: "Sunday", cat: "Days", example: "Ravivar ko aaraam karta hoon." },
+    { front: "Janvari", back: "January", cat: "Month", example: "Janvari mein sardi hoti hai." },
+    { front: "Farvari", back: "February", cat: "Month", example: "Farvari." },
+    { front: "Maarh/March", back: "March", cat: "Month", example: "March mein meri birthday hai." },
+    { front: "April", back: "April", cat: "Month", example: "April mein bete ka birthday hai." },
+    { front: "Mai", back: "May", cat: "Month", example: "Mai mein garmi shuru hoti hai." },
+    { front: "June", back: "June", cat: "Month", example: "June mein Bharat jaate hain." },
+    { front: "Julai", back: "July", cat: "Month", example: "Julai mein baarish hoti hai." },
+    { front: "Agast", back: "August", cat: "Month", example: "Agast = Independence Day." },
+    { front: "Sitambar", back: "September", cat: "Month", example: "Sitambar." },
+    { front: "Aktoobar", back: "October", cat: "Month", example: "Aktoobar mein Diwali hoti hai." },
+    { front: "Navambar", back: "November", cat: "Month", example: "Navambar." },
+    { front: "Disambar", back: "December", cat: "Month", example: "Disambar mein Christmas hota hai." },
+  ],
+  expressions: [
+    { front: "Namaste", back: "Hello / Greetings", cat: "Expression", example: "Namaste! Kaise hain aap?" },
+    { front: "Shukriya / Dhanyavaad", back: "Thank you", cat: "Expression", example: "Bahut shukriya!" },
+    { front: "Koi baat nahi", back: "No problem / Never mind", cat: "Expression", example: "Koi baat nahi, main kar leta hoon." },
+    { front: "Theek hai", back: "OK / Alright", cat: "Expression", example: "Theek hai, hum kal milenge." },
+    { front: "Haan ji", back: "Yes (respectful)", cat: "Expression", example: "Haan ji, main aa jaaunga." },
+    { front: "Nahi ji", back: "No (respectful)", cat: "Expression", example: "Nahi ji, main nahi ja sakta." },
+    { front: "Aap kaise hain?", back: "How are you? (formal)", cat: "Expression", example: "Namaste! Aap kaise hain?" },
+    { front: "Main theek hoon", back: "I am fine", cat: "Expression", example: "Main bilkul theek hoon, shukriya." },
+    { front: "Mujhe maafi dijiye", back: "Please excuse me / Sorry", cat: "Expression", example: "Mujhe maafi dijiye, main late ho gaya." },
+    { front: "Phir milenge", back: "See you again", cat: "Expression", example: "Chalo, phir milenge!" },
+    { front: "Khana khaiye", back: "Please eat (invitation)", cat: "Expression", example: "Aa jaiye, khana khaiye." },
+    { front: "Chai peenge?", back: "Will you have tea?", cat: "Expression", example: "Chai peenge ya coffee?" },
+    { front: "Zara ruk jaiye", back: "Please wait a moment", cat: "Expression", example: "Zara ruk jaiye, main abhi aata hoon." },
+    { front: "Kya baat hai!", back: "What a thing! / Wow!", cat: "Expression", example: "Kya baat hai, bahut accha kiya!" },
+    { front: "Bilkul!", back: "Absolutely! / Of course!", cat: "Expression", example: "Kya aap aa sakte hain? Bilkul!" },
+    { front: "Chalo", back: "Come on / Let's go", cat: "Expression", example: "Chalo, der ho rahi hai." },
+    { front: "Waise", back: "By the way", cat: "Expression", example: "Waise, kya aap jaante hain...?" },
+    { front: "Bas", back: "Enough / Just / Stop", cat: "Expression", example: "Bas, zyada mat khao." },
+  ],
+  emotions: [
+    { front: "khush", back: "happy", cat: "Emotion", example: "Main aaj bahut khush hoon." },
+    { front: "udaas", back: "sad", cat: "Emotion", example: "Woh bahut udaas lag rahi hai." },
+    { front: "gussa", back: "angry", cat: "Emotion", example: "Woh mujhse gussa hai." },
+    { front: "dara hua", back: "scared / afraid", cat: "Emotion", example: "Bachcha dara hua hai." },
+    { front: "thaka hua", back: "tired", cat: "Emotion", example: "Main aaj bahut thaka hua hoon." },
+    { front: "bored", back: "bored (bore ho raha hoon)", cat: "Emotion", example: "Mujhe bore ho raha hai." },
+    { front: "pareshan", back: "worried / troubled", cat: "Emotion", example: "Aap pareshan kyon hain?" },
+    { front: "hairan", back: "surprised", cat: "Emotion", example: "Woh sun ke hairan tha." },
+    { front: "sharminda", back: "embarrassed", cat: "Emotion", example: "Main thoda sharminda hoon." },
+    { front: "excited", back: "uttejit / excited (hoon)", cat: "Emotion", example: "Main kal ke liye bahut excited hoon." },
+    { front: "pyaar", back: "love", cat: "Emotion", example: "Mujhe apni family se bahut pyaar hai." },
+    { front: "nafrat", back: "hatred / hate", cat: "Emotion", example: "Mujhe garmi se nafrat hai." },
+    { front: "umeed", back: "hope", cat: "Emotion", example: "Mujhe umeed hai aap aayenge." },
+    { front: "darr", back: "fear", cat: "Emotion", example: "Mujhe heights se darr lagta hai." },
+  ],
+  bodyparts: [
+    { front: "sar", back: "head", cat: "Body", example: "Mera sar dard kar raha hai." },
+    { front: "haath", back: "hand / arm", cat: "Body", example: "Mere haath dho lo." },
+    { front: "pair", back: "foot / leg", cat: "Body", example: "Mera pair dard kar raha hai." },
+    { front: "aankhein", back: "eyes", cat: "Body", example: "Uski aankhein khoobsoorat hain." },
+    { front: "kaan", back: "ear", cat: "Body", example: "Kaan mein dard hai." },
+    { front: "naak", back: "nose", cat: "Body", example: "Naak band hai." },
+    { front: "munh", back: "mouth / face", cat: "Body", example: "Munh dholo." },
+    { front: "dant", back: "teeth", cat: "Body", example: "Dant saaf karo." },
+    { front: "pet", back: "stomach / belly", cat: "Body", example: "Mera pet bhar gaya." },
+    { front: "peeth", back: "back", cat: "Body", example: "Meri peeth mein dard hai." },
+    { front: "dil", back: "heart", cat: "Body", example: "Dil se bolta hoon." },
+    { front: "khoon", back: "blood", cat: "Body", example: "Uska khoon group A hai." },
+  ],
+  food: [
+    { front: "chawal", back: "rice", cat: "Food", example: "Chawal bahut accha hai." },
+    { front: "roti", back: "bread / flatbread", cat: "Food", example: "Ek aur roti lijiye." },
+    { front: "dal", back: "lentils", cat: "Food", example: "Dal chawal mujhe bahut pasand hai." },
+    { front: "sabzi", back: "vegetables / curry", cat: "Food", example: "Aaj kya sabzi bani hai?" },
+    { front: "chai", back: "tea", cat: "Food", example: "Ek chai peenge?" },
+    { front: "paani", back: "water", cat: "Food", example: "Thoda paani dijiye." },
+    { front: "doodh", back: "milk", cat: "Food", example: "Doodh peena achha hai." },
+    { front: "mithhai", back: "sweets / dessert", cat: "Food", example: "Diwali mein mithhai khaate hain." },
+    { front: "gosht / maas", back: "meat", cat: "Food", example: "Woh maas nahi khaata." },
+    { front: "anda", back: "egg", cat: "Food", example: "Subah anda khaata hoon." },
+    { front: "phul", back: "fruit", cat: "Food", example: "Phul khana sehatmand hai." },
+    { front: "mithi", back: "sweet (adj)", cat: "Food", example: "Yeh chai bahut mithi hai." },
+    { front: "teekha", back: "spicy", cat: "Food", example: "Khaana zyada teekha mat banana." },
+    { front: "namkeen", back: "salty / savoury", cat: "Food", example: "Yeh snack namkeen hai." },
+  ]
+};
+vocabData.all = [];
+Object.values(vocabData).forEach(arr => { if(Array.isArray(arr)) vocabData.all.push(...arr); });
+
+const quizData = [
+  { q: "Which form of 'rehna' is correct for 'She used to live'?", opts: ["rehta tha","rehti thi","rehte the","reh rahi hai"], ans: 1, ex: "Woh (she) = feminine → rehti thi. '-ti' for feminine, '-tha' for past." },
+  { q: "Which possessive is correct? 'My wife' (patni = feminine)", opts: ["mera patni","mere patni","meri patni","mera pati"], ans: 2, ex: "Possessives agree with the noun. Patni is feminine → meri." },
+  { q: "'Aap kaise hain?' means...", opts: ["Where are you?","How are you? (formal)","Are you well?","Who are you?"], ans: 1, ex: "Kaise = how (masculine/respectful). Aap = formal you." },
+  { q: "What goes after 'Main Hindi bol ___'  to say 'I can speak Hindi'?", opts: ["raha hoon","sakta hoon","chahta hoon","sakti hoon"], ans: 1, ex: "Sakna (can): root verb + sakta/sakti/sakte. Main is masculine → sakta hoon." },
+  { q: "To say 'I want to go to India', you need...", opts: ["Main Bharat ja chahta hoon","Main Bharat jaana chahta hoon","Main Bharat jaata chahta hoon","Main Bharat ja sakta hoon"], ans: 1, ex: "Chahna requires FULL infinitive (-na). Jaana (not ja) before chahta." },
+  { q: "Which is the correct past progressive for 'She was sleeping'?", opts: ["Woh so rahi hai","Woh so rahi thi","Woh so raha thi","Woh soti thi"], ans: 1, ex: "Past progressive: root + rahi (feminine) + thi (past). Woh so rahi thi." },
+  { q: "'Kaun' always takes which verb form?", opts: ["Feminine","Masculine singular","Masculine plural","Depends on context"], ans: 1, ex: "Kaun (who) = unknown/masculine singular → khelta (not khelte or khelti)." },
+  { q: "How do you say 'Her dad' when papa is the subject's own dad?", opts: ["Uska papa","Apne papa","Uske papa","Mere papa"], ans: 1, ex: "Reflexive: when subject refers to their OWN relation = apna/apne/apni." },
+  { q: "What is the correct negative with sakna? 'I cannot eat'", opts: ["Main nahi kha sakta","Main kha nahi sakta","Main kha sakta nahi","Main sakta nahi kha"], ans: 0, ex: "Nahi goes before the main verb: Main nahi kha sakta." },
+  { q: "Which question word is used for both Yes/No AND information questions?", opts: ["Kaun","Kahan","Kya","Kyon"], ans: 2, ex: "Kya is unique — starts yes/no questions AND means 'what' in info questions." },
+  { q: "To say 'They used to work', which form is correct?", opts: ["kaam karta tha","kaam karti thi","kaam karte the","kaam kar rahe hain"], ans: 2, ex: "Woh/They = masculine plural → karte the. Mixed or plural groups use -te." },
+  { q: "'Uski beti' means...", opts: ["His son","Her daughter","Their sister","His wife"], ans: 1, ex: "Uski = his/her (feminine possessive) | beti = daughter (feminine)." },
+  { q: "Present habitual for 'We go': Hum jaate ___", opts: ["hoon","hai","ho","hain"], ans: 3, ex: "Hum (we) → hain. Never use hoon (only with Main)." },
+  { q: "In Hindi, where do postpositions go?", opts: ["Before the noun","After the noun","At the start","After the verb"], ans: 1, ex: "Hindi postpositions come AFTER the noun — opposite to English prepositions." },
+  { q: "What does 'isliye' mean?", opts: ["because","but","so / therefore","perhaps"], ans: 2, ex: "Isliye = so/therefore. Kyonki = because. Lekin = but. Shayad = perhaps." },
+  { q: "Which is correct for 'My dad is cooking'?", opts: ["Mera papa khaana bana raha hai","Mere papa khaana bana rahe hain","Meri papa khaana bana rahi hai","Mera papa khaana bana rahe hain"], ans: 1, ex: "Mere (oblique) because papa is oblique subject. Rahe hain = respectful plural for papa." },
+  { q: "Sakna — which form is used with 'Aap'?", opts: ["sakta hoon","sakti hai","sakte hain","sakta hai"], ans: 2, ex: "Aap always takes formal plural form → sakte hain." },
+  { q: "How do you say 'perhaps' in Hindi?", opts: ["isliye","lekin","shayad","koi"], ans: 2, ex: "Shayad = perhaps/maybe. Usually at the start of the sentence." },
+  { q: "'Wahan' means:", opts: ["here","there","where","anywhere"], ans: 1, ex: "Wahan = there (far). Yahan = here. Kahan = where." },
+  { q: "Which tense is: root + ta/ti/te + tha/thi/the?", opts: ["Present Habitual","Past Habitual","Present Progressive","Past Progressive"], ans: 1, ex: "Past Habitual = 'used to'. Formula: root + ta/ti/te + tha/thi/the." },
+  { q: "How do you say 'He will be in India'?", opts: ["Woh Bharat mein tha","Woh Bharat mein hoga","Woh Bharat mein hai","Woh Bharat mein hogi"], ans: 1, ex: "Future tense of hona: hoga (masculine singular). Tha = was, hai = is." },
+  { q: "Which is the correct future form? 'I will speak Hindi' (masculine)", opts: ["Main Hindi bolta hoon","Main Hindi bolunga","Main Hindi bol sakta hoon","Main Hindi bolna chahta hoon"], ans: 1, ex: "Future: bolna → bolunga (I, masculine). Add -unga for masculine, -ungi for feminine." },
+  { q: "Paana vs Sakna — what is the difference?", opts: ["They mean the same","Paana = managed to (completed), Sakna = ability (potential)","Paana = can, Sakna = managed","Paana is formal, Sakna is informal"], ans: 1, ex: "Sakna = you have the ability. Paana = you actually succeeded. 'Main ja sakta hoon' (I can go) vs 'Main ja paya' (I managed to go)." },
+  { q: "To say 'Let me go', which form of jaana do you use?", opts: ["jaana","ja","jaane","jaata"], ans: 2, ex: "Dena (let/allow) uses the oblique -ne form. Jaana → jaane. So: Mujhe jaane do." },
+  { q: "'Hum jaane wale hain' means:", opts: ["We want to go","We are going","We are about to go","We used to go"], ans: 2, ex: "Wala/Wali/Wale = about to. Jaane wale hain = we are about to go." },
+  { q: "What does 'Kha lo' mean?", opts: ["Don't eat","Eat (for yourself)","He is eating","She wants to eat"], ans: 1, ex: "Lena structure: root + lo = do something for yourself. Kha lo = eat (for your own benefit)." },
+  { q: "'Mere saath' means:", opts: ["My house","With me","For me","From me"], ans: 1, ex: "Saath = with. Pronouns before saath use oblique form: mera → mere. So 'mere saath' = with me." },
+  { q: "Which is correct for 'She went to her own house'?", opts: ["Woh uske ghar gayi","Woh apne ghar gayi","Woh mere ghar gayi","Woh apna ghar gayi"], ans: 1, ex: "Apna rule: subject refers to own possession → apna/apne/apni. Ghar = masculine, subject is oblique → apne." },
+  { q: "'Kabhi nahi' means:", opts: ["sometimes","always","never","often"], ans: 2, ex: "Kabhi = sometimes/ever. Kabhi nahi = never. Hamesha = always. Aksar = often." },
+  { q: "What is 'pichli raat'?", opts: ["next night","last night","this night","every night"], ans: 1, ex: "Pichla/Pichli = last. Raat is feminine → pichli. So pichli raat = last night." },
+  { q: "Which sentence uses the past karna correctly?", opts: ["Main kaam kiya hoon","Maine kaam kiya","Main kaam karta tha","Mujhe kaam kiya"], ans: 1, ex: "Completed past with karna: subject takes 'ne' → Maine (main + ne). Then kiya (done)." },
+  { q: "How do you say 'I am hungry'?", opts: ["Main bhookha hoon","Mujhe bhookh lagi hai","Mujhe bhookh chahiye","Main bhookh hoon"], ans: 1, ex: "Hunger is a Ko construction: Mujhe (to me) + bhookh lagi hai. Not mujhe chahiye." },
+  { q: "'Mujhe nahi pata' means:", opts: ["I don't want to know","I don't like it","I don't know","I need to know"], ans: 2, ex: "Pata = information/knowledge. Mujhe nahi pata = it is not known to me = I don't know." },
+  { q: "How do you say 'I like tea'?", opts: ["Mujhe chai chahiye","Mujhe chai acchi lagti hai","Main chai peeta hoon","Chai mujhe hai"], ans: 1, ex: "Liking: Mujhe + thing + accha/acchi/acche + lagta/lagti/lagte + hai. Chai is feminine → acchi lagti." },
+  { q: "Which is correct for 'I need to go'?", opts: ["Mujhe jaana chahiye","Mujhe jaana padega","Both are correct — they mean different things","Mujhe ja chahiye"], ans: 2, ex: "Both are correct but different: Chahiye = should (advice), Padega = will have to (obligation)." },
+  { q: "In 'Maine khaana khaaya', why does the verb end in -a?", opts: ["Because Maine is masculine","Because khaana is masculine","Because past tense always ends -a","Random rule"], ans: 1, ex: "With Ne ergative, verb agrees with OBJECT. Khaana = masculine → khaaya (masculine form)." },
+  { q: "Which verb form do you NOT use Ne with?", opts: ["khaana (to eat)","dekhna (to see)","jaana (to go)","likhna (to write)"], ans: 2, ex: "Ne is NOT used with motion/intransitive verbs. Jaana = motion → Main gaya (not Maine gaya)." },
+  { q: "How do you say 'He is the best'?", opts: ["Woh zyada accha hai","Woh accha hai","Woh sabse accha hai","Woh se accha hai"], ans: 2, ex: "Sabse = most/best (superlative). Zyada = more (comparative). Se = than." },
+  { q: "How do you say 'This is better than that'?", opts: ["Yeh usse accha hai","Yeh se accha hai","Yeh aur accha hai","Yeh sabse accha hai"], ans: 0, ex: "Comparative: A + B se + adjective. Yeh usse accha hai = This (is) that-from good = better than that." },
+  { q: "'Chinta mat karo' means:", opts: ["Do worry","Don't worry","Think about it","Take care"], ans: 1, ex: "Mat = don't (negative command). Chinta = worry. Karo = do. So: don't do worry = don't worry!" },
+  { q: "Which is the formal command for 'Please come'?", opts: ["Aa!","Aao!","Aaiye!","Aana!"], ans: 2, ex: "Aap form command: root + iye. Aa + iye → Aaiye! Aa = informal (tum). Aao = slightly informal." },
+  { q: "What does 'Agar' mean?", opts: ["when","because","if","otherwise"], ans: 2, ex: "Agar = if. Jab = when. Kyonki = because. Warna = otherwise." },
+  { q: "In 'Jab bhi main Bharat jaata hoon', what does 'Jab bhi' mean?", opts: ["when","whenever","if","every time only"], ans: 1, ex: "Jab bhi = whenever (habitual). Jab = when (specific event). Both are conditional time words." },
+  { q: "Which colour is 'laal'?", opts: ["blue","green","red","yellow"], ans: 2, ex: "Laal = red. Neela = blue. Hara = green. Peela = yellow." },
+  { q: "'Sabse mehnga' means:", opts: ["most expensive","very expensive","more expensive","so expensive"], ans: 0, ex: "Sabse = most (superlative marker). Mehnga = expensive. So sabse mehnga = most expensive." },
+];
+
+// ============================================================
+// BOLLYWOOD DATA
+// ============================================================
+const bollywoodSongs = [
+  {
+    title: "Kal Ho Na Ho",
+    film: "Kal Ho Na Ho (2003)",
+    singer: "Sonu Nigam",
+    theme: "Living in the present moment — love, loss, and hope",
+    mood: "Emotional / Bittersweet",
+    keyWords: [
+      { h: "kal", e: "tomorrow / yesterday", note: "Kal = both tomorrow AND yesterday (context tells you which)" },
+      { h: "ho na ho", e: "may or may not be", note: "Ho = may be / might be. Na = not. The phrase means 'there may be no tomorrow'" },
+      { h: "abhi", e: "right now / at this moment", note: "Abhi = emphasises the present moment" },
+      { h: "zindagi", e: "life", note: "Core Urdu/Hindi word. Zindagi meri = my life" },
+      { h: "dil", e: "heart", note: "Dil se = from the heart. Dil chahta hai = the heart wants" },
+      { h: "khushi", e: "happiness / joy", note: "Khush = happy (adj). Khushi = happiness (noun)" },
+      { h: "armaan", e: "desire / wish / longing", note: "Deep emotional longing" },
+      { h: "apna", e: "one's own", note: "Apna sapna = one's own dream. Apni zindagi = one's own life" },
+    ],
+    sentences: [
+      { en: "There may be no tomorrow.", hi: "Kal ho na ho.", ex: "kal = tomorrow, ho na ho = may or may not be" },
+      { en: "My heart wants happiness.", hi: "Mera dil khushi chahta hai.", ex: "dil = heart, chahta = wants" },
+      { en: "Live in the present moment.", hi: "Abhi mein jiyo.", ex: "abhi = right now, jiyo = live (imperative)" },
+      { en: "Life is beautiful.", hi: "Zindagi khoobsoorat hai.", ex: "zindagi = life, khoobsoorat = beautiful" },
+      { en: "My wish is to be happy.", hi: "Mera armaan khush rehna hai.", ex: "armaan = desire/wish, khush rehna = to stay happy" },
+    ]
+  },
+  {
+    title: "Tum Hi Ho",
+    film: "Aashiqui 2 (2013)",
+    singer: "Arijit Singh",
+    theme: "Deep love — you are my everything",
+    mood: "Romantic / Intense",
+    keyWords: [
+      { h: "tum", e: "you (informal)", note: "Tum = informal you. More intimate than aap" },
+      { h: "hi", e: "only / emphasiser", note: "Hi = emphasis particle. Tum hi = you only / you alone" },
+      { h: "mere", e: "my (oblique)", note: "Mera becomes mere before oblique nouns. Mere paas = near me" },
+      { h: "saath", e: "with / together", note: "Mere saath = with me. Saath mein = together" },
+      { h: "rehna", e: "to stay / to live", note: "Mere saath rehna = to stay with me" },
+      { h: "bin", e: "without", note: "Tere bin = without you. Bin = literary 'without'" },
+      { h: "wafa", e: "loyalty / faithfulness", note: "Wafa karna = to be loyal. Bewafa = disloyal" },
+      { h: "raat", e: "night", note: "Raat bhar = all night. Pichli raat = last night" },
+    ],
+    sentences: [
+      { en: "You are with me.", hi: "Tum mere saath ho.", ex: "tum = you (informal), mere saath = with me, ho = are" },
+      { en: "I cannot live without you.", hi: "Main tere bin nahi reh sakta.", ex: "tere bin = without you, nahi reh sakta = cannot live/stay" },
+      { en: "You are only mine.", hi: "Tum hi mere ho.", ex: "hi = only/emphasis. Mere = mine (oblique form)" },
+      { en: "Stay with me tonight.", hi: "Aaj raat mere saath rehna.", ex: "aaj raat = tonight, mere saath = with me, rehna = stay (soft command)" },
+      { en: "My love is only for you.", hi: "Mera pyaar sirf tum hi ho.", ex: "sirf = only, hi = emphasis" },
+    ]
+  },
+  {
+    title: "Chaiyya Chaiyya",
+    film: "Dil Se (1998)",
+    singer: "Sukhwinder Singh",
+    theme: "Joy, movement, celebration — dancing on the rooftop",
+    mood: "Euphoric / Celebratory",
+    keyWords: [
+      { h: "chaiyya", e: "shade / shadow", note: "Chaiyya = shade/shadow. Walking in the shade of love" },
+      { h: "chal", e: "walk / go / move", note: "Chal = go/move (informal command). Chalo = let's go" },
+      { h: "saaya", e: "shadow / shade", note: "Tere saaye mein = in your shadow" },
+      { h: "mann", e: "mind / heart / soul", note: "Mann mein = in the heart. Similar to dil" },
+      { h: "naina", e: "eyes", note: "Naina = eyes (poetic). Aankhein = standard word" },
+      { h: "baat", e: "talk / matter / thing", note: "Kya baat hai! = What a thing! Baat karna = to talk" },
+      { h: "rang", e: "colour", note: "Rang de = colour me. Rang barse = colours pour" },
+      { h: "jhoome", e: "to sway / dance joyfully", note: "Jhooma = swayed. Jhoome jo pavan = as the wind sways" },
+    ],
+    sentences: [
+      { en: "Come, let's walk together.", hi: "Aao, saath mein chalte hain.", ex: "aao = come, saath mein = together, chalte hain = let's walk" },
+      { en: "My heart dances with joy.", hi: "Mera mann khushi se jhoome.", ex: "mann = heart/mind, khushi se = with joy, jhoome = sways/dances" },
+      { en: "Let's go somewhere.", hi: "Kahin chal chalte hain.", ex: "kahin = somewhere, chal chalte = let's go" },
+      { en: "What a beautiful colour!", hi: "Kitna sundar rang hai!", ex: "kitna = how much/what a, sundar = beautiful, rang = colour" },
+      { en: "The wind is swaying.", hi: "Pavan jhoome hai.", ex: "pavan = wind, jhoome = sways" },
+    ]
+  },
+  {
+    title: "Dil Chahta Hai",
+    film: "Dil Chahta Hai (2001)",
+    singer: "Shankar Mahadevan",
+    theme: "Youth, freedom, and the heart wanting what it wants",
+    mood: "Upbeat / Carefree",
+    keyWords: [
+      { h: "dil chahta hai", e: "the heart wants", note: "Chahna = to want. Dil chahta hai = the heart desires/wants" },
+      { h: "nasamajh", e: "foolish / not understanding", note: "Na = not + samajh = understanding. Nasamajh = foolish, carefree" },
+      { h: "parwah", e: "care / worry", note: "Koi parwah nahi = no worries at all" },
+      { h: "yaar", e: "friend (informal)", note: "Yaar = close friend. Very common in casual speech" },
+      { h: "dosti", e: "friendship", note: "Dost = friend. Dosti = friendship" },
+      { h: "mast", e: "carefree / high-spirited", note: "Mast rehna = to stay carefree. Mast hoon = I'm in great spirits" },
+      { h: "sapna", e: "dream", note: "Sapna dekhna = to dream. Mera sapna = my dream" },
+      { h: "azaad", e: "free / liberated", note: "Azaadi = freedom. Azaad hona = to be free" },
+    ],
+    sentences: [
+      { en: "My heart wants to be free.", hi: "Mera dil azaad rehna chahta hai.", ex: "azaad = free, rehna chahta hai = wants to stay" },
+      { en: "I have no worries.", hi: "Mujhe koi parwah nahi.", ex: "koi parwah nahi = no worry at all (ko construction)" },
+      { en: "This is my friend.", hi: "Yeh mera yaar hai.", ex: "yaar = close friend (informal)" },
+      { en: "We are friends.", hi: "Hum dost hain.", ex: "dost = friend, dosti = friendship" },
+      { en: "I want to be carefree.", hi: "Main mast rehna chahta hoon.", ex: "mast = carefree/high-spirited, chahna = want" },
+    ]
+  },
+  {
+    title: "Rang De Basanti",
+    film: "Rang De Basanti (2006)",
+    singer: "Naresh Iyer, Blaaze",
+    theme: "Patriotism, revolution, the courage to change",
+    mood: "Rousing / Patriotic",
+    keyWords: [
+      { h: "rang de", e: "colour me / dye me", note: "Rang = colour. De = give (imperative). Rang de = colour me with..." },
+      { h: "basanti", e: "saffron yellow (colour of revolution)", note: "Named after the colour of India's freedom fighters' clothing" },
+      { h: "desh", e: "country / homeland", note: "Mera desh = my country. Desh bhakt = patriot" },
+      { h: "kranti", e: "revolution", note: "Kranti = revolution. Inquilaab = uprising (Urdu)" },
+      { h: "shaheed", e: "martyr", note: "Shaheed hona = to become a martyr. Shaheedi = martyrdom" },
+      { h: "awaaz", e: "voice / sound", note: "Awaaz uthao = raise your voice. Awaaz = voice" },
+      { h: "zulm", e: "oppression / injustice", note: "Zulm karna = to oppress. Zulm se ladna = to fight oppression" },
+      { h: "himmat", e: "courage / bravery", note: "Himmat karo = be brave. Himmat = courage" },
+    ],
+    sentences: [
+      { en: "I love my country.", hi: "Mujhe apne desh se pyaar hai.", ex: "apne desh se = with my country, pyaar hai = there is love (ko construction)" },
+      { en: "Raise your voice.", hi: "Apni awaaz uthao.", ex: "awaaz = voice, uthao = raise (imperative)" },
+      { en: "Have courage.", hi: "Himmat rakkho.", ex: "himmat = courage, rakkho = keep/have (imperative)" },
+      { en: "Fight against injustice.", hi: "Zulm ke khilaaf lado.", ex: "ke khilaaf = against, lado = fight (imperative)" },
+      { en: "This is our country.", hi: "Yeh hamaara desh hai.", ex: "hamaara = our, desh = country" },
+    ]
+  },
+  {
+    title: "Kabhi Khushi Kabhie Gham",
+    film: "Kabhi Khushi Kabhie Gham (2001)",
+    singer: "Kavita Krishnamurthy, Udit Narayan",
+    theme: "Family, separation, joy and sorrow across generations",
+    mood: "Nostalgic / Emotional",
+    keyWords: [
+      { h: "kabhi", e: "sometimes / ever / once", note: "Kabhi khushi = sometimes happiness. Kabhi kabhi = sometimes" },
+      { h: "gham", e: "sorrow / grief", note: "Gham mein = in sorrow. Dukh aur gham = pain and grief" },
+      { h: "parivaar", e: "family", note: "Mera parivaar = my family. Parivaar ke saath = with family" },
+      { h: "yaad", e: "memory / remembrance", note: "Yaad aana = to be remembered/missed. Tumhari yaad aati hai = I miss you" },
+      { h: "rishtey", e: "relationships / bonds", note: "Rishta = relationship. Rishtey nibhaana = to honour relationships" },
+      { h: "wapas", e: "back / return", note: "Wapas aana = to come back. Ghar wapas = back home" },
+      { h: "alvida", e: "farewell / goodbye", note: "Alvida kehna = to say goodbye. Formal/poetic farewell" },
+      { h: "sapne", e: "dreams (plural)", note: "Sapna = dream. Sapne = dreams. Sapne dekhna = to dream" },
+    ],
+    sentences: [
+      { en: "Sometimes there is happiness, sometimes sorrow.", hi: "Kabhi khushi, kabhi gham.", ex: "kabhi = sometimes, khushi = happiness, gham = sorrow" },
+      { en: "I miss you.", hi: "Tumhari yaad aati hai.", ex: "yaad aati hai = memory comes = I miss you (ko construction)" },
+      { en: "Come back home.", hi: "Ghar wapas aao.", ex: "ghar = home, wapas = back, aao = come (tum imperative)" },
+      { en: "Family relationships are precious.", hi: "Parivaar ke rishtey keemat hain.", ex: "rishtey = relationships, keemat = precious/valuable" },
+      { en: "I will never forget you.", hi: "Main tumhe kabhi nahi bhulunga.", ex: "kabhi nahi = never, bhulunga = will forget (future)" },
+    ]
+  },
+  {
+    title: "Tujhe Dekha To",
+    film: "Dilwale Dulhania Le Jayenge (1995)",
+    singer: "Kumar Sanu, Lata Mangeshkar",
+    theme: "First sight of love — fate and recognition",
+    mood: "Romantic / Dreamy",
+    keyWords: [
+      { h: "tujhe", e: "you (intimate/poetic)", note: "Tujhe = to you (most intimate form). Tujhe dekha = I saw you" },
+      { h: "dekhna", e: "to see / to look at", note: "Dekha = saw. Dekh raha hoon = am seeing. Dekhna = to see" },
+      { h: "jaana", e: "to know (also: to go)", note: "Jaana = both 'to go' AND 'to know' (context). Maine jaana = I came to know" },
+      { h: "intezaar", e: "waiting / anticipation", note: "Intezaar karna = to wait. Tera intezaar = waiting for you" },
+      { h: "milna", e: "to meet / to find", note: "Milna = to meet. Mujhe mila = I found. Phir milenge = we'll meet again" },
+      { h: "aas", e: "hope / expectation", note: "Aas lagana = to pin hopes on. Teri aas = hope of you" },
+      { h: "naseeb", e: "fate / destiny", note: "Naseeb mein hona = to be in fate. Mera naseeb = my destiny" },
+      { h: "chandni", e: "moonlight", note: "Chandni = moonlight. Chandni raat = moonlit night" },
+    ],
+    sentences: [
+      { en: "When I saw you, I knew.", hi: "Jab tujhe dekha, tab jaana.", ex: "jab = when, dekha = saw, tab = then, jaana = came to know" },
+      { en: "I was waiting for you.", hi: "Main tera intezaar kar raha tha.", ex: "tera = your (intimate), intezaar karna = to wait" },
+      { en: "We will meet again.", hi: "Hum phir milenge.", ex: "phir = again, milenge = will meet (future)" },
+      { en: "It was written in my fate.", hi: "Yeh mere naseeb mein likha tha.", ex: "naseeb = fate, mein = in, likha tha = was written" },
+      { en: "The moonlit night is beautiful.", hi: "Chandni raat khoobsoorat hai.", ex: "chandni = moonlight, khoobsoorat = beautiful" },
+    ]
+  }
+];
+
+// ============================================================
+// HOMEWORK DATA
+// ============================================================
+const homeworkSets = [
+  {
+    title: "Lesson 1 — Basic Sentence Structure",
+    sentences: [
+      { en: "I am from the USA.", hi: "Main USA se hoon." },
+      { en: "We are in the class.", hi: "Hum class mein hain." },
+      { en: "He is inside the car.", hi: "Woh gaadi ke andar hai." },
+      { en: "She is not a teacher. She is a student.", hi: "Woh teacher nahi hai. Woh student hai." },
+      { en: "The book is on the table.", hi: "Kitab mez per hai." },
+      { en: "The boy is behind the tree.", hi: "Ladka ped ke piche hai." },
+      { en: "They are in front of the university.", hi: "Woh university ke samne hain." },
+      { en: "The cow is under the tree.", hi: "Gaay ped ke niche hai." },
+      { en: "How are you?", hi: "Aap kaise hain?" },
+      { en: "They are not from Canada. They are from the USA.", hi: "Woh Canada se nahi hain. Woh USA se hain." },
+    ]
+  },
+  {
+    title: "Lesson 2 — Present Habitual Tense",
+    sentences: [
+      { en: "I speak Hindi.", hi: "Main Hindi bolta hoon." },
+      { en: "We understand French.", hi: "Hum French samajhte hain." },
+      { en: "We know Hindi and French.", hi: "Hum Hindi aur French jaante hain." },
+      { en: "She doesn't work in Google.", hi: "Woh Google mein kaam nahi karti." },
+      { en: "Every day that boy plays tennis.", hi: "Roz woh ladka tennis khelta hai." },
+      { en: "Who studies Hindi? Mr Don studies Hindi.", hi: "Hindi kaun padhta hai? Mr Don Hindi padhta hai." },
+      { en: "They don't know Hindi.", hi: "Woh Hindi nahi jaante." },
+      { en: "Every week, my family goes to Park.", hi: "Har hafte mera parivaar park jaata hai." },
+      { en: "He goes to school in NYC.", hi: "Woh NYC mein school jaata hai." },
+      { en: "Every Sunday, we meet in Park.", hi: "Har Ravivar hum park mein milte hain." },
+    ]
+  },
+  {
+    title: "Lesson 3 — Questions (Interrogatives)",
+    sentences: [
+      { en: "How are you? (masculine) I am good.", hi: "Aap kaise hain? Main theek hoon." },
+      { en: "Where is she? She is in India.", hi: "Woh kahan hai? Woh Bharat mein hai." },
+      { en: "What is 'book' in French?", hi: "French mein 'book' kya hai?" },
+      { en: "Where are they from? They are from China.", hi: "Woh kahan se hain? Woh China se hain." },
+      { en: "Who is behind the car? Cat is behind the car.", hi: "Car ke piche kaun hai? Billi car ke piche hai." },
+      { en: "Are you from USA? No, I am from Canada.", hi: "Kya aap USA se hain? Nahi, main Canada se hoon." },
+      { en: "How is the food?", hi: "Khaana kaisa hai?" },
+      { en: "Is she Anna? Yes, she is Anna.", hi: "Kya woh Anna hai? Haan, woh Anna hai." },
+      { en: "Where is Taj Mahal? It is in India.", hi: "Taj Mahal kahan hai? Woh Bharat mein hai." },
+      { en: "How is Shannon? She is sick.", hi: "Shannon kaisi hai? Woh bimaar hai." },
+    ]
+  },
+  {
+    title: "Lesson 4 — Present Habitual (Mix)",
+    sentences: [
+      { en: "I speak Hindi.", hi: "Main Hindi bolta hoon." },
+      { en: "Do you understand French?", hi: "Kya aap French samajhte hain?" },
+      { en: "She knows Hindi and French.", hi: "Woh Hindi aur French jaanti hai." },
+      { en: "Where does she work?", hi: "Woh kahan kaam karti hai?" },
+      { en: "Every day that boy plays tennis.", hi: "Roz woh ladka tennis khelta hai." },
+      { en: "Who studies Hindi? My brother studies Hindi.", hi: "Hindi kaun padhta hai? Mera bhai Hindi padhta hai." },
+      { en: "Do they know Hindi? No, they don't know Hindi.", hi: "Kya woh Hindi jaante hain? Nahi, woh Hindi nahi jaante." },
+      { en: "Every week we go to Park.", hi: "Har hafte hum park jaate hain." },
+      { en: "When does he go to school?", hi: "Woh school kab jaata hai?" },
+      { en: "Every Sunday we meet in Park.", hi: "Har Ravivar hum park mein milte hain." },
+    ]
+  },
+  {
+    title: "Lesson 5 — Present Progressive Tense",
+    sentences: [
+      { en: "Today we are going to India.", hi: "Aaj hum Bharat ja rahe hain." },
+      { en: "What are you doing? I am watching TV.", hi: "Aap kya kar rahe hain? Main TV dekh raha hoon." },
+      { en: "They are working in the garden.", hi: "Woh garden mein kaam kar rahe hain." },
+      { en: "Are you saying something?", hi: "Kya aap kuch keh rahe hain?" },
+      { en: "That girl is not playing cricket.", hi: "Woh ladki cricket nahi khel rahi." },
+      { en: "What is happening there?", hi: "Wahan kya ho raha hai?" },
+      { en: "Who is playing piano? Zach is playing piano.", hi: "Kaun piano baja raha hai? Zach piano baja raha hai." },
+      { en: "Ram and I are coming to the party.", hi: "Ram aur main party mein aa rahe hain." },
+      { en: "Where are we eating today?", hi: "Aaj hum kahan khaana kha rahe hain?" },
+      { en: "He is not making food today.", hi: "Woh aaj khaana nahi bana raha." },
+    ]
+  },
+  {
+    title: "Lesson 6 — Possessives (ka/ke/ki)",
+    sentences: [
+      { en: "My brother does not study English.", hi: "Mera bhai English nahi padhta." },
+      { en: "My Dad is cooking dinner.", hi: "Mere papa raat ka khaana bana rahe hain." },
+      { en: "Our friends are going to USA next week.", hi: "Hamare dost agle hafte USA ja rahe hain." },
+      { en: "Where does your dad live? He lives in New York.", hi: "Aapke papa kahan rehte hain? Woh New York mein rehte hain." },
+      { en: "His mom is buying a new house.", hi: "Uski maa naya ghar khareed rahi hai." },
+      { en: "What is your name? My name is Prakash.", hi: "Aapka naam kya hai? Mera naam Prakash hai." },
+      { en: "Her son plays video games a lot.", hi: "Uska beta bahut video games khelta hai." },
+      { en: "Whose son is playing piano?", hi: "Kiska beta piano baja raha hai?" },
+      { en: "Does his daughter drink coffee?", hi: "Kya uski beti coffee peeti hai?" },
+      { en: "Their house is in California? Where is your house?", hi: "Unka ghar California mein hai? Aapka ghar kahan hai?" },
+      { en: "John's kids are running in the garden.", hi: "John ke bachche garden mein daud rahe hain." },
+      { en: "Why is she coming in our office?", hi: "Woh hamare office mein kyon aa rahi hai?" },
+    ]
+  },
+  {
+    title: "Lesson 7 — Past Habitual (Used to)",
+    sentences: [
+      { en: "I used to live in India.", hi: "Main Bharat mein rehta tha." },
+      { en: "Her dad used to play tennis.", hi: "Uske papa tennis khelte the." },
+      { en: "What was happening there?", hi: "Wahan kya ho raha tha?" },
+      { en: "They used to eat meat, now they don't.", hi: "Woh meat khate the, ab nahi khate." },
+      { en: "Every year, my wife used to go to India.", hi: "Har saal, meri patni Bharat jaati thi." },
+      { en: "Zach's son used to work in India.", hi: "Zach ka beta Bharat mein kaam karta tha." },
+      { en: "Why did you use to learn Hindi?", hi: "Aap Hindi kyon seekhte the?" },
+      { en: "Who used to play chess with you?", hi: "Aap ke saath chess kaun khelta tha?" },
+      { en: "Perhaps he was watching news.", hi: "Shayad woh news dekh raha tha." },
+      { en: "His mom used to drink a lot of coffee.", hi: "Uski amma bahut coffee peeti thi." },
+    ]
+  },
+  {
+    title: "Lesson 8 — Mixed Tenses",
+    sentences: [
+      { en: "She used to live with her dad.", hi: "Woh apne papa ke saath rehti thi." },
+      { en: "What was happening there?", hi: "Wahan kya ho raha tha?" },
+      { en: "She watches Bollywood movies.", hi: "Woh Bollywood movies dekhti hai." },
+      { en: "Do you know Hindi?", hi: "Kya aap Hindi jaante hain?" },
+      { en: "Her dad and she work in hospital.", hi: "Uske papa aur woh hospital mein kaam karte hain." },
+      { en: "She is sick so she is not coming to the party.", hi: "Woh bimaar hai isliye woh party mein nahi aa rahi." },
+      { en: "Where are you going this weekend?", hi: "Aap is weekend kahan ja rahe hain?" },
+      { en: "How was your day? It was good.", hi: "Aapka din kaisa tha? Woh achha tha." },
+      { en: "She used to drink coffee, now she drinks tea.", hi: "Woh coffee peeti thi, ab chai peeti hai." },
+      { en: "Who was studying in the room? Om's daughter was studying.", hi: "Kamre mein kaun padh raha tha? Om ki beti padh rahi thi." },
+      { en: "Her dad is not playing guitar. He's playing basketball.", hi: "Uske papa guitar nahi baja rahe. Woh basketball khel rahe hain." },
+      { en: "Are you from India? Yes, I am from India but I live in USA.", hi: "Kya aap Bharat se hain? Haan, main Bharat se hoon lekin main USA mein rehta hoon." },
+      { en: "Why are they going to India?", hi: "Woh Bharat kyon ja rahe hain?" },
+      { en: "Who is standing in front of the gate?", hi: "Gate ke samne kaun khada hai?" },
+      { en: "They used to study in this university.", hi: "Woh is university mein padhte the." },
+      { en: "Why is she getting angry?", hi: "Woh kyon gussa ho rahi hai?" },
+      { en: "Every Sunday, we watch Bollywood movie.", hi: "Har Ravivar hum Bollywood movie dekhte hain." },
+      { en: "What was he telling? He was telling about India.", hi: "Woh kya bata raha tha? Woh Bharat ke baare mein bata raha tha." },
+      { en: "Do you understand Hindi? No, I used to understand Hindi.", hi: "Kya aap Hindi samajhte hain? Nahi, main Hindi samajhta tha." },
+      { en: "What is happening in USA?", hi: "USA mein kya ho raha hai?" },
+    ]
+  },
+  {
+    title: "Lesson 9 — Sakna (Can)",
+    sentences: [
+      { en: "I can understand Hindi and French.", hi: "Main Hindi aur French samajh sakta hoon." },
+      { en: "Can you come tomorrow?", hi: "Kya aap kal aa sakte hain?" },
+      { en: "She is not coming today but she can come tomorrow.", hi: "Woh aaj nahi aa rahi, lekin woh kal aa sakti hai." },
+      { en: "Every Sunday her dad goes to church so tomorrow he cannot meet.", hi: "Har Ravivar uske papa church jaate hain isliye kal woh nahi mil sakte." },
+      { en: "What were you doing there?", hi: "Aap wahan kya kar rahe the?" },
+      { en: "Who can do this work?", hi: "Yeh kaam kaun kar sakta hai?" },
+      { en: "What is she doing? I don't know.", hi: "Woh kya kar rahi hai? Mujhe nahi pata." },
+      { en: "Because of covid we cannot go to India.", hi: "Covid ke karan hum Bharat nahi ja sakte." },
+      { en: "Where can we play soccer?", hi: "Hum soccer kahan khel sakte hain?" },
+      { en: "I am sick so I cannot cook dinner.", hi: "Main bimaar hoon isliye main raat ka khaana nahi bana sakta." },
+    ]
+  },
+  {
+    title: "Lesson 10 — Chahna (Want)",
+    sentences: [
+      { en: "I want to meet tomorrow.", hi: "Main kal milna chahta hoon." },
+      { en: "She cannot speak Hindi.", hi: "Woh Hindi nahi bol sakti." },
+      { en: "Where do you want to go this summer?", hi: "Aap is garmi mein kahan jaana chahte hain?" },
+      { en: "Mr Tim wants to play tennis.", hi: "Mr Tim tennis khelna chahte hain." },
+      { en: "Does she want to work here?", hi: "Kya woh yahan kaam karna chahti hai?" },
+      { en: "Her dad cannot speak Hindi.", hi: "Uske papa Hindi nahi bol sakte." },
+      { en: "She was sleeping, now she wants to play piano.", hi: "Woh so rahi thi, ab woh piano bajaana chahti hai." },
+      { en: "Who wants to drink tea?", hi: "Chai kaun peena chahta hai?" },
+      { en: "What were you doing there?", hi: "Aap wahan kya kar rahe the?" },
+      { en: "She works in my office.", hi: "Woh mere office mein kaam karti hai." },
+    ]
+  }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentPracticeSet = 'all';
+let practiceQueue = [];
+let practiceIndex = 0;
+let currentVocabSet = 'all';
+let vocabQueue = [];
+let vocabIndex = 0;
+let quizIndex = 0;
+let quizScore = 0;
+let shuffledQuiz = [];
+
+// ============================================================
+// NAV
+// ============================================================
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  const target = document.getElementById(id);
+  target.classList.add('active');
+  target.style.display = 'block';
+  document.querySelectorAll('nav button').forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'")) {
+      b.classList.add('active');
+    }
+  });
+  if (id === 'practice') initPractice();
+  if (id === 'flashcards') initFlashcards();
+  if (id === 'quiz') initQuiz();
+  if (id === 'homework') initHomework();
+  if (id === 'bollywood') renderBwSong();
+  if (id === 'daily') initDailyDrill();
+}
+
+// ============================================================
+// PRACTICE
+// ============================================================
+function setPracticeSet(set, el) {
+  currentPracticeSet = set;
+  document.querySelectorAll('#practice-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  initPractice();
+}
+
+function initPractice() {
+  practiceQueue = [...(practiceData[currentPracticeSet] || practiceData.all)];
+  practiceIndex = 0;
+  showPracticeSentence();
+}
+
+function showPracticeSentence() {
+  if (!practiceQueue.length) return;
+  const item = practiceQueue[practiceIndex];
+  document.getElementById('practice-english').textContent = item.en;
+  document.getElementById('practice-hint').textContent = item.ex ? '💡 ' + item.ex.split('|')[0] : '';
+  document.getElementById('practice-input').value = '';
+  document.getElementById('practice-answer').classList.remove('show');
+  document.getElementById('answer-hindi').textContent = '';
+  document.getElementById('answer-explanation').textContent = '';
+  const total = practiceQueue.length;
+  document.getElementById('practice-counter').textContent = `Sentence ${practiceIndex+1} of ${total}`;
+  document.getElementById('practice-progress').style.width = ((practiceIndex / total) * 100) + '%';
+}
+
+function revealAnswer() {
+  const item = practiceQueue[practiceIndex];
+  document.getElementById('answer-hindi').textContent = item.hi;
+  document.getElementById('answer-explanation').textContent = item.ex || '';
+  document.getElementById('practice-answer').classList.add('show');
+}
+
+function nextSentence() {
+  practiceIndex = (practiceIndex + 1) % practiceQueue.length;
+  showPracticeSentence();
+}
+
+function shufflePractice() {
+  practiceQueue = [...(practiceData[currentPracticeSet] || practiceData.all)];
+  for (let i = practiceQueue.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [practiceQueue[i], practiceQueue[j]] = [practiceQueue[j], practiceQueue[i]];
+  }
+  practiceIndex = 0;
+  showPracticeSentence();
+}
+
+// ============================================================
+// FLASHCARDS
+// ============================================================
+function setVocabSet(set, el) {
+  currentVocabSet = set;
+  document.querySelectorAll('#vocab-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  initFlashcards();
+}
+
+function initFlashcards() {
+  vocabQueue = [...(vocabData[currentVocabSet] || vocabData.all)];
+  vocabIndex = 0;
+  showCard();
+}
+
+function showCard() {
+  if (!vocabQueue.length) return;
+  const card = vocabQueue[vocabIndex];
+  document.getElementById('fc-front').textContent = card.front;
+  document.getElementById('fc-category').textContent = card.cat;
+  document.getElementById('fc-back').textContent = card.back;
+  document.getElementById('fc-example').textContent = card.example || '';
+  document.getElementById('fc-counter').textContent = `${vocabIndex+1} / ${vocabQueue.length}`;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+
+function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
+function nextCard() { vocabIndex = (vocabIndex + 1) % vocabQueue.length; showCard(); }
+function prevCard() { vocabIndex = (vocabIndex - 1 + vocabQueue.length) % vocabQueue.length; showCard(); }
+function shuffleCards() {
+  for (let i = vocabQueue.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [vocabQueue[i], vocabQueue[j]] = [vocabQueue[j], vocabQueue[i]];
+  }
+  vocabIndex = 0; showCard();
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+function initQuiz() {
+  shuffledQuiz = [...quizData].sort(() => Math.random() - 0.5);
+  quizIndex = 0; quizScore = 0;
+  document.getElementById('quiz-content').style.display = 'block';
+  document.getElementById('quiz-complete').style.display = 'none';
+  showQuizQuestion();
+}
+
+function showQuizQuestion() {
+  if (quizIndex >= shuffledQuiz.length) { showQuizComplete(); return; }
+  const q = shuffledQuiz[quizIndex];
+  document.getElementById('quiz-question').textContent = q.q;
+  document.getElementById('quiz-counter').textContent = `Question ${quizIndex+1} of ${shuffledQuiz.length}`;
+  document.getElementById('quiz-progress').style.width = ((quizIndex / shuffledQuiz.length) * 100) + '%';
+  document.getElementById('quiz-feedback').className = 'quiz-feedback';
+  document.getElementById('quiz-feedback').textContent = '';
+  document.getElementById('quiz-next-btn').style.display = 'none';
+  const optsEl = document.getElementById('quiz-options');
+  optsEl.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.textContent = opt;
+    btn.onclick = () => selectOption(i);
+    optsEl.appendChild(btn);
+  });
+}
+
+function selectOption(i) {
+  const q = shuffledQuiz[quizIndex];
+  const opts = document.querySelectorAll('.quiz-option');
+  opts.forEach(o => o.onclick = null);
+  const fb = document.getElementById('quiz-feedback');
+  if (i === q.ans) {
+    opts[i].classList.add('correct');
+    fb.className = 'quiz-feedback correct show';
+    fb.textContent = '✅ Correct! ' + q.ex;
+    quizScore++;
+  } else {
+    opts[i].classList.add('wrong');
+    opts[q.ans].classList.add('correct');
+    fb.className = 'quiz-feedback wrong show';
+    fb.textContent = '❌ Not quite. ' + q.ex;
+  }
+  document.getElementById('quiz-next-btn').style.display = 'inline-block';
+}
+
+function nextQuiz() { quizIndex++; showQuizQuestion(); }
+function restartQuiz() { initQuiz(); }
+
+function showQuizComplete() {
+  document.getElementById('quiz-content').style.display = 'none';
+  document.getElementById('quiz-complete').style.display = 'block';
+  const pct = Math.round((quizScore / shuffledQuiz.length) * 100);
+  document.getElementById('quiz-score').textContent = `${quizScore}/${shuffledQuiz.length}`;
+  const msgs = ['Keep going — review the grammar notes!', 'Good effort — a bit more practice needed!', 'Solid! Review the ones you missed.', 'Great work!', 'Excellent — you\'re nailing this! 🎉'];
+  const msg = pct < 40 ? msgs[0] : pct < 60 ? msgs[1] : pct < 75 ? msgs[2] : pct < 90 ? msgs[3] : msgs[4];
+  document.getElementById('quiz-score-msg').textContent = `${pct}% — ${msg}`;
+}
+
+// ============================================================
+// HOMEWORK
+// ============================================================
+function initHomework() {
+  const list = document.getElementById('hw-list');
+  list.innerHTML = '';
+  homeworkSets.forEach((set, si) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'hw-set';
+    const toggle = document.createElement('button');
+    toggle.className = 'hw-toggle';
+    toggle.innerHTML = `${set.title} <span class="badge">${set.sentences.length} sentences</span>`;
+    toggle.onclick = () => content.classList.toggle('open');
+    const content = document.createElement('div');
+    content.className = 'hw-content';
+    let shown = false;
+    set.sentences.forEach((s, i) => {
+      const item = document.createElement('div');
+      item.className = 'hw-item';
+      item.innerHTML = `<span class="hw-num">${i+1}.</span>
+        <div>
+          <div>${s.en}</div>
+          <div class="hw-answer" id="hw-${si}-${i}" style="display:none">${s.hi}</div>
+          <button style="font-size:0.75rem;background:none;border:none;color:var(--orange);cursor:pointer;padding:2px 0;font-weight:600;" onclick="toggleAnswer('hw-${si}-${i}', this)">Show answer</button>
+        </div>`;
+      content.appendChild(item);
+    });
+    wrap.appendChild(toggle);
+    wrap.appendChild(content);
+    list.appendChild(wrap);
+  });
+}
+
+function toggleAnswer(id, btn) {
+  const el = document.getElementById(id);
+  if (el.style.display === 'none') { el.style.display = 'block'; btn.textContent = 'Hide answer'; }
+  else { el.style.display = 'none'; btn.textContent = 'Show answer'; }
+}
+
+// ============================================================
+// BOLLYWOOD
+// ============================================================
+let currentBwSong = 0;
+let bwPracticeIndex = 0;
+let bwPracticeQueue = [];
+
+function setBwSong(idx) {
+  currentBwSong = idx;
+  document.querySelectorAll('#bw-filters .filter-btn').forEach((b,i) => {
+    b.classList.toggle('active', i === idx);
+  });
+  renderBwSong();
+}
+
+function renderBwSong() {
+  const s = bollywoodSongs[currentBwSong];
+  // Song card
+  document.getElementById('bw-song-card').innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+      <div style="font-size:2.4rem;">🎵</div>
+      <div>
+        <h2 style="margin-bottom:4px;">${s.title}</h2>
+        <div style="font-size:0.85rem;color:var(--mid);">${s.film} • ${s.singer}</div>
+      </div>
+    </div>
+    <div style="background:var(--orange-pale);border-left:4px solid var(--orange);padding:10px 14px;border-radius:6px;margin-bottom:10px;">
+      <strong>Theme:</strong> ${s.theme}<br>
+      <strong>Mood:</strong> ${s.mood}
+    </div>
+    <h3 style="color:var(--blue);margin:12px 0 6px;">Key Vocabulary from this Song</h3>
+    <table><tr><th>Hindi</th><th>English</th><th>Notes</th></tr>
+    ${s.keyWords.map(k => `<tr><td><strong>${k.h}</strong></td><td>${k.e}</td><td style="font-size:0.82rem;color:var(--mid);">${k.note}</td></tr>`).join('')}
+    </table>
+  `;
+  // Vocab grid (flip cards)
+  const grid = document.getElementById('bw-vocab-grid');
+  grid.innerHTML = s.keyWords.map((k,i) => `
+    <div onclick="this.classList.toggle('flipped')" style="background:white;border:1.5px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;min-height:80px;display:flex;flex-direction:column;justify-content:center;transition:all 0.2s;" class="bw-vocab-tile">
+      <div class="bw-front">
+        <div style="font-size:1.1rem;font-weight:700;color:var(--orange);">${k.h}</div>
+        <div style="font-size:0.72rem;color:var(--mid);margin-top:4px;">Tap to reveal</div>
+      </div>
+      <div class="bw-back" style="display:none;">
+        <div style="font-size:0.95rem;font-weight:600;color:var(--dark);">${k.e}</div>
+        <div style="font-size:0.75rem;color:var(--mid);margin-top:4px;">${k.note}</div>
+      </div>
+    </div>
+  `).join('');
+  // Wire up tile flips
+  grid.querySelectorAll('.bw-vocab-tile').forEach(tile => {
+    tile.addEventListener('click', function() {
+      const front = this.querySelector('.bw-front');
+      const back = this.querySelector('.bw-back');
+      if (back.style.display === 'none') {
+        front.style.display = 'none'; back.style.display = 'block';
+        this.style.background = 'var(--orange-pale)';
+      } else {
+        back.style.display = 'none'; front.style.display = 'block';
+        this.style.background = 'white';
+      }
+    });
+  });
+  // Practice sentences
+  bwPracticeQueue = [...s.sentences];
+  bwPracticeIndex = 0;
+  renderBwPractice();
+}
+
+function renderBwPractice() {
+  const container = document.getElementById('bw-practice');
+  container.innerHTML = bwPracticeQueue.map((sent, i) => `
+    <div style="background:var(--grey);border-radius:10px;padding:14px;margin-bottom:10px;">
+      <div style="font-size:0.78rem;color:var(--mid);margin-bottom:4px;">Sentence ${i+1}</div>
+      <div style="font-size:1rem;font-weight:600;margin-bottom:8px;">${sent.en}</div>
+      <textarea id="bw-inp-${i}" placeholder="Type your Hindi answer here..." style="width:100%;padding:8px;border:1.5px solid var(--border);border-radius:6px;font-size:0.9rem;resize:none;height:52px;"></textarea>
+      <div style="margin-top:6px;">
+        <button onclick="revealBwAnswer(${i})" style="background:var(--orange);color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.82rem;">Show answer</button>
+      </div>
+      <div id="bw-ans-${i}" style="display:none;margin-top:8px;background:var(--green-light);border-left:3px solid var(--green);padding:8px 12px;border-radius:6px;">
+        <div style="font-weight:700;color:var(--green);">${sent.hi}</div>
+        <div style="font-size:0.82rem;color:var(--mid);margin-top:4px;">${sent.ex}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function revealBwAnswer(i) {
+  document.getElementById('bw-ans-'+i).style.display = 'block';
+}
+
+// ============================================================
+// DAILY DRILL
+// ============================================================
+
+const dailyDrillData = [
+  // VOCAB
+  { type:'vocab', q:'shayad', a:'perhaps / maybe', cat:'Vocab' },
+  { type:'vocab', q:'lana', a:'to bring', cat:'Vocab' },
+  { type:'vocab', q:'dena', a:'to give', cat:'Vocab' },
+  { type:'vocab', q:'bechna', a:'to sell', cat:'Vocab' },
+  { type:'vocab', q:'kharidna', a:'to buy', cat:'Vocab' },
+  { type:'vocab', q:'phir se', a:'again', cat:'Vocab' },
+  { type:'vocab', q:'chadhna', a:'to climb', cat:'Vocab' },
+  { type:'vocab', q:'koi', a:'someone / anyone / no one', cat:'Vocab' },
+  { type:'vocab', q:'kuch', a:'some / something / nothing / anything', cat:'Vocab' },
+  { type:'vocab', q:'ke karan', a:'because of', cat:'Vocab' },
+  { type:'vocab', q:'kyonki', a:'because', cat:'Vocab' },
+  { type:'vocab', q:'kahna', a:'to say', cat:'Vocab' },
+  { type:'vocab', q:'bolna', a:'to speak', cat:'Vocab' },
+  { type:'vocab', q:'palan karna', a:'to follow', cat:'Vocab' },
+  { type:'vocab', q:'agle', a:'next (masc.)', cat:'Vocab' },
+  { type:'vocab', q:'yatra karna', a:'to travel', cat:'Vocab' },
+  { type:'vocab', q:'uthna', a:'to wake up', cat:'Vocab' },
+  { type:'vocab', q:'baat karna', a:'to talk', cat:'Vocab' },
+  { type:'vocab', q:'milna', a:'to meet', cat:'Vocab' },
+  { type:'vocab', q:'seekhna', a:'to learn', cat:'Vocab' },
+  { type:'vocab', q:'samajhna', a:'to understand', cat:'Vocab' },
+  { type:'vocab', q:'sunna', a:'to listen', cat:'Vocab' },
+  { type:'vocab', q:'isliye', a:'therefore / so', cat:'Vocab' },
+  { type:'vocab', q:'koi baat nahi', a:"no problem / don't worry", cat:'Vocab' },
+  { type:'vocab', q:'kuch nahi', a:'nothing', cat:'Vocab' },
+  { type:'vocab', q:'shuru karna', a:'to start', cat:'Vocab' },
+  { type:'vocab', q:'band karna', a:'to stop / close', cat:'Vocab' },
+  { type:'vocab', q:'pyaar karna', a:'to love', cat:'Vocab' },
+  { type:'vocab', q:'dilchasp', a:'interesting', cat:'Vocab' },
+  { type:'vocab', q:'tabiyat', a:'health', cat:'Vocab' },
+  { type:'vocab', q:'parivaar', a:'family', cat:'Vocab' },
+  { type:'vocab', q:'Ravivar', a:'Sunday', cat:'Vocab' },
+  { type:'vocab', q:'Somvar', a:'Monday', cat:'Vocab' },
+  { type:'vocab', q:'kal', a:'yesterday / tomorrow (context)', cat:'Vocab' },
+  { type:'vocab', q:'pichhle hafte', a:'last week', cat:'Vocab' },
+  { type:'vocab', q:'agle saal', a:'next year', cat:'Vocab' },
+  { type:'vocab', q:'har roz', a:'every day', cat:'Vocab' },
+  { type:'vocab', q:'har subah', a:'every morning', cat:'Vocab' },
+  { type:'vocab', q:'mere liye', a:'for me', cat:'Vocab' },
+  { type:'vocab', q:'kaam karna', a:'to work', cat:'Vocab' },
+
+  // PRESENT HABITUAL
+  { type:'sentence', q:'I drink chai every morning.', a:'Main har subah chai peeta hoon.', cat:'Present Habitual', hint:'peeta hoon' },
+  { type:'sentence', q:'She works in my office.', a:'Woh meri office mein kaam karti hai.', cat:'Present Habitual', hint:'karti hai' },
+  { type:'sentence', q:'Every Sunday we meet in the park.', a:'Har Ravivar hum park mein milte hain.', cat:'Present Habitual', hint:'milte hain' },
+  { type:'sentence', q:'He goes to the gym every day.', a:'Woh har roz gym jaata hai.', cat:'Present Habitual', hint:'jaata hai' },
+  { type:'sentence', q:'She watches Bollywood movies.', a:'Woh Bollywood movies dekhti hai.', cat:'Present Habitual', hint:'dekhti hai' },
+  { type:'sentence', q:'Every Sunday we watch a Bollywood movie.', a:'Har Ravivar hum Bollywood movie dekhte hain.', cat:'Present Habitual', hint:'dekhte hain' },
+  { type:'sentence', q:"My son plays video games a lot.", a:'Mera beta bahut video games khelta hai.', cat:'Present Habitual', hint:'khelta hai' },
+
+  // PAST HABITUAL
+  { type:'sentence', q:'I used to live in India.', a:'Main Bharat mein rehta tha.', cat:'Past Habitual', hint:'rehta tha' },
+  { type:'sentence', q:'He used to play tennis.', a:'Woh tennis khelta tha.', cat:'Past Habitual', hint:'khelta tha' },
+  { type:'sentence', q:'She used to drink coffee, now she drinks tea.', a:'Woh coffee peeti thi, ab woh chai peeti hai.', cat:'Past Habitual', hint:'peeti thi / peeti hai' },
+  { type:'sentence', q:'They used to study in this university.', a:'Woh is university mein padhte the.', cat:'Past Habitual', hint:'padhte the' },
+  { type:'sentence', q:'Every year my wife used to go to India.', a:'Har saal meri patni India jaati thi.', cat:'Past Habitual', hint:'jaati thi' },
+  { type:'sentence', q:"His mom used to drink a lot of coffee.", a:'Uski maa bahut coffee peeti thi.', cat:'Past Habitual', hint:'peeti thi' },
+
+  // PRESENT PROGRESSIVE
+  { type:'sentence', q:'I am watching TV.', a:'Main TV dekh raha hoon.', cat:'Present Progressive', hint:'dekh raha hoon' },
+  { type:'sentence', q:'She is sleeping.', a:'Woh so rahi hai.', cat:'Present Progressive', hint:'so rahi hai' },
+  { type:'sentence', q:'What is happening in USA?', a:'USA mein kya ho raha hai?', cat:'Present Progressive', hint:'ho raha hai' },
+  { type:'sentence', q:'Why is she getting angry?', a:'Woh kyun gusse ho rahi hai?', cat:'Present Progressive', hint:'ho rahi hai' },
+  { type:'sentence', q:'Who is standing in front of the gate?', a:'Gate ke samne kaun khada hai?', cat:'Present Progressive', hint:'khada hai' },
+
+  // PAST PROGRESSIVE
+  { type:'sentence', q:'What was happening there?', a:'Wahan kya ho raha tha?', cat:'Past Progressive', hint:'ho raha tha' },
+  { type:'sentence', q:'She was cooking food.', a:'Woh khaana bana rahi thi.', cat:'Past Progressive', hint:'bana rahi thi' },
+  { type:'sentence', q:'He was telling about India.', a:'Woh India ke baare mein bata raha tha.', cat:'Past Progressive', hint:'bata raha tha' },
+  { type:'sentence', q:'What were you doing there?', a:'Aap wahan kya kar rahe the?', cat:'Past Progressive', hint:'kar rahe the' },
+  { type:'sentence', q:'Perhaps he was watching news.', a:'Shayad woh news dekh raha tha.', cat:'Past Progressive', hint:'dekh raha tha' },
+
+  // SAKNA
+  { type:'sentence', q:'I can understand Hindi and French.', a:'Main Hindi aur French samajh sakta hoon.', cat:'Sakna', hint:'samajh sakta hoon' },
+  { type:'sentence', q:'Can you come tomorrow?', a:'Kya aap kal aa sakte hain?', cat:'Sakna', hint:'aa sakte hain' },
+  { type:'sentence', q:'She cannot come today.', a:'Woh aaj aa nahi sakti hai.', cat:'Sakna', hint:'aa nahi sakti' },
+  { type:'sentence', q:'Because of covid we cannot go to India.', a:'Covid ke karan hum India ja nahi sakte hain.', cat:'Sakna', hint:'ja nahi sakte hain' },
+  { type:'sentence', q:'Who can do this work?', a:'Kaun yeh kaam kar sakta hai?', cat:'Sakna', hint:'kar sakta hai' },
+  { type:'sentence', q:'I am sick so I cannot cook dinner.', a:'Main beemar hoon, isliye main dinner nahi bana sakta hoon.', cat:'Sakna', hint:'bana sakta hoon' },
+  { type:'sentence', q:'Will you be able to do this work?', a:'Kya aap yeh kaam kar sakenge?', cat:'Sakna', hint:'kar sakenge' },
+  { type:'sentence', q:'I will be able to meet tomorrow.', a:'Main kal mil sakunga.', cat:'Sakna', hint:'mil sakunga' },
+
+  // CHAHNA
+  { type:'sentence', q:'I want to go to India.', a:'Main India jaana chahta hoon.', cat:'Chahna', hint:'jaana chahta hoon' },
+  { type:'sentence', q:'She wants to sleep.', a:'Woh sona chahti hai.', cat:'Chahna', hint:'sona chahti hai' },
+  { type:'sentence', q:'We want to go to India.', a:'Hum Bharat jaana chahte hain.', cat:'Chahna', hint:'jaana chahte hain' },
+  { type:'sentence', q:'Does she want to work here?', a:'Kya woh yahan kaam karna chahti hai?', cat:'Chahna', hint:'kaam karna chahti hai' },
+  { type:'sentence', q:'Who wants to drink tea?', a:'Kaun chai peena chahta hai?', cat:'Chahna', hint:'peena chahta hai' },
+  { type:'sentence', q:'I would like to drink tea.', a:'Main chai peena chahunga.', cat:'Chahna', hint:'peena chahunga' },
+  { type:'sentence', q:'My son would like to learn piano.', a:'Mera beta piano seekhna chahega.', cat:'Chahna', hint:'seekhna chahega' },
+
+  // FUTURE TENSE
+  { type:'sentence', q:'I will work tomorrow.', a:'Main kal kaam karunga.', cat:'Future', hint:'karunga' },
+  { type:'sentence', q:'He will come to London.', a:'Woh London aayega.', cat:'Future', hint:'aayega' },
+  { type:'sentence', q:'My mum will come to London.', a:'Meri maa London aayegi.', cat:'Future', hint:'aayegi' },
+  { type:'sentence', q:'Perhaps tomorrow we will watch a film.', a:'Shayad kal hum film dekhenge.', cat:'Future', hint:'dekhenge' },
+  { type:'sentence', q:'My friends will go to France.', a:'Mere dost France jaayenge.', cat:'Future', hint:'jaayenge' },
+  { type:'sentence', q:'My grandmother will buy food for me.', a:'Meri nani mere liye khaana kharidegi.', cat:'Future', hint:'kharidegi' },
+  { type:'sentence', q:'Who will buy your car?', a:'Kaun aapki gadi kharidega?', cat:'Future', hint:'kharidega' },
+  { type:'sentence', q:'We will sell our scooter.', a:'Hum apna scooter bechenge.', cat:'Future', hint:'bechenge' },
+  { type:'sentence', q:'His mother will go home and cook dinner.', a:'Uski maa ghar jaayegi aur khaana banayegi.', cat:'Future', hint:'jaayegi / banayegi' },
+  { type:'sentence', q:'I will give chai.', a:'Main chai dunga.', cat:'Future', hint:'dunga (irregular — dena)' },
+  { type:'sentence', q:'My grandmother will give money.', a:'Meri nani paise degi.', cat:'Future', hint:'degi (irregular — dena)' },
+  { type:'sentence', q:'Who will give water?', a:'Kaun paani dega?', cat:'Future', hint:'dega (irregular — dena)' },
+
+  // POSSESSIVES & OBLIQUE
+  { type:'sentence', q:'I go to the gym every morning with my two sons.', a:'Main apne do bete ke saath har subah gym jaata hoon.', cat:'Possessives', hint:'apne do bete ke saath' },
+  { type:'sentence', q:'She goes with her own dad.', a:'Woh apne papa ke saath jaati hai.', cat:'Possessives', hint:'apne papa ke saath' },
+  { type:'sentence', q:"Her dad lives in London.", a:'Uske papa London mein rehte hain.', cat:'Possessives', hint:'Uske papa — not apne (different subject)' },
+  { type:'sentence', q:'Whose son is playing piano?', a:'Kiska beta piano baja raha hai?', cat:'Possessives', hint:'kiska' },
+  { type:'sentence', q:"His daughter drinks coffee every day.", a:'Har roz uski beti coffee peeti hai.', cat:'Possessives', hint:'uski beti' },
+
+  // GRAMMAR RULES (multiple choice)
+  { type:'rule', q:'Which ending does "Main" (I) take in future tense?', opts:['-ega','-ungi / -unga','-enge','-egi'], a:1, cat:'Future Tense Rule', ex:'"Main kal kaam karunga" — only Main takes -unga/-ungi' },
+  { type:'rule', q:'Apna/apne/apni — which form before "ke saath"?', opts:['apna','apni (feminine noun)','apne (masculine noun)','Both apni and apne'], a:3, cat:'Oblique Case Rule', ex:'Masculine before postposition = apne. Feminine = apni always.' },
+  { type:'rule', q:'"Kaam" means...?', opts:['less','work','name','time'], a:1, cat:'Vocab Rule', ex:'kaam = work. kam = less. Easy to confuse!' },
+  { type:'rule', q:'Chahna uses which verb form?', opts:['Verb root','Infinitive (-na form)','Past participle','Imperative'], a:1, cat:'Chahna Rule', ex:'Main jaana chahta hoon — jaana (infinitive), not ja (root)' },
+  { type:'rule', q:'Sakna uses which verb form?', opts:['Infinitive (-na form)','Verb root','Future stem','Habitual stem'], a:1, cat:'Sakna Rule', ex:'Main bol sakta hoon — bol (root), not bolna' },
+  { type:'rule', q:'"Kaun" means...?', opts:['Why','When','Who','Where'], a:2, cat:'Question Words', ex:'Kaun = who. Kyun = why. Both start with K — easy to mix up!' },
+  { type:'rule', q:'Hum/Aap/They take which to-be verb in present?', opts:['hai','hoon','hain','ho'], a:2, cat:'To-be Verbs', ex:'Hum/Aap/They = hain. Main = hoon. Woh/Yeh = hai.' },
+  { type:'rule', q:'Sunday in Hindi is...?', opts:['Somvar','Ravivar','Mangalvar','Shanivar'], a:1, cat:'Days', ex:'Ravivar = Sunday. Somvar = Monday.' },
+  { type:'rule', q:'Which is correct for "She cannot come"?', opts:['Woh aa nahi sakta hai','Woh aa nahi sakti hai','Woh aa nahi sakte hain','Woh aa nahi sakta hoon'], a:1, cat:'Sakna Rule', ex:'She = female = sakti. hai for woh singular.' },
+  { type:'rule', q:'"Mere liye" means...?', opts:['from me','with me','for me','near me'], a:2, cat:'Postpositions', ex:'ke liye = for. Mere liye = for me.' },
+];
+
+let drillQueue = [];
+let drillIndex = 0;
+let drillScore = 0;
+let drillTotal = 5;
+let drillAnswered = false;
+
+function initDailyDrill() {
+  // Pick 5 random questions — mix of types
+  const shuffled = [...dailyDrillData].sort(() => Math.random() - 0.5);
+  // Ensure variety: at least 1 vocab, 1 sentence, 1 rule if possible
+  const vocabs = shuffled.filter(d => d.type === 'vocab');
+  const sentences = shuffled.filter(d => d.type === 'sentence');
+  const rules = shuffled.filter(d => d.type === 'rule');
+  drillQueue = [
+    vocabs[0], vocabs[1],
+    sentences[0], sentences[1],
+    rules[0]
+  ].filter(Boolean).sort(() => Math.random() - 0.5);
+  drillTotal = drillQueue.length;
+  drillIndex = 0;
+  drillScore = 0;
+  document.getElementById('drill-complete').style.display = 'none';
+  document.getElementById('drill-content').style.display = 'block';
+  renderDrillQuestion();
+}
+
+function renderDrillQuestion() {
+  if (drillIndex >= drillTotal) { showDrillComplete(); return; }
+  drillAnswered = false;
+  const q = drillQueue[drillIndex];
+  const container = document.getElementById('drill-question-wrap');
+  document.getElementById('drill-counter').textContent = `Question ${drillIndex+1} of ${drillTotal}`;
+  document.getElementById('drill-progress').style.width = ((drillIndex / drillTotal) * 100) + '%';
+
+  if (q.type === 'vocab') {
+    container.innerHTML = `
+      <div class="drill-type-badge" style="background:var(--blue-light);color:var(--blue);">📚 Vocab — Hindi to English</div>
+      <div class="drill-q">${q.q}</div>
+      <div style="font-size:0.8rem;color:var(--mid);margin-bottom:12px;">What does this mean?</div>
+      <div class="drill-answer-box" id="drill-ans-box" style="display:none;">
+        <div class="drill-ans-label">Answer</div>
+        <div class="drill-ans-text">${q.a}</div>
+        <div class="drill-cat">${q.cat}</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="revealDrillAnswer()">Reveal Answer</button>
+      </div>
+      <div id="drill-self-score" style="display:none;margin-top:12px;">
+        <div style="font-size:0.88rem;font-weight:600;margin-bottom:8px;">Did you get it?</div>
+        <div class="btn-row">
+          <button class="btn btn-green" onclick="scoreDrill(true)">✅ Got it</button>
+          <button class="btn" style="background:var(--red-light);color:var(--red);" onclick="scoreDrill(false)">❌ Missed it</button>
+        </div>
+      </div>`;
+  } else if (q.type === 'sentence') {
+    container.innerHTML = `
+      <div class="drill-type-badge" style="background:var(--orange-pale);color:var(--orange);">✍️ Translate — ${q.cat}</div>
+      <div class="drill-q">${q.q}</div>
+      <textarea id="drill-input" placeholder="Type your Hindi translation here..." style="width:100%;padding:12px;border:2px solid var(--border);border-radius:8px;font-size:0.95rem;min-height:70px;font-family:inherit;margin:10px 0;resize:vertical;" onfocus="this.style.borderColor='var(--orange)'"></textarea>
+      <div class="drill-answer-box" id="drill-ans-box" style="display:none;">
+        <div class="drill-ans-label">Model Answer</div>
+        <div class="drill-ans-text">${q.a}</div>
+        <div class="drill-hint">💡 ${q.hint}</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="revealDrillAnswer()">Check Answer</button>
+      </div>
+      <div id="drill-self-score" style="display:none;margin-top:12px;">
+        <div style="font-size:0.88rem;font-weight:600;margin-bottom:8px;">How did you do?</div>
+        <div class="btn-row">
+          <button class="btn btn-green" onclick="scoreDrill(true)">✅ Correct</button>
+          <button class="btn" style="background:rgba(255,193,7,0.2);color:#856404;" onclick="scoreDrill('partial')">🔶 Nearly</button>
+          <button class="btn" style="background:var(--red-light);color:var(--red);" onclick="scoreDrill(false)">❌ Wrong</button>
+        </div>
+      </div>`;
+  } else if (q.type === 'rule') {
+    container.innerHTML = `
+      <div class="drill-type-badge" style="background:var(--green-light);color:var(--green);">🧠 Grammar Rule — ${q.cat}</div>
+      <div class="drill-q">${q.q}</div>
+      <div class="drill-opts" id="drill-opts">
+        ${q.opts.map((opt,i) => `<button class="drill-opt" onclick="selectDrillOpt(${i})">${opt}</button>`).join('')}
+      </div>
+      <div class="drill-answer-box" id="drill-ans-box" style="display:none;">
+        <div class="drill-ans-label">Explanation</div>
+        <div class="drill-ans-text">${q.ex}</div>
+      </div>`;
+  }
+}
+
+function revealDrillAnswer() {
+  if (drillAnswered) return;
+  drillAnswered = true;
+  document.getElementById('drill-ans-box').style.display = 'block';
+  document.getElementById('drill-self-score').style.display = 'block';
+  const btn = document.querySelector('#drill-question-wrap .btn-primary');
+  if (btn) btn.style.display = 'none';
+}
+
+function selectDrillOpt(i) {
+  if (drillAnswered) return;
+  drillAnswered = true;
+  const q = drillQueue[drillIndex];
+  const opts = document.querySelectorAll('.drill-opt');
+  opts.forEach(o => o.onclick = null);
+  opts[q.a].style.background = 'var(--green-light)';
+  opts[q.a].style.borderColor = 'var(--green)';
+  opts[q.a].style.color = 'var(--green)';
+  if (i !== q.a) {
+    opts[i].style.background = 'var(--red-light)';
+    opts[i].style.borderColor = 'var(--red)';
+    opts[i].style.color = 'var(--red)';
+  } else { drillScore++; }
+  document.getElementById('drill-ans-box').style.display = 'block';
+  setTimeout(() => { drillIndex++; renderDrillQuestion(); }, 1800);
+}
+
+function scoreDrill(correct) {
+  if (correct === true) drillScore++;
+  else if (correct === 'partial') drillScore += 0.5;
+  drillIndex++;
+  renderDrillQuestion();
+}
+
+function showDrillComplete() {
+  document.getElementById('drill-content').style.display = 'none';
+  document.getElementById('drill-complete').style.display = 'block';
+  const pct = Math.round((drillScore / drillTotal) * 100);
+  document.getElementById('drill-final-score').textContent = `${drillScore}/${drillTotal}`;
+  const msgs = [
+    'Keep going — every rep counts! 💪',
+    'Good effort — review and retry! 🔄',
+    'Solid! Nearly there. 👍',
+    'Great work Vijay! 🎉',
+    'Shabaash! Perfect score! 🇮🇳⭐'
+  ];
+  const msg = pct < 40 ? msgs[0] : pct < 60 ? msgs[1] : pct < 75 ? msgs[2] : pct < 100 ? msgs[3] : msgs[4];
+  document.getElementById('drill-complete-msg').textContent = msg;
+  document.getElementById('drill-pct').textContent = `${pct}%`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded', function() {
+  initPractice();
+  initFlashcards();
+  setBwSong(0);
+  // Ensure home is visible and active
+  document.querySelectorAll('.section').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  const home = document.getElementById('home');
+  home.classList.add('active');
+  home.style.display = 'block';
+  // Set home nav button active
+  const firstNavBtn = document.querySelector('nav button');
+  if (firstNavBtn) firstNavBtn.classList.add('active');
+});
+</script>
+<!-- DAILY DRILL -->
+<div id="daily" class="section">
+  <div class="card">
+    <h2>⚡ Daily Drill</h2>
+    <p style="color:var(--mid);font-size:0.9rem;margin-bottom:16px;">5 random questions every session — vocab, translation & grammar rules from all your lessons. Open this every morning, lunch, evening and before bed.</p>
+    <div class="progress-wrap"><div class="progress-bar" id="drill-progress" style="width:0%"></div></div>
+    <div style="font-size:0.82rem;color:var(--mid);margin:6px 0 16px;" id="drill-counter">Question 1 of 5</div>
+
+    <div id="drill-content">
+      <div id="drill-question-wrap"></div>
+    </div>
+
+    <div id="drill-complete" style="display:none;">
+      <div class="drill-complete-card">
+        <div style="font-size:2rem;margin-bottom:8px;">🇮🇳</div>
+        <div class="drill-complete-score" id="drill-final-score">5/5</div>
+        <div class="drill-complete-pct" id="drill-pct">100%</div>
+        <div style="font-size:0.95rem;color:var(--mid);margin-bottom:20px;" id="drill-complete-msg">Shabaash!</div>
+        <button class="btn btn-primary" onclick="initDailyDrill()" style="font-size:1rem;padding:12px 28px;">🔄 New Drill</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="background:var(--orange-pale);border-color:var(--orange);">
+    <h2>📅 Your Daily Practice Schedule</h2>
+    <table>
+      <tr><th>Time</th><th>Focus</th><th>Duration</th></tr>
+      <tr><td>☀️ 7:30am</td><td>Vocab — 5 words</td><td>2 mins</td></tr>
+      <tr><td>🌤️ 12:30pm</td><td>Translation — 3 sentences</td><td>3 mins</td></tr>
+      <tr><td>🌆 6:00pm</td><td>Grammar rule + sentence</td><td>2 mins</td></tr>
+      <tr><td>🌙 9:45pm</td><td>Full drill — 5 questions</td><td>5 mins</td></tr>
+    </table>
+    <div style="margin-top:12px;font-size:0.85rem;color:var(--mid);">💡 Tap <strong>⚡ Daily Drill</strong> at each of these times. Each session gives you a fresh random set.</div>
+  </div>
+
+  <div class="card">
+    <h2>🎯 Your Known Weak Spots</h2>
+    <div class="note-rule">⚠️ <strong>kaam</strong> (work) vs <strong>kam</strong> (less) — always double-a for work</div>
+    <div class="note-rule">⚠️ <strong>Ravivar</strong> = Sunday / <strong>Somvar</strong> = Monday — not Sominvar!</div>
+    <div class="note-rule">⚠️ Chahna uses <strong>infinitive (-na form)</strong> not root — jaana chahta, not ja chahta</div>
+    <div class="note-rule">⚠️ Sakna uses <strong>root</strong> not infinitive — bol sakta, not bolna sakta</div>
+    <div class="note-rule">⚠️ <strong>main</strong> = I (pronoun) vs <strong>mein</strong> = in (postposition)</div>
+    <div class="note-rule">⚠️ Masculine noun + postposition = <strong>apne</strong> (not apna) — apne papa ke saath</div>
+    <div class="note-rule">⚠️ <strong>Kaun</strong> = who / <strong>Kyun</strong> = why — don't mix these up!</div>
+  </div>
+</div>
+
+</body>
+</html>
