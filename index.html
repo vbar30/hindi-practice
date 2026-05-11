@@ -120,6 +120,49 @@ textarea:focus { outline:none; border-color:var(--orange); }
 .tense-card { background:white; border-radius:10px; padding:12px; border:2px solid var(--border); }
 .tense-card h4 { color:var(--orange); font-size:.88rem; margin-bottom:7px; }
 
+/* CHAPTERS */
+.ch-grid{display:flex;flex-direction:column;gap:8px}
+.ch-card{background:white;border-radius:12px;border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:box-shadow .15s}
+.ch-card:active{box-shadow:0 4px 12px rgba(232,101,26,.2)}
+.ch-header{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.ch-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.ch-info{flex:1}
+.ch-num{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mid)}
+.ch-title{font-size:.95rem;font-weight:700;color:var(--dark);margin:1px 0}
+.ch-sub{font-size:.78rem;color:var(--mid)}
+.ch-arrow{color:var(--mid);font-size:1.2rem}
+.ch-progress-bar{height:3px;background:var(--border)}
+.ch-progress-fill{height:100%;background:var(--orange);transition:width .4s}
+
+/* CHAPTER DETAIL */
+.ch-detail-hdr{border-radius:12px;padding:18px;margin-bottom:14px;color:white}
+.ch-detail-hdr h2{font-size:1.1rem;font-weight:800;margin-bottom:2px}
+.ch-detail-hdr p{font-size:.82rem;opacity:.85}
+.ch-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
+.ch-tabs::-webkit-scrollbar{display:none}
+.ch-tab{flex-shrink:0;padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:600;border:1.5px solid var(--border);background:white;cursor:pointer;color:var(--mid)}
+.ch-tab.on{background:var(--orange);border-color:var(--orange);color:white}
+.ch-content{display:none}
+.ch-content.on{display:block}
+.ch-rule{background:var(--orange-light);border-left:4px solid var(--orange);padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:10px;font-size:.88rem;line-height:1.5}
+.ch-formula{background:#e3f2fd;border-left:4px solid #1565c0;padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:10px;font-size:.88rem;font-family:monospace;line-height:1.6}
+.ch-eg{font-size:.88rem;color:#1565c0;font-style:italic;padding:4px 0;border-bottom:1px solid var(--border)}
+.ch-eg:last-child{border-bottom:none}
+.ch-mini-q{background:white;border-radius:10px;border:1px solid var(--border);padding:14px;margin-bottom:10px}
+.ch-mini-q .q{font-size:.9rem;font-weight:700;margin-bottom:10px;line-height:1.4}
+.ch-mini-opt{padding:9px 12px;border-radius:8px;border:1px solid var(--border);margin-bottom:6px;cursor:pointer;font-size:.85rem;transition:all .15s}
+.ch-mini-opt:active{transform:scale(.98)}
+.ch-mini-opt.correct{background:var(--green-light);border-color:var(--green);color:var(--green);font-weight:600}
+.ch-mini-opt.wrong{background:var(--red-light);border-color:var(--red);color:var(--red)}
+.ch-mini-opt.reveal{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.ch-sentence-item{padding:10px 0;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:3px}
+.ch-sentence-item .en{font-size:.88rem;font-weight:600;color:var(--dark)}
+.ch-sentence-item .hi{font-size:.88rem;color:#1565c0;display:none}
+.ch-sentence-item .hi.show{display:block}
+.ch-reveal-btn{font-size:.75rem;color:var(--orange);background:none;border:none;cursor:pointer;font-weight:600;padding:2px 0}
+.back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--orange);font-size:.88rem;font-weight:700;cursor:pointer;padding:0;margin-bottom:12px}
+
+
 #password-screen{
   position:fixed;top:0;left:0;width:100%;height:100%;
   background:linear-gradient(135deg,#0D1B3E 0%,#1A2D5A 100%);
@@ -191,21 +234,156 @@ textarea:focus { outline:none; border-color:var(--orange); }
   </div>
 </div>
 
-<nav>
-  <h1>🇮🇳 Hindi</h1>
-  <button id="nb-dashboard" onclick="go('dashboard')">📊 Dashboard</button>
-  <button id="nb-home" class="on" onclick="go('home')">Home</button>
-  <button id="nb-notes" onclick="go('notes')">Grammar</button>
-  <button id="nb-tenses" onclick="go('tenses')">Tenses</button>
-  <button id="nb-practice" onclick="go('practice')">Translate</button>
-  <button id="nb-flashcards" onclick="go('flashcards')">Vocab</button>
-  <button id="nb-quiz" onclick="go('quiz')">Quiz</button>
-  <button id="nb-sentence-quiz" onclick="go('sentence-quiz')">Sentences</button>
-  <button id="nb-homework" onclick="go('homework')">Homework</button>
-  <button id="nb-daily" onclick="go('daily')">⚡ Daily</button>
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div>
+    <div class="top-bar-title">🇮🇳 Vijay's Hindi</div>
+    <div class="top-bar-subtitle">Lessons 1–12 with Prakash ji</div>
+  </div>
+  <div class="top-streak" id="top-streak-pill">0 day streak 🔥</div>
+</div>
+
+<!-- BOTTOM NAVIGATION -->
+<div class="bottom-nav">
+  <button class="bnav-item on" id="nb-home" onclick="go('home')">
+    <span class="bnav-icon">🏠</span><span class="bnav-label">Home</span>
+  </button>
+  <button class="bnav-item" id="nb-chapters" onclick="go('chapters')">
+    <span class="bnav-icon">📚</span><span class="bnav-label">Chapters</span>
+  </button>
+  <button class="bnav-item" id="nb-practice-hub" onclick="go('practice-hub')">
+    <span class="bnav-icon">✍️</span><span class="bnav-label">Practice</span>
+  </button>
+  <button class="bnav-item" id="nb-vocab" onclick="go('vocab')">
+    <span class="bnav-icon">🃏</span><span class="bnav-label">Vocab</span>
+  </button>
+  <button class="bnav-item" id="nb-dashboard" onclick="go('dashboard')">
+    <span class="bnav-icon">📊</span><span class="bnav-label">Progress</span>
+  </button>
+</div>
+
+<!-- OLD NAV (hidden, kept for JS compatibility) -->
+<nav style="display:none">
+  <h1>Hindi</h1>
+  <button id="nb-notes" onclick="go('notes')"></button>
+  <button id="nb-tenses" onclick="go('tenses')"></button>
+  <button id="nb-practice" onclick="go('practice')"></button>
+  <button id="nb-flashcards" onclick="go('flashcards')"></button>
+  <button id="nb-quiz" onclick="go('quiz')"></button>
+  <button id="nb-sentence-quiz" onclick="go('sentence-quiz')"></button>
+  <button id="nb-homework" onclick="go('homework')"></button>
+  <button id="nb-daily" onclick="go('daily')"></button>
 </nav>
 
 
+
+
+
+
+<!-- VOCAB HUB -->
+<div id="page-vocab" style="display:none">
+<div class="page">
+  <h2 style="color:var(--orange);margin-bottom:4px">🃏 Vocabulary</h2>
+  <p style="font-size:.82rem;color:var(--mid);margin-bottom:16px">178 words across 9 categories</p>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div onclick="go('flashcards')" style="background:linear-gradient(135deg,#e8651a,#ff8f00);border-radius:14px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px">
+      <span style="font-size:2rem">🃏</span>
+      <div style="flex:1">
+        <div style="font-size:1rem;font-weight:800;color:white">Flashcards</div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.7);margin-top:2px">Flip through · Mark known/unknown</div>
+      </div>
+      <span style="color:rgba(255,255,255,.5);font-size:1.2rem">›</span>
+    </div>
+    <div onclick="go('tenses')" style="background:white;border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px">
+      <span style="font-size:2rem">⏰</span>
+      <div style="flex:1">
+        <div style="font-size:1rem;font-weight:700;color:var(--dark)">Tense Reference</div>
+        <div style="font-size:.8rem;color:var(--mid);margin-top:2px">All tense formulas at a glance</div>
+      </div>
+      <span style="color:var(--mid);font-size:1.2rem">›</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- PRACTICE HUB -->
+<div id="page-practice-hub" style="display:none">
+<div class="page">
+  <h2 style="color:var(--orange);margin-bottom:4px;padding:0 0 4px">✍️ Practice</h2>
+  <p style="font-size:.82rem;color:var(--mid);margin-bottom:16px">Choose what to practice</p>
+  
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div onclick="go('sentence-quiz')" style="background:linear-gradient(135deg,#6a1b9a,#7b1fa2);border-radius:14px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px">
+      <span style="font-size:2rem">🎯</span>
+      <div style="flex:1">
+        <div style="font-size:1rem;font-weight:800;color:white">Sentence Quiz</div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.7);margin-top:2px">110+ sentences · English ↔ Hindi</div>
+      </div>
+      <span style="color:rgba(255,255,255,.5);font-size:1.2rem">›</span>
+    </div>
+    
+    <div onclick="go('quiz')" style="background:linear-gradient(135deg,#1565c0,#1976d2);border-radius:14px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px">
+      <span style="font-size:2rem">🧠</span>
+      <div style="flex:1">
+        <div style="font-size:1rem;font-weight:800;color:white">Grammar Quiz</div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.7);margin-top:2px">45 multiple choice · Grammar rules</div>
+      </div>
+      <span style="color:rgba(255,255,255,.5);font-size:1.2rem">›</span>
+    </div>
+    
+    <div onclick="go('practice')" style="background:linear-gradient(135deg,#e8651a,#f57c00);border-radius:14px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px">
+      <span style="font-size:2rem">📝</span>
+      <div style="flex:1">
+        <div style="font-size:1rem;font-weight:800;color:white">Translation Practice</div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.7);margin-top:2px">200+ sentences · Type your answer</div>
+      </div>
+      <span style="color:rgba(255,255,255,.5);font-size:1.2rem">›</span>
+    </div>
+    
+    <div onclick="go('homework')" style="background:linear-gradient(135deg,#2e7d32,#388e3c);border-radius:14px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px">
+      <span style="font-size:2rem">📋</span>
+      <div style="flex:1">
+        <div style="font-size:1rem;font-weight:800;color:white">Homework Sets</div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.7);margin-top:2px">All Prakash's homework · Lessons 1–12</div>
+      </div>
+      <span style="color:rgba(255,255,255,.5);font-size:1.2rem">›</span>
+    </div>
+    
+    <div onclick="go('daily')" style="background:linear-gradient(135deg,#00695c,#00897b);border-radius:14px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px">
+      <span style="font-size:2rem">⚡</span>
+      <div style="flex:1">
+        <div style="font-size:1rem;font-weight:800;color:white">Daily Drill</div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.7);margin-top:2px">5 random questions · Quick session</div>
+      </div>
+      <span style="color:rgba(255,255,255,.5);font-size:1.2rem">›</span>
+    </div>
+    
+    <div onclick="go('notes')" style="background:white;border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px">
+      <span style="font-size:2rem">📖</span>
+      <div style="flex:1">
+        <div style="font-size:1rem;font-weight:700;color:var(--dark)">Grammar Reference</div>
+        <div style="font-size:.8rem;color:var(--mid);margin-top:2px">All rules · Tenses · Quick reference</div>
+      </div>
+      <span style="color:var(--mid);font-size:1.2rem">›</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- CHAPTERS -->
+<div id="page-chapters" style="display:none">
+<div class="page">
+  <div id="ch-list-view">
+    <h2 style="color:var(--orange);margin-bottom:4px">📚 Chapters</h2>
+    <p style="font-size:.82rem;color:var(--mid);margin-bottom:14px">Each chapter has grammar notes, examples, a mini quiz and sentences to practice.</p>
+    <div class="ch-grid" id="ch-grid"></div>
+  </div>
+  <div id="ch-detail-view" style="display:none">
+    <button class="back-btn" onclick="showChList()">← All Chapters</button>
+    <div id="ch-detail-content"></div>
+  </div>
+</div>
+</div>
 
 <!-- DASHBOARD -->
 <div id="page-dashboard" style="display:none">
@@ -240,29 +418,76 @@ textarea:focus { outline:none; border-color:var(--orange); }
 <!-- HOME -->
 <div id="page-home" style="display:block">
 <div class="page">
-  <p class="welcome">Namaste, <strong>Vijay!</strong> What would you like to practice today?</p>
-  <div class="home-grid">
-    <div class="home-card" onclick="go('dashboard')" style="border-color:var(--orange);background:linear-gradient(135deg,#fff4ed,#fff)"><div class="icon">📊</div><h3>Progress Dashboard</h3><p>Track your scores, streaks and weak spots across all sections</p></div>
-    <div class="home-card" onclick="go('notes')"><div class="icon">📖</div><h3>Grammar Notes</h3><p>Pronouns, postpositions, possessives, adjectives & more</p></div>
-    <div class="home-card" onclick="go('tenses')"><div class="icon">⏰</div><h3>Tense Cheatsheet</h3><p>All tenses — Habitual, Progressive, Sakna, Chahna, Future, Ne</p></div>
-    <div class="home-card" onclick="go('practice')"><div class="icon">✍️</div><h3>Translation Practice</h3><p>200+ sentences across 15 topic sets</p></div>
-    <div class="home-card" onclick="go('flashcards')"><div class="icon">🃏</div><h3>Vocabulary Flashcards</h3><p>300+ words: verbs, colours, numbers, days, emotions, food</p></div>
-    <div class="home-card" onclick="go('quiz')"><div class="icon">🧠</div><h3>Grammar Quiz</h3><p>45 multiple choice questions — test your grammar rules</p></div>
-    <div class="home-card" onclick="go('homework')"><div class="icon">📝</div><h3>Homework Sets</h3><p>All Prakash's homework with model answers</p></div>
-    <div class="home-card" onclick="go('daily')" style="border-color:var(--green);background:var(--green-light)"><div class="icon">⚡</div><h3>Daily Drill</h3><p>5 random questions — sentences, vocab & grammar rules</p></div>
+  <!-- Welcome -->
+  <div style="background:linear-gradient(135deg,#0D1B3E,#1A2D5A);border-radius:16px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:rgba(255,153,51,0.1);border-radius:50%"></div>
+    <div style="font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Namaste, Vijay ji!</div>
+    <div style="font-size:1.3rem;font-weight:800;color:#FF9933;margin-bottom:4px">What shall we practice today?</div>
+    <div style="font-size:.82rem;color:rgba(255,255,255,.6)" id="home-stats-line">Loading your progress...</div>
   </div>
-  <div class="card" style="margin-top:16px">
-    <h2>⚡ Quick Tense Reference</h2>
+
+  <!-- Quick stats row -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px" id="home-quick-stats">
+    <div style="background:white;border-radius:12px;padding:12px 8px;text-align:center;border:1px solid var(--border)">
+      <div style="font-size:1.5rem;font-weight:800;color:var(--orange)" id="hqs-streak">–</div>
+      <div style="font-size:.68rem;color:var(--mid);margin-top:1px">Day Streak</div>
+    </div>
+    <div style="background:white;border-radius:12px;padding:12px 8px;text-align:center;border:1px solid var(--border)">
+      <div style="font-size:1.5rem;font-weight:800;color:var(--orange)" id="hqs-correct">–</div>
+      <div style="font-size:.68rem;color:var(--mid);margin-top:1px">Correct</div>
+    </div>
+    <div style="background:white;border-radius:12px;padding:12px 8px;text-align:center;border:1px solid var(--border)">
+      <div style="font-size:1.5rem;font-weight:800;color:var(--orange)" id="hqs-pct">–</div>
+      <div style="font-size:.68rem;color:var(--mid);margin-top:1px">Accuracy</div>
+    </div>
+  </div>
+
+  <!-- Daily drill CTA -->
+  <div onclick="go('daily')" style="background:linear-gradient(135deg,#00695c,#00897b);border-radius:14px;padding:16px;margin-bottom:16px;cursor:pointer;display:flex;align-items:center;gap:12px">
+    <span style="font-size:2rem">⚡</span>
+    <div style="flex:1">
+      <div style="font-size:1rem;font-weight:800;color:white">Today's Daily Drill</div>
+      <div style="font-size:.8rem;color:rgba(255,255,255,.7);margin-top:1px">5 quick questions · Keep your streak going</div>
+    </div>
+    <span style="color:rgba(255,255,255,.6);font-size:1.3rem">›</span>
+  </div>
+
+  <!-- Nav cards -->
+  <div style="font-size:.78rem;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">All Sections</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+    <div onclick="go('chapters')" style="background:white;border-radius:12px;padding:14px;cursor:pointer;border:1px solid var(--border);border-top:3px solid #FF9933">
+      <div style="font-size:1.5rem;margin-bottom:6px">📚</div>
+      <div style="font-size:.9rem;font-weight:700;color:var(--dark)">Chapters</div>
+      <div style="font-size:.75rem;color:var(--mid);margin-top:2px">14 chapters · Grammar + examples + quiz</div>
+    </div>
+    <div onclick="go('practice-hub')" style="background:white;border-radius:12px;padding:14px;cursor:pointer;border:1px solid var(--border);border-top:3px solid #6a1b9a">
+      <div style="font-size:1.5rem;margin-bottom:6px">✍️</div>
+      <div style="font-size:.9rem;font-weight:700;color:var(--dark)">Practice</div>
+      <div style="font-size:.75rem;color:var(--mid);margin-top:2px">Quiz · Translation · Homework · Drill</div>
+    </div>
+    <div onclick="go('vocab')" style="background:white;border-radius:12px;padding:14px;cursor:pointer;border:1px solid var(--border);border-top:3px solid #e8651a">
+      <div style="font-size:1.5rem;margin-bottom:6px">🃏</div>
+      <div style="font-size:.9rem;font-weight:700;color:var(--dark)">Vocabulary</div>
+      <div style="font-size:.75rem;color:var(--mid);margin-top:2px">178 words · 9 categories</div>
+    </div>
+    <div onclick="go('dashboard')" style="background:white;border-radius:12px;padding:14px;cursor:pointer;border:1px solid var(--border);border-top:3px solid #2e7d32">
+      <div style="font-size:1.5rem;margin-bottom:6px">📊</div>
+      <div style="font-size:.9rem;font-weight:700;color:var(--dark)">Progress</div>
+      <div style="font-size:.75rem;color:var(--mid);margin-top:2px">Streak · Scores · Weak spots</div>
+    </div>
+  </div>
+
+  <!-- Quick tense reference -->
+  <div style="font-size:.78rem;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;margin-top:8px">Quick Tense Reference</div>
+  <div class="card">
     <table>
       <tr><th>Tense</th><th>Pattern</th><th>Example</th></tr>
-      <tr><td>Present Habitual</td><td>root + ta/ti/te + hai/hoon</td><td>Main jaata hoon</td></tr>
-      <tr><td>Past Habitual</td><td>root + ta/ti/te + tha/thi/the</td><td>Woh jaati thi</td></tr>
-      <tr><td>Present Progressive</td><td>root + raha/rahi/rahe + hai/hoon</td><td>Main dekh raha hoon</td></tr>
-      <tr><td>Past Progressive</td><td>root + raha/rahi/rahe + tha/thi/the</td><td>Woh so rahi thi</td></tr>
-      <tr><td>Can (Sakna)</td><td>root + sakta/sakti/sakte + hai</td><td>Main bol sakta hoon</td></tr>
-      <tr><td>Want (Chahna)</td><td>infinitive + chahta/chahti/chahte + hoon</td><td>Main jaana chahta hoon</td></tr>
-      <tr><td>Future</td><td>root + unga/ega/egi/enge</td><td>Main karunga</td></tr>
-      <tr><td>Completed past (Ne)</td><td>subject+ne + object + verb(past)</td><td>Maine khaana khaaya</td></tr>
+      <tr><td>Habitual</td><td>root+ta/ti/te+hai</td><td>Main jaata hoon</td></tr>
+      <tr><td>Progressive</td><td>root+raha/rahi/rahe+hai</td><td>Main dekh raha hoon</td></tr>
+      <tr><td>Sakna</td><td>root+sakta/sakti+hai</td><td>Main bol sakta hoon</td></tr>
+      <tr><td>Chahna</td><td>infin+chahta/chahti+hoon</td><td>Main jaana chahta hoon</td></tr>
+      <tr><td>Future</td><td>root+unga/ega/egi/enge</td><td>Main karunga</td></tr>
+      <tr><td>Should</td><td>mujhe+infin+chahiye</td><td>Mujhe padhna chahiye</td></tr>
     </table>
   </div>
 </div>
@@ -1734,19 +1959,48 @@ textarea:focus { outline:none; border-color:var(--orange); }
 <script>
 // ===== NAV =====
 function go(id) {
-  ['home','notes','tenses','practice','flashcards','quiz','homework','daily'].forEach(function(p) {
-    document.getElementById('page-'+p).style.display = 'none';
-    document.getElementById('nb-'+p).classList.remove('on');
-  });
-  document.getElementById('page-'+id).style.display = 'block';
-  document.getElementById('nb-'+id).classList.add('on');
+  // Hide all pages
+  document.querySelectorAll('[id^="page-"]').forEach(function(el){el.style.display='none';});
+  // Show target page
+  var page = document.getElementById('page-'+id);
+  if(page) page.style.display = 'block';
+  // Update bottom nav
+  document.querySelectorAll('.bnav-item').forEach(function(b){b.classList.remove('on');});
+  var navMap = {
+    'home':'nb-home',
+    'chapters':'nb-chapters',
+    'practice-hub':'nb-practice-hub',
+    'practice':'nb-practice-hub',
+    'sentence-quiz':'nb-practice-hub',
+    'quiz':'nb-practice-hub',
+    'homework':'nb-practice-hub',
+    'daily':'nb-practice-hub',
+    'notes':'nb-practice-hub',
+    'tenses':'nb-practice-hub',
+    'vocab':'nb-vocab',
+    'flashcards':'nb-vocab',
+    'dashboard':'nb-dashboard'
+  };
+  var btnId = navMap[id] || 'nb-home';
+  var btn = document.getElementById(btnId);
+  if(btn) btn.classList.add('on');
   window.scrollTo(0,0);
+  // Init functions
   if(id==='practice') initPractice();
   if(id==='flashcards') initFlashcards();
   if(id==='quiz') initQuiz();
   if(id==='homework') initHomework();
   if(id==='sentence-quiz') initSQ();
   if(id==='daily') initDrill();
+  if(id==='dashboard') renderDashboard();
+  if(id==='chapters') initChapters();
+  trackVisit();
+  // Update streak in top bar
+  try {
+    var d = MEM.load();
+    var el = document.getElementById('top-streak-pill');
+    if(el) el.textContent = (d.streak||1) + ' day streak 🔥';
+  } catch(e){}
 }
 
 // ===== DATA =====
@@ -3754,13 +4008,623 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 
+
+
+
+// ============================================================
+// CHAPTERS SYSTEM — All 14 chapters from the complete guide
+// ============================================================
+
+var CHAPTERS = [
+  {
+    num:1, title:"Pronouns & Sentence Structure", lesson:"Lessons 1-2",
+    color:"#e8651a", icon:"👤",
+    grammar:[
+      {rule:"Hindi word order: Subject → Object → Verb (not Subject → Verb → Object like English)",
+       formula:"Main chai peeta hoon = I (chai) (drink) am — object comes before verb"},
+      {rule:"Main = hoon ALWAYS. Never hai. Never hain. This is the #1 most common mistake.",
+       formula:"Main theek hoon ✅ | Main theek hai ❌ | Main theek hain ❌"},
+      {rule:"To-be verbs: Main=hoon | Woh/Yeh=hai | Hum/Aap/Ve=hain | Tum=ho",
+       formula:"Each pronoun has exactly one to-be verb — memorise these pairs"},
+    ],
+    examples:[
+      {en:"I am fine.",hi:"Main theek hoon."},
+      {en:"She is at home.",hi:"Woh ghar mein hai."},
+      {en:"We are in London.",hi:"Hum London mein hain."},
+      {en:"Where are you?",hi:"Tum kahan ho?"},
+      {en:"How are you (formal)?",hi:"Aap kaise hain?"},
+      {en:"I am from London.",hi:"Main London se hoon."},
+      {en:"She is not here.",hi:"Woh yahan nahi hai."},
+      {en:"They are students.",hi:"Ve student hain."},
+    ],
+    quiz:[
+      {q:"Which to-be verb goes with Main?",opts:["hai","hain","hoon","ho"],ans:2,ex:"Main ALWAYS takes hoon. Never hai or hain."},
+      {q:"Which to-be verb goes with Woh (she)?",opts:["hoon","hain","ho","hai"],ans:3,ex:"Woh = hai. Always."},
+      {q:"Hindi word order is?",opts:["Subject-Verb-Object","Subject-Object-Verb","Verb-Subject-Object","Object-Verb-Subject"],ans:1,ex:"Hindi: Subject-Object-Verb. Main chai peeta hoon (I chai drink)."},
+      {q:"How are you (formal) in Hindi?",opts:["Tum kaise ho?","Aap kaise hain?","Woh kaisa hai?","Hum kaise hain?"],ans:1,ex:"Aap = formal you. Kaise hain = how are (formal plural)."},
+    ],
+    memorise:["Main = hoon","Woh/Yeh = hai","Hum/Aap/Ve = hain","Tum = ho","Word order: Subject-Object-Verb","Main hoon — NEVER Main hai"]
+  },
+  {
+    num:2, title:"Postpositions", lesson:"Lesson 1",
+    color:"#1565c0", icon:"📍",
+    grammar:[
+      {rule:"Hindi uses POSTPOSITIONS — they come AFTER the word, unlike English prepositions which come before",
+       formula:"in the house = ghar MEIN (house in) | on the table = mez PAR (table on)"},
+      {rule:"Before a postposition, masculine -a noun endings change to -e (oblique case)",
+       formula:"beta (son) → bete ke saath | kamra (room) → kamre mein | apna → apne"},
+      {rule:"Ke paas = near/with — used to express HAVING something (no verb 'have' in Hindi)",
+       formula:"Mere paas paisa nahi hai = I don't have money (lit: near me money not is)"},
+    ],
+    examples:[
+      {en:"The book is on the table.",hi:"Kitaab mez par hai."},
+      {en:"I am in the house.",hi:"Main ghar mein hoon."},
+      {en:"Bring chai for me.",hi:"Mere liye chai lao."},
+      {en:"I am with my wife.",hi:"Main patni ke saath hoon."},
+      {en:"Tell me about India.",hi:"India ke baare mein batao."},
+      {en:"We will meet after class.",hi:"Class ke baad milenge."},
+      {en:"Wash hands before eating.",hi:"Khaane ke pehle haath dhoo."},
+      {en:"I don't have money.",hi:"Mere paas paisa nahi hai."},
+      {en:"Who is in front of the gate?",hi:"Gate ke samne kaun hai?"},
+    ],
+    quiz:[
+      {q:"What does mein mean?",opts:["on","from","in","with"],ans:2,ex:"Ghar mein = in the house."},
+      {q:"What does ke baad mean?",opts:["before","after","with","for"],ans:1,ex:"Class ke baad = after class."},
+      {q:"What does ke liye mean?",opts:["about","with","from","for"],ans:3,ex:"Mere liye = for me."},
+      {q:"Mere paas paisa nahi hai means?",opts:["I need money","I have money","I don't have money","I want money"],ans:2,ex:"Ke paas = with/have. Nahi = not. Lit: near-me money not is."},
+      {q:"Beta before ke saath becomes?",opts:["beta ke saath","bete ke saath","betas ke saath","beti ke saath"],ans:1,ex:"Masculine -a changes to -e before postposition. Beta → bete."},
+    ],
+    memorise:["mein = in","par = on","se = from/by","ke liye = for","ke saath = with","ke baad = after","ke pehle = before","ke baare mein = about","ke paas = near/have","ke samne = in front of","Oblique: masc -a → -e before postposition"]
+  },
+  {
+    num:3, title:"Question Words", lesson:"Lessons 2-3",
+    color:"#6a1b9a", icon:"❓",
+    grammar:[
+      {rule:"ALL Hindi question words start with K — from the same Sanskrit root. Easy to spot.",
+       formula:"Kya / Kaun / Kyon / Kahan / Kab / Kaisa / Kitna / Kisko / Kisse"},
+      {rule:"Kya has TWO jobs: (1) What is this? (2) Yes/No question marker at start of sentence",
+       formula:"Kya hai yeh? (What is this?) | Kya aap theek hain? (Are you okay?)"},
+      {rule:"Jab = when as a connector (not a question). Kab = when as a question.",
+       formula:"KAB aaoge? (When will you come?) | JAB main aaya... (When I came...)"},
+    ],
+    examples:[
+      {en:"Are you okay?",hi:"Kya aap theek hain?"},
+      {en:"Who is coming?",hi:"Kaun aa raha hai?"},
+      {en:"Why didn't you come?",hi:"Kyon nahi aaye?"},
+      {en:"Where are you?",hi:"Aap kahan hain?"},
+      {en:"When will you come?",hi:"Kab aaoge?"},
+      {en:"How is your health?",hi:"Tabiyat kaisi hai?"},
+      {en:"How much money do you need?",hi:"Kitna paisa chahiye?"},
+      {en:"Whose book is it?",hi:"Kiski kitaab hai?"},
+      {en:"Who will you give money to?",hi:"Kisko paisa doge?"},
+      {en:"Who are you talking to?",hi:"Kisse baat kar rahe ho?"},
+    ],
+    quiz:[
+      {q:"Which word means why?",opts:["Kya","Kaun","Kyon","Kahan"],ans:2,ex:"Kyon = why. Kyon nahi aaye? = Why didn't you come?"},
+      {q:"Kab means?",opts:["who","where","when (question)","why"],ans:2,ex:"Kab = when as a question. Kab aaoge? = When will you come?"},
+      {q:"Kya at the start of a sentence means?",opts:["what","yes/no question marker","who","how"],ans:1,ex:"Kya aap theek hain? = Are you okay? Kya = yes/no marker here."},
+      {q:"Kisse means?",opts:["to whom","from where","with/from whom","whose"],ans:2,ex:"Kisse = with/from whom. Kisse baat kar rahe ho? = Who are you talking to?"},
+      {q:"Jab vs Kab — which is correct?",opts:["Jab aaoge? (when will you come)","Kab main aaya, woh roya (when I came, he cried)","Kab main aaya... (when I came)","Jab aaoge? is correct"],ans:2,ex:"KAB = question (when?). JAB = connector (when... then...). Kab aaoge? / Jab main aaya..."},
+    ],
+    memorise:["Kya = what / yes-no marker","Kaun = who","Kyon = why","Kahan = where","Kab = when (question)","Jab = when (connector)","Kaisa/Kaisi/Kaise = how/what kind","Kitna = how much/many","Kisko = to whom (indirect)","Kisse = with/from whom (SE verbs)","Kiski = whose"]
+  },
+  {
+    num:4, title:"Habitual Tense — Present & Past", lesson:"Lessons 2, 6",
+    color:"#2e7d32", icon:"🔄",
+    grammar:[
+      {rule:"Present Habitual = things done regularly: habits, routines, general truths",
+       formula:"root + ta/ti/te + hoon/hai/hain"},
+      {rule:"Past Habitual = things you USED TO do. Identical formula — swap to-be verb only",
+       formula:"root + ta/ti/te + tha/thi/the"},
+      {rule:"Gender/number agreement: -ta = masculine singular | -ti = feminine | -te = plural or formal",
+       formula:"peeta hoon (I, male) | peeti hoon (I, female) | peete hain (we/they/aap)"},
+    ],
+    examples:[
+      {en:"I drink chai every morning.",hi:"Main har subah chai peeta hoon."},
+      {en:"She works in London.",hi:"Woh London mein kaam karti hai."},
+      {en:"We meet every Sunday.",hi:"Hum har Ravivar milte hain."},
+      {en:"I don't drink coffee.",hi:"Main coffee nahi peeta."},
+      {en:"I used to live in India.",hi:"Main Bharat mein rehta tha."},
+      {en:"She used to drink coffee.",hi:"Woh coffee peeti thi."},
+      {en:"They used to study together.",hi:"Woh saath padhte the."},
+      {en:"He didn't use to eat meat.",hi:"Woh maas nahi khaata tha."},
+      {en:"Every year my wife goes to India.",hi:"Mere patni har saal India jaati hai."},
+    ],
+    quiz:[
+      {q:"Present habitual formula?",opts:["root+raha+hoon","root+ta/ti/te+hoon/hai","root+unga","infinitive+chahta+hoon"],ans:1,ex:"root + ta/ti/te + hoon/hai/hain"},
+      {q:"She used to work — correct Hindi?",opts:["Woh kaam karti hai.","Woh kaam kar rahi hai.","Woh kaam karti thi.","Woh kaam karegi."],ans:2,ex:"Past habitual feminine: karti thi. Woh kaam karti thi."},
+      {q:"Nahi goes where in habitual negative?",opts:["After verb","Before verb, drop hoon/hai","After subject","At end"],ans:1,ex:"Main nahi peeta. Nahi before verb. Drop hoon/hai in negative."},
+      {q:"We used to meet — correct?",opts:["Hum milte hain.","Hum milte the.","Hum milte tha.","Hum milta the."],ans:1,ex:"Plural past habitual = milte the. Hum milte the."},
+    ],
+    memorise:["ta = masc.sing.","ti = feminine","te = plural/formal/Aap","tha = masc.sing.past","thi = fem.past","the = plural past","Drop hoon/hai in negative habitual","Nahi goes BEFORE the verb"]
+  },
+  {
+    num:5, title:"Progressive Tense — Present & Past", lesson:"Lessons 3, 6",
+    color:"#00838f", icon:"▶️",
+    grammar:[
+      {rule:"Present progressive = happening RIGHT NOW at this moment",
+       formula:"root + raha/rahi/rahe + hoon/hai/hain"},
+      {rule:"Past progressive = was happening at a moment in the past",
+       formula:"root + raha/rahi/rahe + tha/thi/the"},
+      {rule:"KEY distinction: ta/ti/te = habit (I drink chai daily) | raha = in progress (I am drinking chai now)",
+       formula:"peeta hoon = I drink (habit) | pee raha hoon = I am drinking (right now)"},
+    ],
+    examples:[
+      {en:"I am watching TV.",hi:"Main TV dekh raha hoon."},
+      {en:"She is sleeping.",hi:"Woh so rahi hai."},
+      {en:"What is happening?",hi:"Kya ho raha hai?"},
+      {en:"We are eating together.",hi:"Hum saath khaa rahe hain."},
+      {en:"I am not talking to him.",hi:"Main usse baat nahi kar raha."},
+      {en:"What was happening there?",hi:"Wahan kya ho raha tha?"},
+      {en:"She was cooking food.",hi:"Woh khaana bana rahi thi."},
+      {en:"I was sleeping when she called.",hi:"Main so raha tha jab usne call kiya."},
+      {en:"What were you doing?",hi:"Aap kya kar rahe the?"},
+      {en:"He was telling about India.",hi:"Woh India ke baare mein bata raha tha."},
+    ],
+    quiz:[
+      {q:"Progressive formula?",opts:["root+ta+hoon","root+raha/rahi/rahe+hoon/hai","infinitive+chahta","root+unga"],ans:1,ex:"root + raha/rahi/rahe + hoon/hai/hain"},
+      {q:"She is sleeping — which raha form?",opts:["raha","rahe","rahi","rahu"],ans:2,ex:"She = feminine → rahi. Woh so rahi hai."},
+      {q:"I was eating — correct Hindi?",opts:["Main khaa raha hoon.","Main khaa raha tha.","Main khaata tha.","Main khaa raha the."],ans:1,ex:"Past progressive masc: raha tha. Main khaa raha tha."},
+      {q:"Jab (when connector) joins sentences — example?",opts:["Kab aaya?","Main so raha tha jab usne call kiya.","Jab aaoge?","Woh jab hai"],ans:1,ex:"Jab = when (connector). Main so raha tha JAB usne call kiya."},
+    ],
+    memorise:["raha = masc.sing.","rahi = feminine","rahe = plural/formal","Habitual = ta/ti/te","Progressive = raha/rahi/rahe","Jab = when (connector in past progressive sentences)"]
+  },
+  {
+    num:6, title:"Possessives, Adjectives & Oblique Case", lesson:"Lessons 4-5",
+    color:"#c62828", icon:"👨‍👩‍👧",
+    grammar:[
+      {rule:"Apna/apni/apne = REFLEXIVE — subject refers to their OWN possession. Very important.",
+       formula:"Main APNI patni se baat karta hoon. (talking to MY OWN wife)"},
+      {rule:"When someone else refers to your possession — use mera/meri/mere, not apna",
+       formula:"Woh MERI patni se baat karta hai. (He talks to MY wife — he is subject, not me)"},
+      {rule:"Apna agrees with the OBJECT (possessed thing) gender/number, not the subject",
+       formula:"Main apna kaam karta hoon. (masc kaam) | Main apni chai peeta hoon. (fem chai)"},
+    ],
+    examples:[
+      {en:"I talk to my wife.",hi:"Main apni patni se baat karta hoon."},
+      {en:"She calls her mum.",hi:"Woh apni maa ko call karti hai."},
+      {en:"He loves his wife.",hi:"Woh apni patni se pyaar karta hai."},
+      {en:"He talks to my wife.",hi:"Woh meri patni se baat karta hai."},
+      {en:"I am with my son.",hi:"Main apne bete ke saath hoon."},
+      {en:"For me.",hi:"Mere liye."},
+      {en:"My son is studying.",hi:"Mera beta padh raha hai."},
+      {en:"Her mother came.",hi:"Uski maa aayi."},
+    ],
+    quiz:[
+      {q:"I talk to my wife — correct?",opts:["Main meri patni se baat karta hoon.","Main apni patni se baat karta hoon.","Main uski patni se baat karta hoon.","Main patni ko baat karta hoon."],ans:1,ex:"Apni = reflexive. Subject (Main) refers to own wife → apni."},
+      {q:"He talks to my wife — which my?",opts:["apni","uski","meri","hamari"],ans:2,ex:"He (Woh) is the subject — not me. So use meri (my), not apna."},
+      {q:"Apna agrees with?",opts:["The subject gender","The object gender/number","Always masculine","Always stays apna"],ans:1,ex:"Apna agrees with the OBJECT. Apna kaam (masc) | Apni chai (fem) | Apne bhai (oblique)."},
+      {q:"Beta before ke saath becomes?",opts:["beta ke saath","bete ke saath","betas ke saath","beti ke saath"],ans:1,ex:"Oblique case: masculine -a → -e before postposition. Beta → bete."},
+    ],
+    memorise:["apna/apne/apni = OWN (reflexive — same subject)","mera/mere/meri = my (another subject refers to it)","uska/uske/uski = his/her","hamara/hamare/hamari = our","Apna agrees with the OBJECT gender","Oblique: masc -a → -e before postposition"]
+  },
+  {
+    num:7, title:"Sakna — Can / Ability", lesson:"Lesson 7",
+    color:"#1565c0", icon:"💪",
+    grammar:[
+      {rule:"Sakna expresses ABILITY. Always paired with another verb using the VERB ROOT (not infinitive)",
+       formula:"root + sakta/sakti/sakte + hoon/hai/hain"},
+      {rule:"Past Sakna: same formula, swap to-be verb. Future Sakna: root changes completely",
+       formula:"Past: root + sakta/sakti/sakte + tha/thi/the | Future: sakunga/sakegi/sakenge"},
+      {rule:"CRITICAL: Sakna = ROOT | Chahna = INFINITIVE. This is the most common mix-up.",
+       formula:"ja sakta hoon (can go ROOT) | jaana chahta hoon (want to go INFINITIVE)"},
+    ],
+    examples:[
+      {en:"I can speak Hindi.",hi:"Main Hindi bol sakta hoon."},
+      {en:"She cannot come.",hi:"Woh aa nahi sakti."},
+      {en:"We can meet.",hi:"Hum mil sakte hain."},
+      {en:"I could speak before.",hi:"Main pehle bol sakta tha."},
+      {en:"She couldn't come yesterday.",hi:"Woh kal nahi aa sakti thi."},
+      {en:"We could meet.",hi:"Hum mil sakte the."},
+      {en:"I will be able to meet tomorrow.",hi:"Main kal mil sakunga."},
+      {en:"Can I ask you one question?",hi:"Kya main aapse ek sawaal pooch sakta hoon?"},
+      {en:"Can you meet me in my office?",hi:"Kya aap mujhse mere office mein mil sakte hain?"},
+    ],
+    quiz:[
+      {q:"Sakna uses which verb form?",opts:["Infinitive (-na)","Root only","Past participle","Full sentence"],ans:1,ex:"ROOT only. Ja sakta hoon ✅ | Jaana sakta hoon ❌"},
+      {q:"She can come — correct?",opts:["Woh aana sakti hai.","Woh aa sakti hai.","Woh aa sakta hai.","Woh aa sakti hain."],ans:1,ex:"Root (aa) + sakti (feminine) + hai."},
+      {q:"Future Sakna for Main (male)?",opts:["sakta hoon","sakenga","sakunga","sakenge"],ans:2,ex:"Main + sakunga. Main kal mil sakunga."},
+      {q:"Nahi goes where in Sakna negative?",opts:["After sakta","Before root","Between root and sakta","At end"],ans:2,ex:"Root + NAHI + sakta. Woh aa NAHI sakti."},
+    ],
+    memorise:["Sakna = VERB ROOT","Present: root + sakta/sakti/sakte + hoon/hai","Past: root + sakta/sakti/sakte + tha/thi","Future: sakunga/sakegi/sakenge","Nahi between root and sakta","Sakna=ROOT vs Chahna=INFINITIVE — never mix these"]
+  },
+  {
+    num:8, title:"Chahna — Want To", lesson:"Lesson 7",
+    color:"#6a1b9a", icon:"💝",
+    grammar:[
+      {rule:"Chahna expresses DESIRE. Always paired with INFINITIVE (-na form) — the opposite of Sakna",
+       formula:"infinitive(-na) + chahta/chahti/chahte + hoon/hai/hain"},
+      {rule:"Past Chahna: keep infinitive + chahta/ti/te, swap to-be verb to tha/thi/the",
+       formula:"Main jaana chahta tha. (I wanted to go.)"},
+      {rule:"Future Chahna = polite desire. Softer than simple future (karunga = will; chahunga = would like)",
+       formula:"infinitive + chahunga/chahegi/chahenge"},
+    ],
+    examples:[
+      {en:"I want to go to India.",hi:"Main India jaana chahta hoon."},
+      {en:"She wants to sleep.",hi:"Woh sona chahti hai."},
+      {en:"We want to meet.",hi:"Hum milna chahte hain."},
+      {en:"I wanted to go.",hi:"Main jaana chahta tha."},
+      {en:"She wanted to go to India.",hi:"Woh India jaana chahti thi."},
+      {en:"We wanted to meet.",hi:"Hum milna chahte the."},
+      {en:"I would like to drink chai.",hi:"Main chai peena chahunga."},
+      {en:"What would you like to drink?",hi:"Aap kya peena chahenge?"},
+      {en:"I would like to meet you.",hi:"Main aapse milna chahunga."},
+      {en:"I don't want to go.",hi:"Main nahi jaana chahta."},
+    ],
+    quiz:[
+      {q:"Chahna uses which verb form?",opts:["Root only","Infinitive (-na)","Past participle","Present tense"],ans:1,ex:"INFINITIVE. Jaana chahta hoon ✅ | Ja chahta hoon ❌"},
+      {q:"Simple future vs Would Like To?",opts:["Same meaning","Karunga=definite plan, chahunga=polite desire","Chahunga is stronger","No difference in Hindi"],ans:1,ex:"Karunga = I WILL (certainty). Karna chahunga = I WOULD LIKE TO (polite wish)."},
+      {q:"She wanted to sleep — correct?",opts:["Woh sona chahti hai.","Woh sona chahti thi.","Woh sona chahegi.","Woh so rahi thi."],ans:1,ex:"Past Chahna feminine: chahti thi. Woh sona chahti thi."},
+      {q:"Sakna vs Chahna — which uses infinitive?",opts:["Both","Neither","Sakna","Chahna"],ans:3,ex:"Chahna = INFINITIVE (-na). Sakna = ROOT. This is a critical distinction."},
+    ],
+    memorise:["Chahna = INFINITIVE (-na form)","Present: chahta/chahti/chahte + hoon/hai","Past: chahta/chahti/chahte + tha/thi","Future: chahunga/chahegi/chahenge","SAKNA=ROOT | CHAHNA=INFINITIVE","Nahi goes before infinitive in negative"]
+  },
+  {
+    num:9, title:"Future Tense", lesson:"Lesson 8",
+    color:"#e8651a", icon:"🔮",
+    grammar:[
+      {rule:"Future adds endings directly to the verb root — NO separate to-be verb needed",
+       formula:"Main = unga/ungi | Woh (m) = ega | Woh (f) = egi | Hum/Aap/Ve = enge"},
+      {rule:"Several common verbs have IRREGULAR future roots that must be memorised",
+       formula:"dena→dunga | lena→lunga | hona→hounga/hoga | jaana→jaaunga | aana→aaunga | peena→piunga"},
+      {rule:"Papa/elders always get respectful plural (-enge). Kaun = unknown = masculine singular default (-ega)",
+       formula:"Mere papa jaayenge ✅ | Kaun aayega? ✅"},
+    ],
+    examples:[
+      {en:"I will talk to my wife.",hi:"Main apni patni se baat karunga."},
+      {en:"I will go to India next year.",hi:"Main agle saal Bharat jaaunga."},
+      {en:"She will give me money.",hi:"Woh mujhe paisa degi."},
+      {en:"We will meet him tomorrow.",hi:"Hum kal usse milenge."},
+      {en:"Who will come?",hi:"Kaun aayega?"},
+      {en:"My dad will come.",hi:"Mere papa aayenge."},
+      {en:"There will be no problem.",hi:"Koi problem nahi hogi."},
+      {en:"I will give you chai.",hi:"Main aapko chai dunga."},
+      {en:"She will not be able to come.",hi:"Woh nahi aa sakegi."},
+      {en:"I will take this.",hi:"Main yeh le lunga."},
+    ],
+    quiz:[
+      {q:"Future ending for Main (male)?",opts:["ega","enge","unga","oge"],ans:2,ex:"Main only takes -unga. Main karunga / jaaunga / dunga."},
+      {q:"She will give — dena future?",opts:["degi","dega","denge","dogi"],ans:0,ex:"Woh (female) + dena irregular future → degi."},
+      {q:"Papa future ending?",opts:["-ega","-egi","-enge","-unga"],ans:2,ex:"Papa/elders = respectful plural = -enge. Mere papa jaayenge."},
+      {q:"Kaun future ending?",opts:["-enge","-ega","-egi","-unga"],ans:1,ex:"Kaun = unknown = masculine singular default = -ega. Kaun aayega?"},
+    ],
+    memorise:["Main = unga/ungi","Woh (m) = ega","Woh (f) = egi","Hum/Aap/They = enge","Tum = oge/ogi","IRREGULAR: dena→dunga | lena→lunga | hona→hounga/hoga/hogi/honge | jaana→jaaunga/jaayega | aana→aaunga/aayega | peena→piunga | khaana→khaunga"]
+  },
+  {
+    num:10, title:"Imperatives — Commands & Requests", lesson:"Lesson 10",
+    color:"#f57f17", icon:"📢",
+    grammar:[
+      {rule:"Imperatives are commands or requests. The subject is ALWAYS implied — never state it",
+       formula:"NO subject. NO tense. Just the verb form. Aajiye (not Aap aajiye)"},
+      {rule:"Three levels of formality based on relationship with the person",
+       formula:"Formal (root+iye) | Familiar (root+o) | Intimate (root only)"},
+      {rule:"Karna compounds are special: kijiye/karo/kar. Kripya = please (formal context only)",
+       formula:"baat kijiye (formal) | baat karo (familiar) | baat kar (intimate)"},
+    ],
+    examples:[
+      {en:"Please come inside.",hi:"Kripya andar aajiye."},
+      {en:"Please speak again.",hi:"Kripya phir se boliye."},
+      {en:"Please tell me your name.",hi:"Kripya mujhe apna naam bataiye."},
+      {en:"Please give me 10 rupees.",hi:"Kripya mujhe das rupaye dijiye."},
+      {en:"Forgive me.",hi:"Maaf kijiye."},
+      {en:"Eat your food.",hi:"Khaana khao."},
+      {en:"Don't watch TV.",hi:"TV mat dekho."},
+      {en:"Please talk to your doctor.",hi:"Kripya apne doctor se baat kijiye."},
+      {en:"Sit down.",hi:"Baitho."},
+      {en:"Get up.",hi:"Utho."},
+      {en:"Finish your homework and play outside.",hi:"Homework khatam karo aur bahar khelo."},
+      {en:"Please do not talk to her.",hi:"Kripya usse baat mat kijiye."},
+    ],
+    quiz:[
+      {q:"Formal imperative of aana?",opts:["aao","aa","aajiye","aana"],ans:2,ex:"Formal = root + iye. Aa + iye = aajiye."},
+      {q:"Karna in familiar imperative?",opts:["kijiye","karo","kar","karna"],ans:1,ex:"Familiar karna = karo. Kaam karo."},
+      {q:"Negative imperative word (stronger)?",opts:["na","mat","nahi","band"],ans:1,ex:"Mat = stronger negative. Na = softer. TV mat dekho."},
+      {q:"Dena formal imperative?",opts:["do","dena","dijiye","de"],ans:2,ex:"Dena irregular: formal = dijiye. Mujhe dijiye."},
+      {q:"Rule for imperatives — which is TRUE?",opts:["Always state the subject","Use future tense","No subject, no tense — just verb form","Add karna hai at end"],ans:2,ex:"NO subject. NO tense. NO karna hai. Just the verb form alone."},
+    ],
+    memorise:["Formal: root+iye","Familiar: root+o","Intimate: root only","Kripya = please (formal)","Na = soft negative | Mat = strong negative","dena→dijiye/do/de","lena→lijiye/lo/le","peena→pijiye/piyo/pee","karna→kijiye/karo/kar","NO subject in imperatives!"]
+  },
+  {
+    num:11, title:"Se vs Ko — Animate Objects", lesson:"Lessons 9-11",
+    color:"#00695c", icon:"🔗",
+    grammar:[
+      {rule:"MPPBBK = the six SE verbs. Everything else takes KO. Memorise this mnemonic.",
+       formula:"Milna Poochna Pyaar-karna Baat-karna Bolna Kahna → always SE"},
+      {rule:"SE = two-way interaction (with someone). KO = one-way delivery (to/for someone)",
+       formula:"SE: milna (meet with) | KO: dena (give to), batana (tell to)"},
+      {rule:"Pronouns cannot just add se/ko — they have special combined forms",
+       formula:"Main+se=mujhse | Main+ko=mujhe | Aap+se=aapse | Aap+ko=aapko | Woh+se=usse | Woh+ko=usse"},
+    ],
+    examples:[
+      {en:"I meet my boss every day.",hi:"Main boss se milta hoon."},
+      {en:"I will talk to you tomorrow.",hi:"Main kal aapse baat karunga."},
+      {en:"She used to ask me questions.",hi:"Woh mujhse bahut sawaal poochti thi."},
+      {en:"Prakash teaches me Hindi.",hi:"Prakash mujhe Hindi padhata hai."},
+      {en:"I love my wife.",hi:"Main apni patni se pyaar karta hoon."},
+      {en:"Call your mum.",hi:"Apni maa ko call karo."},
+      {en:"Please talk to your doctor.",hi:"Kripya apne doctor se baat kijiye."},
+      {en:"Give them money.",hi:"Unhe paisa do."},
+      {en:"I like talking to my wife.",hi:"Mujhe apni patni se baat karna pasand hai."},
+      {en:"Tell me.",hi:"Mujhe batao."},
+    ],
+    quiz:[
+      {q:"Baat karna takes which postposition?",opts:["ko","se","ne","ke liye"],ans:1,ex:"Baat karna = SE verb (MPPBBK). Apne doctor SE baat kijiye."},
+      {q:"To me using a KO verb (like batana)?",opts:["mujhse","mujhko","mujhe","mere"],ans:2,ex:"KO form of Main = mujhe. Mujhe batao."},
+      {q:"With me using a SE verb (like milna)?",opts:["mujhe","mujhse","mere","main"],ans:1,ex:"SE form of Main = mujhse. Mujhse baat karo."},
+      {q:"Batana (to tell) takes?",opts:["se","ko","ne","par"],ans:1,ex:"Batana = KO verb. NOT in MPPBBK. Mujhe batao."},
+      {q:"What does MPPBBK stand for?",opts:["Milna Peena Padhna Baithna Bolna Khelna","Milna Poochna Pyaar Baat Bolna Kahna","Milna Poochna Peena Bolna Baat Karna","Main Phir Padhna Bahar Bolna Karo"],ans:1,ex:"MPPBBK: Milna Poochna Pyaar-karna Baat-karna Bolna Kahna — all take SE."},
+    ],
+    memorise:["MPPBBK → SE: Milna Poochna Pyaar Baat Bolna Kahna","Everything else → KO","SE forms: mujhse/aapse/usse/humse/unse","KO forms: mujhe/aapko/usse(usko)/hame/unhe","Baat karna ≠ Batana — common confusion!","Possessive+noun → oblique first: apne bhai se | apni maa ko"]
+  },
+  {
+    num:12, title:"Indirect Sentence Structure", lesson:"Lesson 11",
+    color:"#4a148c", icon:"↔️",
+    grammar:[
+      {rule:"Direct sentences: Main is the active subject doing the action (verb agrees with Main)",
+       formula:"Main chai peeta hoon. (I drink chai — Main is doing it actively)"},
+      {rule:"Indirect sentences: something happens TO the subject — subject takes ko postposition",
+       formula:"Mujhe chai pasand hai. (chai is liked by me — chai is the grammatical subject)"},
+      {rule:"Five indirect structures — all follow the same logic: the person takes ko form",
+       formula:"pasand (like) | chahiye-noun (need) | chahiye-verb (should) | +hai (have to) | parna (forced)"},
+    ],
+    examples:[
+      {en:"I like chai.",hi:"Mujhe chai pasand hai."},
+      {en:"She doesn't like coffee.",hi:"Usse coffee pasand nahi hai."},
+      {en:"Who likes chai?",hi:"Kisko chai pasand hai?"},
+      {en:"I need water.",hi:"Mujhe paani chahiye."},
+      {en:"I should study.",hi:"Mujhe padhna chahiye."},
+      {en:"I need to go home.",hi:"Mujhe ghar jaana hai."},
+      {en:"Every day I have to do a lot of work.",hi:"Har din mujhe bahut kaam karna parta hai."},
+      {en:"I like to meet my friend.",hi:"Mujhe apne dost se milna pasand hai."},
+      {en:"We need to talk to her.",hi:"Hame usse baat karni hai."},
+      {en:"She used to like this.",hi:"Usse yeh pasand tha."},
+    ],
+    quiz:[
+      {q:"I like chai — which is correct?",opts:["Main chai pasand karta hoon.","Main chai pasand hai.","Mujhe chai pasand hai.","Mujhse chai pasand hai."],ans:2,ex:"Like = indirect. Mujhe (ko form) + chai + pasand hai."},
+      {q:"Nahi with pasand goes?",opts:["Before pasand","After pasand","Before mujhe","At the end"],ans:1,ex:"Mujhe chai pasand NAHI hai. Nahi AFTER pasand."},
+      {q:"Chahiye with a verb (infinitive) means?",opts:["need (noun)","should","must","have to (forced)"],ans:1,ex:"Mujhe padhna chahiye = I should study (soft suggestion)."},
+      {q:"Inner compulsion (need to) formula?",opts:["infinitive+chahiye","infinitive+parta hai","infinitive+hai","infinitive+chahta hoon"],ans:2,ex:"Mujhe ghar jaana HAI. Inner drive = infinitive + hai."},
+      {q:"Direct vs Indirect — I drink chai daily?",opts:["Mujhe chai peeta hoon.","Main chai peeti hoon.","Main chai peeta hoon.","Mujhe chai peena hai."],ans:2,ex:"Drinking chai daily = habit = DIRECT. Main (subject) chai peeta hoon."},
+    ],
+    memorise:["Direct = Main does it actively","Indirect = Mujhe/Usse/Hame (ko form)","pasand hai = like","pasand NAHI hai = don't like","chahiye (noun) = need","chahiye (infinitive) = should","infinitive+hai = need to (inner)","parta/parti hai = have to (forced/external)","Kisko = indirect who (oblique of kaun)"]
+  },
+  {
+    num:13, title:"Comparatives & Superlatives", lesson:"Lesson 12",
+    color:"#1565c0", icon:"📊",
+    grammar:[
+      {rule:"Comparative: X is bigger/smaller/better than Y. Hindi uses SE after the comparison word",
+       formula:"X + Y + SE + adjective + hai — Y se = than Y"},
+      {rule:"Superlative: the most/best/biggest. Hindi uses SABSE (from all) before the adjective",
+       formula:"X + SABSE + adjective + hai — sabse = the most"},
+      {rule:"Zyada = more. Behtar = better. Both are useful comparison helpers.",
+       formula:"Zyada mehnat karta hai (works harder) | Behtar hai (it is better)"},
+    ],
+    examples:[
+      {en:"My house is bigger than your house.",hi:"Mera ghar aapke ghar se bada hai."},
+      {en:"Hindi is easier than French.",hi:"Hindi French se aasaan hai."},
+      {en:"He is taller than me.",hi:"Woh mujhse lamba hai."},
+      {en:"My son is younger than your son.",hi:"Mera beta aapke bete se chota hai."},
+      {en:"London is the most expensive city in the UK.",hi:"London UK ka sabse mehnga shahar hai."},
+      {en:"This is the best chai.",hi:"Yeh sabse achhi chai hai."},
+      {en:"Who is the youngest?",hi:"Sabse chota kaun hai?"},
+      {en:"She is the most beautiful.",hi:"Woh sabse sundar hai."},
+      {en:"He is the tallest in the class.",hi:"Woh class mein sabse lamba hai."},
+    ],
+    quiz:[
+      {q:"Comparative formula?",opts:["X sabse Y hai","X Y se adjective hai","X Y mein adjective hai","X Y ko adjective hai"],ans:1,ex:"X + Y + SE + adjective. Mera ghar aapke ghar SE bada hai."},
+      {q:"The most expensive in Hindi?",opts:["zyada mehnga","bahut mehnga","sabse mehnga","se mehnga"],ans:2,ex:"SABSE = the most. Sabse mehnga = most expensive."},
+      {q:"Better in Hindi?",opts:["achha","zyada achha / behtar","sabse achha","bahut achha"],ans:1,ex:"Behtar = better. Zyada achha also works."},
+      {q:"He is taller than me — correct?",opts:["Woh mujhe lamba hai.","Woh mujhse lamba hai.","Woh mere se lamba hai.","Woh mujh lamba hai."],ans:1,ex:"Me = mujhse (pronoun SE form). Woh MUJHSE lamba hai."},
+    ],
+    memorise:["Comparative: X + Y + SE + adjective","Superlative: SABSE + adjective","Sabse = of all / the most","Behtar = better","Zyada = more","Pronouns before se: mujhse (than me) | aapse (than you) | usse (than him/her)"]
+  },
+  {
+    num:14, title:"Obligation — Should, Need To, Must", lesson:"Lesson 12",
+    color:"#c62828", icon:"⚡",
+    grammar:[
+      {rule:"Three levels of obligation — each uses a different structure and expresses different pressure",
+       formula:"Should: mujhe+infinitive+chahiye | Need to: mujhe+infinitive+hai | Must: zaroor+chahiye"},
+      {rule:"Parna = strongest external compulsion — being FORCED by outside circumstances",
+       formula:"parta/parti/parte + hai (present) | tha/thi/the (past) | parega/paregi (future)"},
+      {rule:"Zaroor = definitely/of course — used alone as a response OR to strengthen chahiye into must",
+       formula:"Zaroor! (Of course!) | Mujhe zaroor jaana chahiye (I absolutely must go)"},
+    ],
+    examples:[
+      {en:"I should study.",hi:"Mujhe padhna chahiye."},
+      {en:"My son should study more.",hi:"Mere bete ko zyada padhna chahiye."},
+      {en:"What should I do now?",hi:"Mujhe ab kya karna chahiye?"},
+      {en:"We should buy vegetables.",hi:"Hame sabzi kharidni chahiye."},
+      {en:"I need to go home.",hi:"Mujhe ghar jaana hai."},
+      {en:"We need to talk.",hi:"Hame baat karni hai."},
+      {en:"She needs to go to her office.",hi:"Usse apne office jaana hai."},
+      {en:"Every day I have to do a lot of work.",hi:"Har din mujhe bahut kaam karna parta hai."},
+      {en:"I must go.",hi:"Mujhe zaroor jaana chahiye."},
+      {en:"I will definitely come.",hi:"Main zaroor aaunga."},
+      {en:"Of course!",hi:"Zaroor!"},
+      {en:"You must come on time.",hi:"Aapko zaroor samay par aana chahiye."},
+    ],
+    quiz:[
+      {q:"Should formula?",opts:["mujhe+infinitive+hai","mujhe+infinitive+chahiye","mujhe+infinitive+parta hai","mujhe+zaroor+chahiye"],ans:1,ex:"Should = mujhe + infinitive + chahiye. Mujhe padhna chahiye."},
+      {q:"Need to (inner drive) formula?",opts:["mujhe+infinitive+chahiye","mujhe+infinitive+hai","mujhe+infinitive+parta hai","mujhe+zaroor+chahiye"],ans:1,ex:"Inner compulsion = mujhe + infinitive + hai. Mujhe ghar jaana hai."},
+      {q:"Zaroor alone means?",opts:["must","should","of course / definitely","need to"],ans:2,ex:"Zaroor! = Of course! / Definitely! Very common response in conversation."},
+      {q:"Parna expresses?",opts:["inner desire","soft suggestion","external/forced obligation","ability"],ans:2,ex:"Parna = forced from outside. Har din mujhe kaam karna PARTA hai."},
+      {q:"The four levels in order (softest to strongest)?",opts:["Must Should Need-to Parna","Should Need-to Must Parna","Should Must Need-to Parna","Need-to Should Must Parna"],ans:1,ex:"Should (chahiye) < Need to (+hai) < Must (zaroor+chahiye) < Have to (parna)."},
+    ],
+    memorise:["Should: mujhe+infinitive+chahiye","Need to (inner): mujhe+infinitive+hai","Must: mujhe+zaroor+infinitive+chahiye","Have to (forced): parna — parta/parti/parte+hai","Zaroor = definitely/of course","Sabzi kharidNI chahiye (feminine noun → -ni)","Gender matters: baat karNI / kaam karNA"]
+  },
+];
+
+var curChapter = null;
+var chQuizAnswered = {};
+var chQuizScores = {};
+
+function initChapters() {
+  renderChList();
+}
+
+function renderChList() {
+  document.getElementById("ch-list-view").style.display = "block";
+  document.getElementById("ch-detail-view").style.display = "none";
+  var html = CHAPTERS.map(function(ch) {
+    var done = chQuizScores[ch.num] || 0;
+    var total = ch.quiz.length;
+    var pct = total > 0 ? Math.round(done/total*100) : 0;
+    return "<div class='ch-card' onclick='showChapter("+ch.num+")'>"
+      + "<div class='ch-header'>"
+      + "<div class='ch-icon' style='background:"+ch.color+"22;color:"+ch.color+"'>"+ch.icon+"</div>"
+      + "<div class='ch-info'>"
+      + "<div class='ch-num'>Chapter "+ch.num+" &middot; "+ch.lesson+"</div>"
+      + "<div class='ch-title'>"+ch.title+"</div>"
+      + "<div class='ch-sub'>"+ch.examples.length+" examples &middot; "+ch.quiz.length+" quiz questions</div>"
+      + "</div><div class='ch-arrow'>&#8250;</div></div>"
+      + "<div class='ch-progress-bar'><div class='ch-progress-fill' style='width:"+pct+"%;background:"+ch.color+"'></div></div>"
+      + "</div>";
+  }).join("");
+  document.getElementById("ch-grid").innerHTML = html;
+}
+
+function showChList() {
+  renderChList();
+}
+
+function showChapter(num) {
+  curChapter = null;
+  for (var i=0; i<CHAPTERS.length; i++) { if (CHAPTERS[i].num===num) { curChapter=CHAPTERS[i]; break; } }
+  if (!curChapter) return;
+  document.getElementById("ch-list-view").style.display = "none";
+  document.getElementById("ch-detail-view").style.display = "block";
+  var ch = curChapter;
+  
+  var grammarHtml = ch.grammar.map(function(g) {
+    return "<div class='card' style='margin-bottom:10px;border-top:3px solid "+ch.color+"'>"
+      + "<div class='ch-rule'>"+g.rule+"</div>"
+      + "<div class='ch-formula'>"+g.formula+"</div>"
+      + "</div>";
+  }).join("");
+
+  var examplesHtml = "<div class='card'>"
+    + "<p style='font-size:.82rem;color:var(--mid);margin-bottom:10px'>Tap Show to reveal the Hindi translation. Cover and test yourself.</p>"
+    + ch.examples.map(function(e,i) {
+        return "<div class='ch-sentence-item'>"
+          + "<div class='en'>"+e.en+"</div>"
+          + "<div class='hi' id='ch-hi-"+num+"-"+i+"'>"+e.hi+"</div>"
+          + "<button class='ch-reveal-btn' onclick='chReveal("+num+","+i+",this)'>Show Hindi</button>"
+          + "</div>";
+      }).join("")
+    + "</div>";
+
+  var quizHtml = "<div class='card'><h2 style='margin-bottom:4px'>Chapter "+num+" Quiz</h2>"
+    + "<p style='font-size:.82rem;color:var(--mid);margin-bottom:12px'>"+ch.quiz.length+" questions &mdash; tap to answer</p>"
+    + ch.quiz.map(function(q,qi) {
+        return "<div class='ch-mini-q' id='ch-q-"+num+"-"+qi+"'>"
+          + "<div class='q'>Q"+(qi+1)+". "+q.q+"</div>"
+          + q.opts.map(function(o,oi) {
+              return "<div class='ch-mini-opt' onclick='chAnswer("+num+","+qi+","+oi+")' id='ch-opt-"+num+"-"+qi+"-"+oi+"'>"+o+"</div>";
+            }).join("")
+          + "<div class='qfb' id='ch-fb-"+num+"-"+qi+"'></div>"
+          + "</div>";
+      }).join("")
+    + "</div>";
+
+  var memoriseHtml = "<div class='card' style='border-top:3px solid "+ch.color+"'>"
+    + "<h2 style='margin-bottom:10px'>Key things to memorise</h2>"
+    + ch.memorise.map(function(m) {
+        return "<div style='padding:8px 12px;background:"+ch.color+"15;border-radius:8px;margin-bottom:6px;font-size:.88rem;font-weight:600;border-left:3px solid "+ch.color+"'>"+m+"</div>";
+      }).join("")
+    + "</div>";
+
+  var html = "<div class='ch-detail-hdr' style='background:linear-gradient(135deg,"+ch.color+","+ch.color+"cc)'>"
+    + "<div style='display:flex;align-items:center;gap:10px;margin-bottom:4px'>"
+    + "<span style='font-size:1.8rem'>"+ch.icon+"</span>"
+    + "<div><div style='font-size:.75rem;opacity:.8;text-transform:uppercase;letter-spacing:.5px'>Chapter "+ch.num+" &middot; "+ch.lesson+"</div>"
+    + "<div style='font-size:1.1rem;font-weight:800'>"+ch.title+"</div></div></div></div>"
+    + "<div class='ch-tabs'>"
+    + "<button class='ch-tab on' onclick='showChTab(\"grammar\",this)'>📖 Grammar</button>"
+    + "<button class='ch-tab' onclick='showChTab(\"examples\",this)'>✍️ Examples</button>"
+    + "<button class='ch-tab' onclick='showChTab(\"quiz\",this)'>🎯 Quiz</button>"
+    + "<button class='ch-tab' onclick='showChTab(\"memorise\",this)'>🧠 Memorise</button>"
+    + "</div>"
+    + "<div id='ch-tab-grammar' class='ch-content on'>"+grammarHtml+"</div>"
+    + "<div id='ch-tab-examples' class='ch-content'>"+examplesHtml+"</div>"
+    + "<div id='ch-tab-quiz' class='ch-content'>"+quizHtml+"</div>"
+    + "<div id='ch-tab-memorise' class='ch-content'>"+memoriseHtml+"</div>";
+
+  document.getElementById("ch-detail-content").innerHTML = html;
+  chQuizAnswered = chQuizAnswered || {};
+}
+
+function showChTab(tab, btn) {
+  document.querySelectorAll(".ch-content").forEach(function(el){el.classList.remove("on");});
+  document.querySelectorAll(".ch-tab").forEach(function(b){b.classList.remove("on");});
+  document.getElementById("ch-tab-"+tab).classList.add("on");
+  btn.classList.add("on");
+}
+
+function chReveal(num, i, btn) {
+  var el = document.getElementById("ch-hi-"+num+"-"+i);
+  if (el.classList.contains("show")) {
+    el.classList.remove("show");
+    btn.textContent = "Show Hindi";
+  } else {
+    el.classList.add("show");
+    btn.textContent = "Hide";
+  }
+}
+
+function chAnswer(chNum, qi, selected) {
+  var key = chNum+"-"+qi;
+  if (!chQuizAnswered) chQuizAnswered = {};
+  if (chQuizAnswered[key]) return;
+  chQuizAnswered[key] = true;
+  var ch = null;
+  for (var i=0; i<CHAPTERS.length; i++) { if (CHAPTERS[i].num===chNum) { ch=CHAPTERS[i]; break; } }
+  if (!ch) return;
+  var q = ch.quiz[qi];
+  var isOk = selected === q.ans;
+  for (var oi=0; oi<q.opts.length; oi++) {
+    var el = document.getElementById("ch-opt-"+chNum+"-"+qi+"-"+oi);
+    if (!el) continue;
+    el.style.pointerEvents = "none";
+    if (oi === q.ans) el.classList.add("reveal");
+  }
+  var selEl = document.getElementById("ch-opt-"+chNum+"-"+qi+"-"+selected);
+  if (selEl) { selEl.classList.remove("reveal"); selEl.classList.add(isOk ? "correct" : "wrong"); }
+  var fb = document.getElementById("ch-fb-"+chNum+"-"+qi);
+  if (fb) {
+    fb.style.display = "block";
+    fb.className = "qfb show " + (isOk ? "right" : "wrong");
+    fb.textContent = (isOk ? "✅ " : "❌ ") + q.ex;
+  }
+  if (!chQuizScores[chNum]) chQuizScores[chNum] = 0;
+  if (isOk) { chQuizScores[chNum]++; MEM.record("grammar", true); }
+  else { MEM.record("grammar", false); }
+}
+
 // ===== INIT ON LOAD =====
 window.onload = function() {
   initPW();
   initPractice();
   initFlashcards();
   trackVisit();
+  updateHomeStats();
 };
+
+function updateHomeStats() {
+  try {
+    var s = MEM.stats();
+    var el;
+    el = document.getElementById('hqs-streak');
+    if(el) el.textContent = (s.streak||1) + ' 🔥';
+    el = document.getElementById('hqs-correct');
+    if(el) el.textContent = s.totalCorrect;
+    el = document.getElementById('hqs-pct');
+    if(el) el.textContent = s.accuracy + '%';
+    el = document.getElementById('home-stats-line');
+    if(el) el.textContent = s.vocabKnown + ' vocab words known · ' + s.sentencesMastered + ' sentences mastered';
+    el = document.getElementById('top-streak-pill');
+    if(el) el.textContent = (s.streak||1) + ' day streak 🔥';
+  } catch(e){}
+}
 
 
 // ===== PASSWORD PROTECTION =====
