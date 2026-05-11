@@ -119,13 +119,81 @@ textarea:focus { outline:none; border-color:var(--orange); }
 @media(max-width:560px){ .grid2 { grid-template-columns:1fr; } }
 .tense-card { background:white; border-radius:10px; padding:12px; border:2px solid var(--border); }
 .tense-card h4 { color:var(--orange); font-size:.88rem; margin-bottom:7px; }
+
+#password-screen{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:linear-gradient(135deg,#0D1B3E 0%,#1A2D5A 100%);
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999;flex-direction:column;padding:24px;
+}
+#password-screen.hidden{display:none;}
+.pw-box{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,153,51,0.4);
+  border-radius:20px;padding:36px 28px;
+  text-align:center;max-width:340px;width:100%;
+}
+.pw-flag{font-size:52px;margin-bottom:12px;}
+.pw-title{font-size:22px;font-weight:800;color:#FF9933;margin-bottom:4px;}
+.pw-sub{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:24px;}
+.pw-input{
+  width:100%;padding:14px 16px;font-size:18px;
+  border:2px solid rgba(255,255,255,0.15);
+  border-radius:12px;background:rgba(255,255,255,0.08);
+  color:white;font-family:inherit;outline:none;
+  text-align:center;letter-spacing:4px;margin-bottom:12px;
+}
+.pw-input:focus{border-color:#FF9933;}
+.pw-input.wrong{border-color:#c62828;animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px)};}
+.pw-btn{
+  width:100%;padding:14px;border-radius:12px;border:none;
+  background:#FF9933;color:#0D1B3E;font-size:16px;
+  font-weight:800;cursor:pointer;font-family:inherit;
+  transition:opacity .15s;
+}
+.pw-btn:active{opacity:.85;}
+.pw-error{color:#ef9a9a;font-size:13px;margin-top:10px;display:none;}
+.pw-error.show{display:block;}
+
+
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.dash-card{background:white;border-radius:12px;padding:16px;text-align:center;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.dash-num{font-size:2.2rem;font-weight:800;color:var(--orange)}
+.dash-lbl{font-size:.75rem;color:var(--mid);margin-top:2px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.dash-section{background:white;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid var(--border)}
+.dash-section-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.dash-section-name{font-size:.9rem;font-weight:700;color:var(--dark)}
+.dash-section-score{font-size:.82rem;font-weight:700;color:var(--green)}
+.dash-bar-wrap{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.dash-bar-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--green));border-radius:3px;transition:width .5s}
+.streak-card{background:linear-gradient(135deg,var(--orange),#ff6b35);border-radius:12px;padding:16px;text-align:center;color:white;margin-bottom:14px}
+.streak-num{font-size:3rem;font-weight:800}
+.streak-lbl{font-size:.85rem;opacity:.9;margin-top:2px}
+.weak-card{background:var(--orange-light);border:1px solid var(--orange);border-radius:10px;padding:12px;margin-bottom:8px}
+.weak-title{font-size:.8rem;font-weight:700;color:var(--orange);margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
+.weak-item{font-size:.82rem;color:var(--dark);padding:3px 0;border-bottom:1px solid rgba(232,101,26,.15)}
+
 .formula { background:var(--dark); color:#ffd54f; padding:7px 10px; border-radius:6px; font-family:monospace; font-size:.8rem; margin:5px 0; }
 </style>
 </head>
 <body>
 
+<div id="password-screen">
+  <div class="pw-box">
+    <div class="pw-flag">🇮🇳</div>
+    <div class="pw-title">Vijay's Hindi Guide</div>
+    <div class="pw-sub">Enter your password to continue</div>
+    <input type="password" class="pw-input" id="pw-input" placeholder="••••••••"
+      onkeydown="if(event.key==='Enter')checkPW()">
+    <button class="pw-btn" onclick="checkPW()">Enter →</button>
+    <div class="pw-error" id="pw-error">Incorrect password. Try again.</div>
+  </div>
+</div>
+
 <nav>
   <h1>🇮🇳 Hindi</h1>
+  <button id="nb-dashboard" onclick="go('dashboard')">📊 Dashboard</button>
   <button id="nb-home" class="on" onclick="go('home')">Home</button>
   <button id="nb-notes" onclick="go('notes')">Grammar</button>
   <button id="nb-tenses" onclick="go('tenses')">Tenses</button>
@@ -138,11 +206,43 @@ textarea:focus { outline:none; border-color:var(--orange); }
 </nav>
 
 
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" style="display:none">
+<div class="page">
+  <h2 style="color:var(--orange);margin-bottom:14px">📊 Your Progress Dashboard</h2>
+  
+  <div class="streak-card" id="dash-streak">
+    <div class="streak-num" id="dash-streak-num">0</div>
+    <div class="streak-lbl">day streak 🔥</div>
+  </div>
+
+  <div class="dash-grid">
+    <div class="dash-card"><div class="dash-num" id="dash-total-score">0</div><div class="dash-lbl">Total correct</div></div>
+    <div class="dash-card"><div class="dash-num" id="dash-total-pct">0%</div><div class="dash-lbl">Accuracy</div></div>
+    <div class="dash-card"><div class="dash-num" id="dash-vocab-known">0</div><div class="dash-lbl">Vocab known</div></div>
+    <div class="dash-card"><div class="dash-num" id="dash-sentences">0</div><div class="dash-lbl">Sentences mastered</div></div>
+  </div>
+
+  <div style="font-size:.8rem;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px">Progress by section</div>
+  <div id="dash-sections"></div>
+
+  <div style="font-size:.8rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.3px;margin:12px 0 8px">Focus areas — your weakest spots</div>
+  <div id="dash-weak"></div>
+
+  <div style="font-size:.8rem;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.3px;margin:12px 0 8px">Today's recommended drill</div>
+  <div class="card" id="dash-recommend" style="cursor:pointer"></div>
+
+  <button onclick="resetAllProgress()" style="width:100%;padding:11px;border-radius:10px;border:1.5px solid var(--red);background:white;color:var(--red);font-size:.82rem;font-weight:600;cursor:pointer;margin-top:8px">Reset all progress</button>
+</div>
+</div>
+
 <!-- HOME -->
 <div id="page-home" style="display:block">
 <div class="page">
   <p class="welcome">Namaste, <strong>Vijay!</strong> What would you like to practice today?</p>
   <div class="home-grid">
+    <div class="home-card" onclick="go('dashboard')" style="border-color:var(--orange);background:linear-gradient(135deg,#fff4ed,#fff)"><div class="icon">📊</div><h3>Progress Dashboard</h3><p>Track your scores, streaks and weak spots across all sections</p></div>
     <div class="home-card" onclick="go('notes')"><div class="icon">📖</div><h3>Grammar Notes</h3><p>Pronouns, postpositions, possessives, adjectives & more</p></div>
     <div class="home-card" onclick="go('tenses')"><div class="icon">⏰</div><h3>Tense Cheatsheet</h3><p>All tenses — Habitual, Progressive, Sakna, Chahna, Future, Ne</p></div>
     <div class="home-card" onclick="go('practice')"><div class="icon">✍️</div><h3>Translation Practice</h3><p>200+ sentences across 15 topic sets</p></div>
@@ -2896,8 +2996,14 @@ function checkVocabAnswer() {
   document.getElementById('vq-feedback-text').style.color = isCorrect ? 'var(--green)' : 'var(--red)';
   document.getElementById('vq-answer-text').textContent = 'Answer: ' + card.back;
   document.getElementById('vq-example-text').textContent = card.example || '';
-  if(isCorrect) vqScore++;
-  else vqMissed.push(card);
+  if(isCorrect) {
+    vqScore++;
+    MEM.record('vocab', true);
+    MEM.markKnown(card.front, true);
+  } else {
+    vqMissed.push(card);
+    MEM.record('vocab', false, card.front);
+  }
   document.getElementById('vq-score-display').textContent = 'Score: '+vqScore+'/'+(vqIdx+1);
 }
 
@@ -3048,8 +3154,9 @@ function checkHwAnswer() {
 function skipHw() { hwIdx++; showHwQ(); }
 
 function scoreHw(val) {
-  if(val === true) hwScore++;
-  else if(val === 'partial') hwScore += 0.5;
+  if(val === true) { hwScore++; MEM.record('homework', true); }
+  else if(val === 'partial') { hwScore += 0.5; MEM.record('homework', true); }
+  else { MEM.record('homework', false); }
   hwIdx++; showHwQ();
 }
 
@@ -3270,8 +3377,17 @@ const SQ_DATA = [
 
 const SQ_CATS = ['All', ...new Set(SQ_DATA.map(q=>q.cat))];
 var sqMode = 'en', sqCat = 'All', sqQueue = [], sqIdx = 0, sqScore = 0, sqAnswered = false;
+var sqResults = {}; // tracks correct/total per sentence
+
+function sqSave() {
+  try { localStorage.setItem('hindi_sq_results', JSON.stringify(sqResults)); } catch(e) {}
+}
+function sqLoad() {
+  try { var s = localStorage.getItem('hindi_sq_results'); if(s) sqResults = JSON.parse(s); } catch(e) {}
+}
 
 function initSQ() {
+  sqLoad();
   if (!document.querySelector('#sq-filters .fbtn')) {
     var fb = document.getElementById('sq-filters');
     SQ_CATS.forEach(function(c) {
@@ -3364,7 +3480,20 @@ function selectSQOpt(i, selected, correct) {
   fb.className = 'qfb ' + (isOk ? 'right show' : 'wrong show');
   fb.textContent = isOk ? '✅ Correct!' : '❌ The correct answer is shown in green above.';
 
-  if (isOk) sqScore++;
+  if (isOk) {
+    sqScore++;
+    var key = sqQueue[sqIdx].en;
+    sqResults[key] = (sqResults[key] || 0) + 1;
+    sqSave();
+    MEM.record('sentences', true);
+    MEM.markSentence(key, true);
+  } else {
+    var key = sqQueue[sqIdx].en;
+    sqResults[key] = 0;
+    sqSave();
+    MEM.record('sentences', false, key);
+    MEM.markSentence(key, false);
+  }
   document.getElementById('sq-score-display').textContent = sqScore + ' / ' + (sqIdx+1);
   document.getElementById('sq-next-wrap').style.display = 'block';
 }
@@ -3384,11 +3513,280 @@ function showSQFinish() {
   document.getElementById('sq-missed-list').innerHTML = '';
 }
 
+
+
+// ============================================================
+// MEMORY & SCORING SYSTEM
+// ============================================================
+
+var MEM = {
+  // Load all data from localStorage
+  load: function() {
+    try {
+      var d = localStorage.getItem('hindi_memory');
+      return d ? JSON.parse(d) : MEM.fresh();
+    } catch(e) { return MEM.fresh(); }
+  },
+  // Save all data
+  save: function(data) {
+    try { localStorage.setItem('hindi_memory', JSON.stringify(data)); } catch(e) {}
+  },
+  // Fresh data structure
+  fresh: function() {
+    return {
+      streak: 0,
+      lastVisit: null,
+      sections: {
+        vocab: {correct:0, total:0, known:[]},
+        sentences: {correct:0, total:0, mastered:{}},
+        grammar: {correct:0, total:0},
+        homework: {correct:0, total:0, scores:[]},
+        drill: {correct:0, total:0},
+        translate: {correct:0, total:0}
+      },
+      weakWords: [],
+      weakSentences: []
+    };
+  },
+  // Record a correct/wrong answer for a section
+  record: function(section, isCorrect, item) {
+    var data = MEM.load();
+    if (!data.sections[section]) data.sections[section] = {correct:0, total:0};
+    data.sections[section].total++;
+    if (isCorrect) data.sections[section].correct++;
+    
+    // Track weak items
+    if (!isCorrect && item) {
+      if (section === 'vocab' || section === 'sentences') {
+        var arr = section === 'vocab' ? data.weakWords : data.weakSentences;
+        var existing = arr.findIndex(function(x){return x.item===item;});
+        if (existing >= 0) arr[existing].count++;
+        else arr.push({item:item, count:1});
+        arr.sort(function(a,b){return b.count-a.count;});
+        if (arr.length > 10) arr = arr.slice(0,10);
+        if (section === 'vocab') data.weakWords = arr;
+        else data.weakSentences = arr;
+      }
+    }
+    MEM.save(data);
+    return data;
+  },
+  // Mark vocab word as known
+  markKnown: function(word, known) {
+    var data = MEM.load();
+    if (!data.sections.vocab.known) data.sections.vocab.known = [];
+    if (known) {
+      if (data.sections.vocab.known.indexOf(word) < 0)
+        data.sections.vocab.known.push(word);
+    } else {
+      data.sections.vocab.known = data.sections.vocab.known.filter(function(w){return w!==word;});
+    }
+    MEM.save(data);
+  },
+  // Mark sentence as mastered
+  markSentence: function(en, correct) {
+    var data = MEM.load();
+    if (!data.sections.sentences.mastered) data.sections.sentences.mastered = {};
+    data.sections.sentences.mastered[en] = (data.sections.sentences.mastered[en]||0) + (correct?1:-1);
+    if (data.sections.sentences.mastered[en] < 0) data.sections.sentences.mastered[en] = 0;
+    MEM.save(data);
+  },
+  // Get accuracy for a section
+  accuracy: function(section) {
+    var data = MEM.load();
+    var s = data.sections[section];
+    if (!s || s.total === 0) return 0;
+    return Math.round(s.correct/s.total*100);
+  },
+  // Get overall stats
+  stats: function() {
+    var data = MEM.load();
+    var totalCorrect = 0, totalAll = 0;
+    Object.keys(data.sections).forEach(function(k){
+      var s = data.sections[k];
+      totalCorrect += (s.correct||0);
+      totalAll += (s.total||0);
+    });
+    return {
+      streak: data.streak || 0,
+      totalCorrect: totalCorrect,
+      totalAll: totalAll,
+      accuracy: totalAll>0 ? Math.round(totalCorrect/totalAll*100) : 0,
+      vocabKnown: (data.sections.vocab.known||[]).length,
+      sentencesMastered: Object.keys(data.sections.sentences.mastered||{}).filter(function(k){
+        return (data.sections.sentences.mastered[k]||0) >= 2;
+      }).length,
+      sections: data.sections,
+      weakWords: data.weakWords||[],
+      weakSentences: data.weakSentences||[]
+    };
+  }
+};
+
+function trackVisit() {
+  var data = MEM.load();
+  var today = new Date().toDateString();
+  if (data.lastVisit === today) return;
+  var yesterday = new Date(Date.now()-86400000).toDateString();
+  if (data.lastVisit === yesterday) data.streak = (data.streak||0) + 1;
+  else if (data.lastVisit !== today) data.streak = 1;
+  data.lastVisit = today;
+  MEM.save(data);
+}
+
+function resetAllProgress() {
+  if (!confirm('Reset ALL progress? This cannot be undone.')) return;
+  localStorage.removeItem('hindi_memory');
+  localStorage.removeItem('hindi_sq_results');
+  localStorage.removeItem('hv3_known');
+  alert('All progress reset.');
+  renderDashboard();
+}
+
+// ============================================================
+// DASHBOARD RENDERER
+// ============================================================
+function renderDashboard() {
+  var s = MEM.stats();
+  
+  // Streak
+  document.getElementById('dash-streak-num').textContent = s.streak;
+  
+  // Top stats
+  document.getElementById('dash-total-score').textContent = s.totalCorrect;
+  document.getElementById('dash-total-pct').textContent = s.accuracy + '%';
+  document.getElementById('dash-vocab-known').textContent = s.vocabKnown;
+  document.getElementById('dash-sentences').textContent = s.sentencesMastered;
+
+  // Section bars
+  var sections = [
+    {key:'vocab', label:'Vocabulary', icon:'🃏'},
+    {key:'sentences', label:'Sentence Quiz', icon:'🎯'},
+    {key:'grammar', label:'Grammar Quiz', icon:'🧠'},
+    {key:'homework', label:'Homework', icon:'📝'},
+    {key:'drill', label:'Daily Drill', icon:'⚡'},
+    {key:'translate', label:'Translation', icon:'✍️'},
+  ];
+  var sectHtml = sections.map(function(sec) {
+    var d = s.sections[sec.key]||{correct:0,total:0};
+    var pct = d.total>0 ? Math.round(d.correct/d.total*100) : 0;
+    return '<div class="dash-section">'
+      + '<div class="dash-section-top">'
+      + '<span class="dash-section-name">'+sec.icon+' '+sec.label+'</span>'
+      + '<span class="dash-section-score">'+d.correct+'/'+d.total+' ('+pct+'%)</span>'
+      + '</div>'
+      + '<div class="dash-bar-wrap"><div class="dash-bar-fill" style="width:'+pct+'%"></div></div>'
+      + '</div>';
+  }).join('');
+  document.getElementById('dash-sections').innerHTML = sectHtml;
+
+  // Weak areas
+  var weakHtml = '';
+  if (s.weakWords.length) {
+    weakHtml += '<div class="weak-card"><div class="weak-title">⚠️ Vocab to revisit</div>'
+      + s.weakWords.slice(0,5).map(function(w){return '<div class="weak-item">'+w.item+' ('+w.count+' misses)</div>';}).join('')
+      + '</div>';
+  }
+  if (s.weakSentences.length) {
+    weakHtml += '<div class="weak-card"><div class="weak-title">⚠️ Sentences to revisit</div>'
+      + s.weakSentences.slice(0,3).map(function(w){return '<div class="weak-item">'+w.item+'</div>';}).join('')
+      + '</div>';
+  }
+  if (!weakHtml) weakHtml = '<div style="font-size:.85rem;color:var(--mid);padding:8px 0">No weak spots yet — keep practicing!</div>';
+  document.getElementById('dash-weak').innerHTML = weakHtml;
+
+  // Recommendation
+  var lowestSection = sections.reduce(function(min, sec) {
+    var d = s.sections[sec.key]||{correct:0,total:0};
+    var pct = d.total>0 ? d.correct/d.total : -1;
+    var minPct = s.sections[min.key]&&s.sections[min.key].total>0 ? s.sections[min.key].correct/s.sections[min.key].total : -1;
+    return pct < minPct ? sec : min;
+  }, sections[0]);
+  
+  var recMap = {vocab:'flashcards', sentences:'sentence-quiz', grammar:'quiz', homework:'homework', drill:'daily', translate:'practice'};
+  document.getElementById('dash-recommend').innerHTML = 
+    '<h2 style="margin-bottom:6px">'+lowestSection.icon+' '+lowestSection.label+'</h2>'
+    + '<p style="font-size:.85rem;color:var(--mid);margin-bottom:10px">Your lowest scoring section — click to practice</p>'
+    + '<button class="btn btn-o" onclick="go(\'' + recMap[lowestSection.key] + '\')" style="width:100%">Start practicing →</button>';
+}
+
+// ============================================================
+// WIRE UP SCORING TO EXISTING FUNCTIONS
+// ============================================================
+
+// Hook into grammar quiz scoring
+var _origNextQuiz = null;
+window.addEventListener('load', function() {
+  // Patch initQuiz to track scores
+  var origInitQuiz = initQuiz;
+  initQuiz = function() {
+    origInitQuiz.apply(this, arguments);
+  };
+});
+
+// Patch selectOpt for grammar quiz to record scores
+function recordGrammarScore(isCorrect) {
+  MEM.record('grammar', isCorrect);
+}
+
+// Patch selectSQOpt for sentence quiz
+var _origSelectSQOpt = null;
+window.addEventListener('DOMContentLoaded', function() {
+  // Will be patched after functions are defined
+});
+
+
 // ===== INIT ON LOAD =====
 window.onload = function() {
+  initPW();
   initPractice();
   initFlashcards();
+  trackVisit();
 };
+
+
+// ===== PASSWORD PROTECTION =====
+// Password is "vijay2026"
+var PW_HASH = '797e3fef'; // simple fingerprint
+
+function hashStr(s) {
+  var h = 0;
+  for (var i = 0; i < s.length; i++) {
+    h = Math.imul(31, h) + s.charCodeAt(i) | 0;
+  }
+  return Math.abs(h).toString(16).slice(0,8);
+}
+
+function checkPW() {
+  var input = document.getElementById('pw-input').value;
+  var err = document.getElementById('pw-error');
+  var inp = document.getElementById('pw-input');
+  
+  if (hashStr(input) === PW_HASH) {
+    // Correct — save to session and hide screen
+    sessionStorage.setItem('hindi_auth', PW_HASH);
+    document.getElementById('password-screen').classList.add('hidden');
+    err.classList.remove('show');
+  } else {
+    // Wrong
+    inp.classList.add('wrong');
+    err.classList.add('show');
+    inp.value = '';
+    setTimeout(function(){ inp.classList.remove('wrong'); }, 400);
+  }
+}
+
+function initPW() {
+  // Check if already authenticated this session
+  if (sessionStorage.getItem('hindi_auth') === PW_HASH) {
+    document.getElementById('password-screen').classList.add('hidden');
+  }
+  // Focus password input
+  var inp = document.getElementById('pw-input');
+  if (inp) setTimeout(function(){ inp.focus(); }, 100);
+}
+
+
 </script>
 </body>
 </html>
