@@ -7,217 +7,656 @@
 <meta name="apple-mobile-web-app-title" content="Hindi">
 <title>Vijay's Hindi Practice</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
 :root {
-  --orange:#e8651a; --orange-light:#fff4ed; --green:#2e7d32; --green-light:#e8f5e9;
-  --blue:#1565c0; --blue-light:#e3f2fd; --red:#c62828; --red-light:#ffebee;
-  --dark:#1a1a1a; --mid:#666; --border:#e0e0e0; --grey:#f5f5f5;
-}
-* { box-sizing:border-box; margin:0; padding:0; }
-body { font-family:'Segoe UI',sans-serif; background:#fafafa; color:var(--dark); }
-nav {
-  background:var(--orange); color:white; padding:0 16px;
-  height:52px; display:flex; align-items:center; gap:4px; flex-wrap:wrap;
-  position:sticky; top:0; z-index:100; box-shadow:0 2px 8px rgba(0,0,0,.15);
-}
-nav h1 { font-size:1rem; font-weight:800; margin-right:8px; white-space:nowrap; }
-nav button {
-  background:rgba(255,255,255,.15); border:none; color:white;
-  padding:5px 10px; border-radius:16px; cursor:pointer; font-size:.78rem;
-  font-weight:600; white-space:nowrap; transition:background .2s;
-}
-nav button.on, nav button:hover { background:rgba(255,255,255,.35); }
-.page { padding:20px; max-width:860px; margin:0 auto; }
-.card { background:white; border-radius:12px; padding:18px; margin-bottom:14px; border:1px solid var(--border); box-shadow:0 1px 4px rgba(0,0,0,.05); }
-.card h2 { font-size:1.05rem; color:var(--orange); margin-bottom:12px; }
-.card h3 { font-size:.9rem; color:var(--blue); margin:10px 0 6px; }
-table { width:100%; border-collapse:collapse; font-size:.85rem; margin:8px 0; }
-th { background:var(--orange); color:white; padding:7px 10px; text-align:left; }
-td { padding:6px 10px; border-bottom:1px solid var(--border); }
-tr:nth-child(even) td { background:var(--grey); }
-.rule { background:var(--orange-light); border-left:3px solid var(--orange); padding:10px 14px; border-radius:4px; font-size:.87rem; margin:6px 0; line-height:1.6; }
-.eg { background:var(--blue-light); padding:8px 12px; border-radius:4px; font-size:.84rem; margin:5px 0; color:var(--blue); font-weight:500; }
-.home-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-@media(max-width:480px){ .home-grid { grid-template-columns:1fr; } }
-.home-card { background:white; border-radius:12px; padding:16px; border:1px solid var(--border); cursor:pointer; text-align:center; transition:all .2s; }
-.home-card:hover { border-color:var(--orange); transform:translateY(-2px); box-shadow:0 4px 12px rgba(232,101,26,.15); }
-.home-card .icon { font-size:1.8rem; margin-bottom:6px; }
-.home-card h3 { font-size:.9rem; }
-.home-card p { font-size:.75rem; color:var(--mid); margin-top:3px; }
-.welcome { font-size:1rem; color:var(--mid); margin-bottom:16px; }
-.welcome strong { color:var(--orange); }
-textarea { width:100%; padding:10px; border:2px solid var(--border); border-radius:8px; font-size:.92rem; resize:vertical; min-height:64px; font-family:inherit; }
-textarea:focus { outline:none; border-color:var(--orange); }
-.btn { padding:9px 18px; border:none; border-radius:8px; cursor:pointer; font-size:.88rem; font-weight:600; transition:all .2s; }
-.btn-o { background:var(--orange); color:white; }
-.btn-g { background:var(--grey); color:var(--dark); }
-.btn-grn { background:var(--green); color:white; }
-.btn-row { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
-.ans-box { margin-top:12px; padding:12px; border-radius:8px; }
-.ans-box.green { background:var(--green-light); border-left:4px solid var(--green); }
-.ans-box.blue { background:var(--blue-light); border-left:4px solid var(--blue); }
-.ans-hindi { font-size:1rem; font-weight:700; }
-.ans-note { font-size:.82rem; color:var(--mid); margin-top:6px; line-height:1.5; }
-.counter { font-size:.8rem; color:var(--mid); margin-bottom:8px; }
-.prog-wrap { background:var(--border); border-radius:8px; height:7px; margin:8px 0; }
-.prog-bar { background:var(--orange); height:7px; border-radius:8px; transition:width .3s; }
-.sentence-box { background:var(--orange-light); border-left:4px solid var(--orange); padding:12px 14px; border-radius:8px; margin-bottom:12px; }
-.sentence-box .en { font-size:1.05rem; font-weight:700; }
-.sentence-box .hint { font-size:.8rem; color:var(--mid); margin-top:3px; }
-.filters { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
-.fbtn { padding:5px 11px; border-radius:14px; border:2px solid var(--border); background:white; cursor:pointer; font-size:.78rem; font-weight:600; transition:all .2s; }
-.fbtn.on, .fbtn:hover { border-color:var(--orange); background:var(--orange-light); color:var(--orange); }
-.flashcard { perspective:1000px; height:170px; margin:12px 0; cursor:pointer; }
-.fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
-.flashcard.flipped .fc-inner { transform:rotateY(180deg); }
-.fc-front, .fc-back { position:absolute; width:100%; height:100%; backface-visibility:hidden; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:16px; }
-.fc-front { background:var(--orange); color:white; }
-.fc-back { background:var(--green); color:white; transform:rotateY(180deg); }
-.fc-word { font-size:1.5rem; font-weight:800; }
-.fc-cat { font-size:.75rem; opacity:.8; margin-top:4px; }
-.fc-trans { font-size:1.3rem; font-weight:700; }
-.fc-eg { font-size:.78rem; opacity:.9; margin-top:6px; }
-.fc-nav { display:flex; gap:8px; justify-content:center; align-items:center; margin-top:8px; }
-.fc-nav span { font-size:.82rem; color:var(--mid); }
-.quiz-q { font-size:.97rem; font-weight:700; margin-bottom:12px; }
-.quiz-opts { display:flex; flex-direction:column; gap:7px; }
-.qopt { padding:10px 13px; border:2px solid var(--border); border-radius:8px; cursor:pointer; font-size:.88rem; background:white; text-align:left; transition:all .2s; font-family:inherit; }
-.qopt:hover { border-color:var(--orange); background:var(--orange-light); }
-.qopt.right { border-color:var(--green); background:var(--green-light); color:var(--green); }
-.qopt.wrong { border-color:var(--red); background:var(--red-light); color:var(--red); }
-.qfb { margin-top:10px; padding:10px; border-radius:8px; font-size:.85rem; display:none; line-height:1.5; }
-.qfb.show { display:block; }
-.qfb.right { background:var(--green-light); color:var(--green); }
-.qfb.wrong { background:var(--red-light); color:var(--red); }
-.score { text-align:center; padding:20px; }
-.score-num { font-size:2.5rem; font-weight:800; color:var(--orange); }
-.score-msg { font-size:.9rem; color:var(--mid); margin-top:6px; }
-.hw-set { margin-bottom:8px; }
-.hw-toggle { width:100%; text-align:left; background:white; border:1px solid var(--border); border-radius:8px; padding:11px 14px; cursor:pointer; font-weight:600; font-size:.88rem; display:flex; justify-content:space-between; align-items:center; }
-.hw-toggle:hover { background:var(--orange-light); }
-.hw-badge { background:var(--orange); color:white; border-radius:10px; padding:2px 8px; font-size:.72rem; }
-.hw-content { display:none; background:white; border:1px solid var(--border); border-top:none; border-radius:0 0 8px 8px; padding:14px; }
-.hw-item { padding:7px 0; border-bottom:1px solid var(--border); font-size:.88rem; display:flex; gap:8px; }
-.hw-item:last-child { border-bottom:none; }
-.hw-num { color:var(--orange); font-weight:700; min-width:20px; }
-.hw-ans { font-size:.82rem; color:var(--mid); margin-top:2px; font-style:italic; }
-.drill-badge { display:inline-block; padding:3px 10px; border-radius:10px; font-size:.75rem; font-weight:700; margin-bottom:10px; }
-.drill-q { font-size:1.1rem; font-weight:700; margin-bottom:14px; line-height:1.4; }
-.drill-opts { display:flex; flex-direction:column; gap:7px; margin-bottom:10px; }
-.dopt { padding:10px 13px; border:2px solid var(--border); border-radius:8px; cursor:pointer; font-size:.88rem; background:white; text-align:left; font-family:inherit; transition:all .2s; }
-.dopt:hover { border-color:var(--orange); background:var(--orange-light); }
-.dopt.right { border-color:var(--green)!important; background:var(--green-light)!important; color:var(--green)!important; }
-.dopt.wrong { border-color:var(--red)!important; background:var(--red-light)!important; color:var(--red)!important; }
-.drill-ans { background:var(--green-light); border-left:4px solid var(--green); padding:12px; border-radius:8px; margin:10px 0; display:none; }
-.drill-ans-label { font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:var(--green); margin-bottom:4px; }
-.drill-ans-text { font-size:.97rem; font-weight:700; }
-.drill-ans-hint { font-size:.8rem; color:var(--mid); margin-top:5px; }
-.drill-complete { text-align:center; padding:28px 20px; background:white; border-radius:14px; border:2px solid var(--green); }
-.drill-score { font-size:2.8rem; font-weight:800; color:var(--orange); }
-.drill-pct { font-size:1.05rem; color:var(--green); font-weight:700; margin:4px 0 10px; }
-.weak-box { background:var(--orange-light); border-left:3px solid var(--orange); padding:9px 13px; border-radius:4px; font-size:.85rem; margin:5px 0; }
-.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-@media(max-width:560px){ .grid2 { grid-template-columns:1fr; } }
-.tense-card { background:white; border-radius:10px; padding:12px; border:2px solid var(--border); }
-.tense-card h4 { color:var(--orange); font-size:.88rem; margin-bottom:7px; }
+  /* Core palette — warm, rich, premium */
+  --ink:        #0F1923;
+  --ink-2:      #1E2D3D;
+  --ink-light:  #2C3E50;
+  --saffron:    #E8871A;
+  --saffron-2:  #FF9F1C;
+  --gold:       #C8972B;
+  --gold-light: #FFF3DC;
+  --cream:      #FAFAF7;
+  --cream-2:    #F4F3EE;
+  --white:      #FFFFFF;
+  --sage:       #4A7C59;
+  --sage-light: #EBF4EE;
+  --ruby:       #C0392B;
+  --ruby-light: #FDECEA;
+  --cobalt:     #1A56A0;
+  --cobalt-light: #EBF2FB;
+  --mid:        #6B7280;
+  --border:     #E8E7E2;
+  --shadow-sm:  0 1px 3px rgba(15,25,35,0.08), 0 1px 2px rgba(15,25,35,0.04);
+  --shadow-md:  0 4px 16px rgba(15,25,35,0.10), 0 2px 6px rgba(15,25,35,0.06);
+  --shadow-lg:  0 12px 32px rgba(15,25,35,0.14), 0 4px 12px rgba(15,25,35,0.08);
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+  --r-xl: 24px;
 
-/* CHAPTERS */
-.ch-grid{display:flex;flex-direction:column;gap:8px}
-.ch-card{background:white;border-radius:12px;border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:box-shadow .15s}
-.ch-card:active{box-shadow:0 4px 12px rgba(232,101,26,.2)}
-.ch-header{display:flex;align-items:center;gap:12px;padding:14px 16px}
-.ch-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
-.ch-info{flex:1}
-.ch-num{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mid)}
-.ch-title{font-size:.95rem;font-weight:700;color:var(--dark);margin:1px 0}
-.ch-sub{font-size:.78rem;color:var(--mid)}
-.ch-arrow{color:var(--mid);font-size:1.2rem}
-.ch-progress-bar{height:3px;background:var(--border)}
-.ch-progress-fill{height:100%;background:var(--orange);transition:width .4s}
-
-/* CHAPTER DETAIL */
-.ch-detail-hdr{border-radius:12px;padding:18px;margin-bottom:14px;color:white}
-.ch-detail-hdr h2{font-size:1.1rem;font-weight:800;margin-bottom:2px}
-.ch-detail-hdr p{font-size:.82rem;opacity:.85}
-.ch-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
-.ch-tabs::-webkit-scrollbar{display:none}
-.ch-tab{flex-shrink:0;padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:600;border:1.5px solid var(--border);background:white;cursor:pointer;color:var(--mid)}
-.ch-tab.on{background:var(--orange);border-color:var(--orange);color:white}
-.ch-content{display:none}
-.ch-content.on{display:block}
-.ch-rule{background:var(--orange-light);border-left:4px solid var(--orange);padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:10px;font-size:.88rem;line-height:1.5}
-.ch-formula{background:#e3f2fd;border-left:4px solid #1565c0;padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:10px;font-size:.88rem;font-family:monospace;line-height:1.6}
-.ch-eg{font-size:.88rem;color:#1565c0;font-style:italic;padding:4px 0;border-bottom:1px solid var(--border)}
-.ch-eg:last-child{border-bottom:none}
-.ch-mini-q{background:white;border-radius:10px;border:1px solid var(--border);padding:14px;margin-bottom:10px}
-.ch-mini-q .q{font-size:.9rem;font-weight:700;margin-bottom:10px;line-height:1.4}
-.ch-mini-opt{padding:9px 12px;border-radius:8px;border:1px solid var(--border);margin-bottom:6px;cursor:pointer;font-size:.85rem;transition:all .15s}
-.ch-mini-opt:active{transform:scale(.98)}
-.ch-mini-opt.correct{background:var(--green-light);border-color:var(--green);color:var(--green);font-weight:600}
-.ch-mini-opt.wrong{background:var(--red-light);border-color:var(--red);color:var(--red)}
-.ch-mini-opt.reveal{background:var(--green-light);border-color:var(--green);color:var(--green)}
-.ch-sentence-item{padding:10px 0;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:3px}
-.ch-sentence-item .en{font-size:.88rem;font-weight:600;color:var(--dark)}
-.ch-sentence-item .hi{font-size:.88rem;color:#1565c0;display:none}
-.ch-sentence-item .hi.show{display:block}
-.ch-reveal-btn{font-size:.75rem;color:var(--orange);background:none;border:none;cursor:pointer;font-weight:600;padding:2px 0}
-.back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--orange);font-size:.88rem;font-weight:700;cursor:pointer;padding:0;margin-bottom:12px}
-
-
-#password-screen{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  background:linear-gradient(135deg,#0D1B3E 0%,#1A2D5A 100%);
-  display:flex;align-items:center;justify-content:center;
-  z-index:9999;flex-direction:column;padding:24px;
+  /* Legacy compat */
+  --orange: var(--saffron);
+  --orange-light: var(--gold-light);
+  --green: var(--sage);
+  --green-light: var(--sage-light);
+  --blue: var(--cobalt);
+  --blue-light: var(--cobalt-light);
+  --red: var(--ruby);
+  --red-light: var(--ruby-light);
+  --dark: var(--ink);
+  --border: #E8E7E2;
 }
-#password-screen.hidden{display:none;}
-.pw-box{
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,153,51,0.4);
-  border-radius:20px;padding:36px 28px;
-  text-align:center;max-width:340px;width:100%;
-}
-.pw-flag{font-size:52px;margin-bottom:12px;}
-.pw-title{font-size:22px;font-weight:800;color:#FF9933;margin-bottom:4px;}
-.pw-sub{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:24px;}
-.pw-input{
-  width:100%;padding:14px 16px;font-size:18px;
-  border:2px solid rgba(255,255,255,0.15);
-  border-radius:12px;background:rgba(255,255,255,0.08);
-  color:white;font-family:inherit;outline:none;
-  text-align:center;letter-spacing:4px;margin-bottom:12px;
-}
-.pw-input:focus{border-color:#FF9933;}
-.pw-input.wrong{border-color:#c62828;animation:shake .3s ease;}
-@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px)};}
-.pw-btn{
-  width:100%;padding:14px;border-radius:12px;border:none;
-  background:#FF9933;color:#0D1B3E;font-size:16px;
-  font-weight:800;cursor:pointer;font-family:inherit;
-  transition:opacity .15s;
-}
-.pw-btn:active{opacity:.85;}
-.pw-error{color:#ef9a9a;font-size:13px;margin-top:10px;display:none;}
-.pw-error.show{display:block;}
 
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.dash-card{background:white;border-radius:12px;padding:16px;text-align:center;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.05)}
-.dash-num{font-size:2.2rem;font-weight:800;color:var(--orange)}
-.dash-lbl{font-size:.75rem;color:var(--mid);margin-top:2px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
-.dash-section{background:white;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid var(--border)}
-.dash-section-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.dash-section-name{font-size:.9rem;font-weight:700;color:var(--dark)}
-.dash-section-score{font-size:.82rem;font-weight:700;color:var(--green)}
-.dash-bar-wrap{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
-.dash-bar-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--green));border-radius:3px;transition:width .5s}
-.streak-card{background:linear-gradient(135deg,var(--orange),#ff6b35);border-radius:12px;padding:16px;text-align:center;color:white;margin-bottom:14px}
-.streak-num{font-size:3rem;font-weight:800}
-.streak-lbl{font-size:.85rem;opacity:.9;margin-top:2px}
-.weak-card{background:var(--orange-light);border:1px solid var(--orange);border-radius:10px;padding:12px;margin-bottom:8px}
-.weak-title{font-size:.8rem;font-weight:700;color:var(--orange);margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
-.weak-item{font-size:.82rem;color:var(--dark);padding:3px 0;border-bottom:1px solid rgba(232,101,26,.15)}
+html { -webkit-text-size-adjust: 100%; }
 
-.formula { background:var(--dark); color:#ffd54f; padding:7px 10px; border-radius:6px; font-family:monospace; font-size:.8rem; margin:5px 0; }
+body {
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── TYPOGRAPHY ─────────────────────────────────────── */
+h1, h2, h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink);
+}
+h1 { font-size: 1.6rem; }
+h2 { font-size: 1.15rem; margin-bottom: 6px; }
+h3 { font-size: 1rem; }
+
+/* ── TOP BAR ─────────────────────────────────────────── */
+.top-bar {
+  background: var(--ink);
+  padding: 14px 18px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1.5px solid rgba(232,135,26,0.25);
+}
+.top-bar-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--saffron);
+  letter-spacing: -0.3px;
+}
+.top-bar-subtitle {
+  font-size: .7rem;
+  color: rgba(255,255,255,0.4);
+  margin-top: 1px;
+  letter-spacing: 0.2px;
+}
+.top-streak {
+  background: rgba(232,135,26,0.12);
+  border: 1px solid rgba(232,135,26,0.3);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--saffron-2);
+  letter-spacing: 0.2px;
+}
+
+/* ── BOTTOM NAV ───────────────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--ink);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 100;
+}
+.bnav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 9px 4px 7px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: 'DM Sans', sans-serif;
+  position: relative;
+  transition: opacity 0.15s;
+}
+.bnav-icon {
+  width: 22px;
+  height: 22px;
+  margin-bottom: 3px;
+  opacity: 0.35;
+  transition: opacity 0.15s;
+}
+.bnav-item.on .bnav-icon { opacity: 1; }
+.bnav-label {
+  font-size: .6rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: color 0.15s;
+}
+.bnav-item.on .bnav-label { color: var(--saffron); }
+.bnav-item.on::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 25%; right: 25%;
+  height: 2px;
+  background: var(--saffron);
+  border-radius: 0 0 3px 3px;
+}
+
+/* ── CARDS ───────────────────────────────────────────── */
+.card {
+  background: var(--white);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  padding: 16px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── BUTTONS ────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: var(--r-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  letter-spacing: 0.1px;
+}
+.btn:active { transform: scale(0.97); }
+.btn-o { background: var(--saffron); color: var(--white); }
+.btn-o:hover { background: var(--saffron-2); }
+.btn-g { background: var(--sage); color: var(--white); }
+.btn-b { background: var(--cobalt); color: var(--white); }
+.btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--mid); }
+
+/* ── INPUTS ─────────────────────────────────────────── */
+input[type=text], textarea {
+  font-family: 'DM Sans', sans-serif;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 10px 14px;
+  font-size: .95rem;
+  color: var(--ink);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+input:focus, textarea:focus {
+  border-color: var(--saffron);
+  box-shadow: 0 0 0 3px rgba(232,135,26,0.12);
+}
+
+/* ── TABLE ───────────────────────────────────────────── */
+table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+th {
+  background: var(--ink);
+  color: var(--white);
+  padding: 7px 10px;
+  text-align: left;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: .75rem;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+th:first-child { border-radius: 6px 0 0 0; }
+th:last-child { border-radius: 0 6px 0 0; }
+td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  color: var(--ink-light);
+  line-height: 1.45;
+}
+tr:last-child td { border-bottom: none; }
+tr:nth-child(even) td { background: var(--cream); }
+
+/* ── PROGRESS BARS ───────────────────────────────────── */
+.prog-wrap {
+  height: 4px;
+  background: var(--cream-2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 6px 0;
+}
+.prog-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--saffron), var(--saffron-2));
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+/* ── FILTERS / PILLS ─────────────────────────────────── */
+.filters {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.fbtn {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: .78rem;
+  font-weight: 600;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  cursor: pointer;
+  color: var(--mid);
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+  letter-spacing: 0.1px;
+}
+.fbtn.on { background: var(--ink); border-color: var(--ink); color: var(--white); }
+
+/* ── QUIZ/DRILL OPTIONS ──────────────────────────────── */
+.drill-opts, .quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+.drill-opt, .ch-mini-opt {
+  padding: 11px 14px;
+  border-radius: var(--r-sm);
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--white);
+  transition: all 0.15s;
+  line-height: 1.4;
+}
+.drill-opt:hover, .ch-mini-opt:hover { border-color: var(--saffron); background: var(--gold-light); }
+.drill-opt:active, .ch-mini-opt:active { transform: scale(0.98); }
+.drill-opt.correct, .ch-mini-opt.correct { background: var(--sage-light); border-color: var(--sage); color: var(--sage); font-weight: 600; }
+.drill-opt.wrong, .ch-mini-opt.wrong { background: var(--ruby-light); border-color: var(--ruby); color: var(--ruby); font-weight: 600; }
+.drill-opt.reveal, .ch-mini-opt.reveal { background: var(--sage-light); border-color: var(--sage); color: var(--sage); font-weight: 600; }
+
+/* ── FEEDBACK ────────────────────────────────────────── */
+.qfb {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: var(--r-sm);
+  font-size: .85rem;
+  display: none;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.qfb.show { display: block; }
+.qfb.right { background: var(--sage-light); color: var(--sage); border-left: 3px solid var(--sage); }
+.qfb.wrong { background: var(--ruby-light); color: var(--ruby); border-left: 3px solid var(--ruby); }
+
+/* ── SCORE / FINISH ──────────────────────────────────── */
+.score {
+  background: var(--white);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  padding: 28px 16px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 10px;
+}
+.score-num {
+  font-family: 'Fraunces', serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--saffron);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.score-msg { font-size: .95rem; color: var(--mid); }
+
+/* ── COUNTER ─────────────────────────────────────────── */
+.counter {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--mid);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* ── ANSWER INPUT STATES ─────────────────────────────── */
+input.correct { border-color: var(--sage) !important; background: var(--sage-light) !important; color: var(--sage) !important; }
+input.wrong   { border-color: var(--ruby) !important; background: var(--ruby-light) !important; color: var(--ruby) !important; }
+
+/* ── PAGE / LAYOUT ───────────────────────────────────── */
+.page { padding: 14px 16px 96px; }
+
+/* ── GRAMMAR NOTES ───────────────────────────────────── */
+.section-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 18px 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--gold-light);
+}
+.rule-box {
+  background: var(--gold-light);
+  border-left: 3px solid var(--saffron);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  padding: 10px 14px;
+  font-size: .875rem;
+  line-height: 1.55;
+  margin-bottom: 10px;
+  color: var(--ink-light);
+}
+.formula-box {
+  background: var(--cobalt-light);
+  border-left: 3px solid var(--cobalt);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  padding: 10px 14px;
+  font-family: 'DM Sans', monospace;
+  font-size: .82rem;
+  color: var(--cobalt);
+  margin-bottom: 10px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+.example-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+.example-row:last-child { border-bottom: none; }
+.example-en { font-size: .88rem; font-weight: 600; color: var(--ink); }
+.example-hi { font-size: .88rem; color: var(--cobalt); font-style: italic; }
+
+/* ── TENSES PAGE ─────────────────────────────────────── */
+.tense-card {
+  background: var(--white);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-sm);
+}
+.tense-card h4 { font-family: 'Fraunces', serif; color: var(--saffron); font-size: .95rem; margin-bottom: 8px; font-weight: 600; }
+.tense-card code { font-size: .8rem; background: var(--cream-2); padding: 2px 6px; border-radius: 4px; color: var(--cobalt); font-family: 'DM Sans', monospace; }
+
+/* ── VOCAB / FLASHCARD ───────────────────────────────── */
+.fc-card {
+  background: var(--white);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+  margin-bottom: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.fc-card:active { transform: scale(0.98); }
+.fc-front { font-family: 'Fraunces', serif; font-size: 1.6rem; font-weight: 600; color: var(--ink); }
+.fc-back { font-size: 1rem; color: var(--cobalt); font-style: italic; margin-top: 8px; display: none; }
+.fc-cat { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mid); margin-bottom: 8px; }
+
+/* ── HOMEWORK ────────────────────────────────────────── */
+.hw-q { font-size: .95rem; font-weight: 600; margin-bottom: 10px; line-height: 1.45; color: var(--ink); }
+.hw-hint { font-size: .8rem; color: var(--mid); margin-bottom: 8px; font-style: italic; }
+.hw-answer { font-family: 'DM Sans', monospace; font-size: .88rem; color: var(--cobalt); background: var(--cobalt-light); padding: 8px 12px; border-radius: var(--r-sm); margin: 8px 0; display: none; border-left: 3px solid var(--cobalt); }
+.score-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.sbtn {
+  flex: 1;
+  padding: 9px;
+  border-radius: var(--r-sm);
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+  min-width: 60px;
+}
+.sbtn:active { transform: scale(0.97); }
+.sbtn-correct { background: var(--sage); color: white; }
+.sbtn-partial { background: var(--saffron); color: white; }
+.sbtn-wrong   { background: var(--cream-2); color: var(--mid); border: 1.5px solid var(--border); }
+
+/* ── QUIZ PAGE SPECIFIC ──────────────────────────────── */
+.quiz-q {
+  font-family: 'Fraunces', serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+/* ── CHAPTERS ────────────────────────────────────────── */
+.ch-grid { display: flex; flex-direction: column; gap: 8px; }
+.ch-card {
+  background: var(--white);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s, transform 0.1s;
+}
+.ch-card:active { transform: scale(0.99); box-shadow: var(--shadow-md); }
+.ch-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+.ch-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+.ch-info { flex: 1; min-width: 0; }
+.ch-num { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mid); margin-bottom: 1px; }
+.ch-title { font-family: 'Fraunces', serif; font-size: .95rem; font-weight: 600; color: var(--ink); margin-bottom: 1px; line-height: 1.3; }
+.ch-sub { font-size: .75rem; color: var(--mid); }
+.ch-arrow { color: var(--border); font-size: 1.1rem; font-weight: 300; }
+.ch-progress-bar { height: 3px; background: var(--cream-2); }
+.ch-progress-fill { height: 100%; transition: width 0.4s; }
+.ch-detail-hdr { border-radius: var(--r-lg); padding: 20px; margin-bottom: 14px; color: white; }
+.ch-detail-hdr h2 { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 3px; }
+.ch-detail-hdr p { font-size: .8rem; opacity: 0.8; }
+.ch-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: var(--cream-2);
+  border-radius: var(--r-sm);
+  padding: 4px;
+}
+.ch-tabs::-webkit-scrollbar { display: none; }
+.ch-tab {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border-radius: 7px;
+  font-size: .8rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--mid);
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+.ch-tab.on { background: var(--white); color: var(--ink); box-shadow: var(--shadow-sm); }
+.ch-content { display: none; }
+.ch-content.on { display: block; }
+.ch-rule {
+  background: var(--gold-light);
+  border-left: 3px solid var(--saffron);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  padding: 10px 14px;
+  font-size: .875rem;
+  line-height: 1.55;
+  margin-bottom: 8px;
+  color: var(--ink-light);
+}
+.ch-formula {
+  background: var(--cobalt-light);
+  border-left: 3px solid var(--cobalt);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  padding: 10px 14px;
+  font-size: .82rem;
+  color: var(--cobalt);
+  margin-bottom: 10px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+.ch-sentence-item { padding: 10px 0; border-bottom: 1px solid var(--border); }
+.ch-sentence-item:last-child { border-bottom: none; }
+.ch-sentence-item .en { font-size: .88rem; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+.ch-sentence-item .hi { font-size: .88rem; color: var(--cobalt); font-style: italic; display: none; margin-top: 4px; }
+.ch-sentence-item .hi.show { display: block; }
+.ch-reveal-btn { font-size: .75rem; color: var(--saffron); background: none; border: none; cursor: pointer; font-weight: 600; padding: 2px 0; font-family: 'DM Sans', sans-serif; }
+.back-btn { display: inline-flex; align-items: center; gap: 5px; background: none; border: none; color: var(--saffron); font-size: .88rem; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 14px; font-family: 'DM Sans', sans-serif; }
+.ch-mini-q { background: var(--white); border-radius: var(--r-sm); border: 1px solid var(--border); padding: 14px; margin-bottom: 10px; }
+.ch-mini-q .q { font-family: 'Fraunces', serif; font-size: .9rem; font-weight: 600; margin-bottom: 10px; line-height: 1.4; }
+
+/* ── DASHBOARD ───────────────────────────────────────── */
+.dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.dash-card { background: var(--white); border-radius: var(--r-md); padding: 16px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.dash-num { font-family: 'Fraunces', serif; font-size: 2.2rem; font-weight: 700; color: var(--saffron); line-height: 1; }
+.dash-lbl { font-size: .7rem; color: var(--mid); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+.dash-section { background: var(--white); border-radius: var(--r-md); padding: 12px 14px; margin-bottom: 8px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.dash-section-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
+.dash-section-name { font-size: .88rem; font-weight: 600; color: var(--ink); }
+.dash-section-score { font-size: .8rem; font-weight: 700; color: var(--sage); }
+.dash-bar-wrap { height: 5px; background: var(--cream-2); border-radius: 3px; overflow: hidden; }
+.dash-bar-fill { height: 100%; background: linear-gradient(90deg, var(--saffron), var(--sage)); border-radius: 3px; transition: width 0.5s; }
+.streak-card {
+  background: linear-gradient(135deg, var(--saffron) 0%, var(--saffron-2) 100%);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  text-align: center;
+  color: white;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-md);
+}
+.streak-num { font-family: 'Fraunces', serif; font-size: 3rem; font-weight: 700; line-height: 1; }
+.streak-lbl { font-size: .85rem; opacity: 0.85; margin-top: 4px; }
+.weak-card { background: var(--gold-light); border: 1px solid rgba(232,135,26,0.2); border-radius: var(--r-md); padding: 12px; margin-bottom: 8px; }
+.weak-title { font-size: .72rem; font-weight: 700; color: var(--saffron); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.4px; }
+.weak-item { font-size: .82rem; color: var(--ink); padding: 4px 0; border-bottom: 1px solid rgba(232,135,26,0.12); }
+
+/* ── PASSWORD SCREEN ────────────────────────────────── */
+#password-screen {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999; padding: 24px;
+}
+#password-screen.hidden { display: none; }
+.pw-box {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--r-xl);
+  padding: 36px 28px;
+  text-align: center;
+  max-width: 340px;
+  width: 100%;
+}
+.pw-flag { font-size: 48px; margin-bottom: 14px; }
+.pw-title { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 600; color: var(--saffron); margin-bottom: 4px; }
+.pw-sub { font-size: .82rem; color: rgba(255,255,255,0.4); margin-bottom: 24px; }
+.pw-input {
+  width: 100%; padding: 13px 16px; font-size: 1.1rem;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: var(--r-sm);
+  background: rgba(255,255,255,0.06);
+  color: white; font-family: 'DM Sans', sans-serif; outline: none;
+  text-align: center; letter-spacing: 4px; margin-bottom: 12px;
+}
+.pw-input:focus { border-color: var(--saffron); box-shadow: 0 0 0 3px rgba(232,135,26,0.15); }
+.pw-input.wrong { border-color: var(--ruby); animation: shake .3s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+.pw-btn {
+  width: 100%; padding: 13px; border-radius: var(--r-sm); border: none;
+  background: var(--saffron); color: var(--ink); font-size: .95rem;
+  font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  letter-spacing: 0.3px; transition: background 0.15s;
+}
+.pw-btn:hover { background: var(--saffron-2); }
+.pw-error { color: var(--ruby-light); font-size: .82rem; margin-top: 10px; display: none; }
+.pw-error.show { display: block; }
+
+/* ── SENTENCE QUIZ ───────────────────────────────────── */
+.sq-opt {
+  padding: 11px 14px;
+  border-radius: var(--r-sm);
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--white);
+  transition: all 0.15s;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.sq-opt-letter {
+  width: 24px; height: 24px; border-radius: 6px;
+  background: var(--cream-2); display: flex; align-items: center;
+  justify-content: center; font-size: .75rem; font-weight: 700;
+  color: var(--saffron); flex-shrink: 0;
+}
+
+/* ── MISC ────────────────────────────────────────────── */
+.sec-nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 8px 16px; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.sec-nav::-webkit-scrollbar { display: none; }
+.sec-btn { flex-shrink: 0; padding: 5px 14px; border-radius: 20px; font-size: .78rem; font-weight: 600; border: 1.5px solid var(--border); background: white; cursor: pointer; color: var(--mid); font-family: 'DM Sans', sans-serif; }
+.sec-btn.on { background: var(--saffron); border-color: var(--saffron); color: white; }
+
+select {
+  font-family: 'DM Sans', sans-serif;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 7px 12px;
+  font-size: .85rem;
+  color: var(--ink);
+  background: var(--white);
+  outline: none;
+}
+
+hr { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+
+p { color: var(--mid); font-size: .88rem; line-height: 1.5; }
+
+/* ── ANIMATIONS ──────────────────────────────────────── */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.page { animation: fadeIn 0.2s ease; }
+
+/* ── MISC COMPAT ─────────────────────────────────────── */
+.home-card { background: var(--white); border-radius: var(--r-md); padding: 16px; cursor: pointer; border: 1px solid var(--border); border-top: 3px solid var(--saffron); box-shadow: var(--shadow-sm); transition: box-shadow 0.15s; }
+.home-card:active { box-shadow: var(--shadow-md); }
+.home-card .icon { font-size: 1.5rem; margin-bottom: 6px; }
+.home-card h3 { font-family: 'Fraunces', serif; font-size: .95rem; color: var(--ink); margin-bottom: 3px; }
+.home-card p { font-size: .78rem; color: var(--mid); margin: 0; }
+
 </style>
 </head>
 <body>
@@ -246,19 +685,24 @@ textarea:focus { outline:none; border-color:var(--orange); }
 <!-- BOTTOM NAVIGATION -->
 <div class="bottom-nav">
   <button class="bnav-item on" id="nb-home" onclick="go('home')">
-    <span class="bnav-icon">🏠</span><span class="bnav-label">Home</span>
+    <svg class="bnav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" color="white"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span class="bnav-label">Home</span>
   </button>
   <button class="bnav-item" id="nb-chapters" onclick="go('chapters')">
-    <span class="bnav-icon">📚</span><span class="bnav-label">Chapters</span>
+    <svg class="bnav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" color="white"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span class="bnav-label">Chapters</span>
   </button>
   <button class="bnav-item" id="nb-practice-hub" onclick="go('practice-hub')">
-    <span class="bnav-icon">✍️</span><span class="bnav-label">Practice</span>
+    <svg class="bnav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" color="white"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span class="bnav-label">Practice</span>
   </button>
   <button class="bnav-item" id="nb-vocab" onclick="go('vocab')">
-    <span class="bnav-icon">🃏</span><span class="bnav-label">Vocab</span>
+    <svg class="bnav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" color="white"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    <span class="bnav-label">Vocab</span>
   </button>
   <button class="bnav-item" id="nb-dashboard" onclick="go('dashboard')">
-    <span class="bnav-icon">📊</span><span class="bnav-label">Progress</span>
+    <svg class="bnav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" color="white"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <span class="bnav-label">Progress</span>
   </button>
 </div>
 
@@ -309,62 +753,74 @@ textarea:focus { outline:none; border-color:var(--orange); }
 <!-- PRACTICE HUB -->
 <div id="page-practice-hub" style="display:none">
 <div class="page">
-  <h2 style="color:var(--orange);margin-bottom:4px;padding:0 0 4px">✍️ Practice</h2>
-  <p style="font-size:.82rem;color:var(--mid);margin-bottom:16px">Choose what to practice</p>
-  
+  <div style="font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;color:var(--ink);margin-bottom:4px">Practice</div>
+  <div style="font-size:.82rem;color:var(--mid);margin-bottom:18px">Choose a practice mode</div>
+
   <div style="display:flex;flex-direction:column;gap:10px">
-    <div onclick="go('sentence-quiz')" style="background:linear-gradient(135deg,#6a1b9a,#7b1fa2);border-radius:14px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px">
-      <span style="font-size:2rem">🎯</span>
-      <div style="flex:1">
-        <div style="font-size:1rem;font-weight:800;color:white">Sentence Quiz</div>
-        <div style="font-size:.8rem;color:rgba(255,255,255,.7);margin-top:2px">110+ sentences · English ↔ Hindi</div>
+    <div onclick="go('sentence-quiz')" style="background:var(--white);border-radius:var(--r-md);padding:16px 18px;cursor:pointer;border:1px solid var(--border);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:14px">
+      <div style="width:44px;height:44px;background:#F0EAF7;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B3FA0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       </div>
-      <span style="color:rgba(255,255,255,.5);font-size:1.2rem">›</span>
+      <div style="flex:1">
+        <div style="font-family:'Fraunces',serif;font-size:.98rem;font-weight:600;color:var(--ink);margin-bottom:2px">Sentence Quiz</div>
+        <div style="font-size:.78rem;color:var(--mid)">110+ sentences · English ↔ Hindi</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
-    
-    <div onclick="go('quiz')" style="background:linear-gradient(135deg,#1565c0,#1976d2);border-radius:14px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px">
-      <span style="font-size:2rem">🧠</span>
-      <div style="flex:1">
-        <div style="font-size:1rem;font-weight:800;color:white">Grammar Quiz</div>
-        <div style="font-size:.8rem;color:rgba(255,255,255,.7);margin-top:2px">45 multiple choice · Grammar rules</div>
+
+    <div onclick="go('quiz')" style="background:var(--white);border-radius:var(--r-md);padding:16px 18px;cursor:pointer;border:1px solid var(--border);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:14px">
+      <div style="width:44px;height:44px;background:#EBF2FB;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A56A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
       </div>
-      <span style="color:rgba(255,255,255,.5);font-size:1.2rem">›</span>
+      <div style="flex:1">
+        <div style="font-family:'Fraunces',serif;font-size:.98rem;font-weight:600;color:var(--ink);margin-bottom:2px">Grammar Quiz</div>
+        <div style="font-size:.78rem;color:var(--mid)">45 questions · Grammar rules</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
-    
-    <div onclick="go('practice')" style="background:linear-gradient(135deg,#e8651a,#f57c00);border-radius:14px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px">
-      <span style="font-size:2rem">📝</span>
-      <div style="flex:1">
-        <div style="font-size:1rem;font-weight:800;color:white">Translation Practice</div>
-        <div style="font-size:.8rem;color:rgba(255,255,255,.7);margin-top:2px">200+ sentences · Type your answer</div>
+
+    <div onclick="go('practice')" style="background:var(--white);border-radius:var(--r-md);padding:16px 18px;cursor:pointer;border:1px solid var(--border);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:14px">
+      <div style="width:44px;height:44px;background:var(--gold-light);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--saffron)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
       </div>
-      <span style="color:rgba(255,255,255,.5);font-size:1.2rem">›</span>
+      <div style="flex:1">
+        <div style="font-family:'Fraunces',serif;font-size:.98rem;font-weight:600;color:var(--ink);margin-bottom:2px">Translation</div>
+        <div style="font-size:.78rem;color:var(--mid)">200+ sentences · Type your answer</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
-    
-    <div onclick="go('homework')" style="background:linear-gradient(135deg,#2e7d32,#388e3c);border-radius:14px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px">
-      <span style="font-size:2rem">📋</span>
-      <div style="flex:1">
-        <div style="font-size:1rem;font-weight:800;color:white">Homework Sets</div>
-        <div style="font-size:.8rem;color:rgba(255,255,255,.7);margin-top:2px">All Prakash's homework · Lessons 1–12</div>
+
+    <div onclick="go('homework')" style="background:var(--white);border-radius:var(--r-md);padding:16px 18px;cursor:pointer;border:1px solid var(--border);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:14px">
+      <div style="width:44px;height:44px;background:var(--sage-light);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--sage)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       </div>
-      <span style="color:rgba(255,255,255,.5);font-size:1.2rem">›</span>
+      <div style="flex:1">
+        <div style="font-family:'Fraunces',serif;font-size:.98rem;font-weight:600;color:var(--ink);margin-bottom:2px">Homework</div>
+        <div style="font-size:.78rem;color:var(--mid)">Prakash's sets · Lessons 1–12</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
-    
-    <div onclick="go('daily')" style="background:linear-gradient(135deg,#00695c,#00897b);border-radius:14px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px">
-      <span style="font-size:2rem">⚡</span>
-      <div style="flex:1">
-        <div style="font-size:1rem;font-weight:800;color:white">Daily Drill</div>
-        <div style="font-size:.8rem;color:rgba(255,255,255,.7);margin-top:2px">5 random questions · Quick session</div>
+
+    <div onclick="go('daily')" style="background:var(--white);border-radius:var(--r-md);padding:16px 18px;cursor:pointer;border:1px solid var(--border);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:14px">
+      <div style="width:44px;height:44px;background:#E9F7F5;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00695c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       </div>
-      <span style="color:rgba(255,255,255,.5);font-size:1.2rem">›</span>
+      <div style="flex:1">
+        <div style="font-family:'Fraunces',serif;font-size:.98rem;font-weight:600;color:var(--ink);margin-bottom:2px">Daily Drill</div>
+        <div style="font-size:.78rem;color:var(--mid)">5 random questions · Quick session</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
-    
-    <div onclick="go('notes')" style="background:white;border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px">
-      <span style="font-size:2rem">📖</span>
-      <div style="flex:1">
-        <div style="font-size:1rem;font-weight:700;color:var(--dark)">Grammar Reference</div>
-        <div style="font-size:.8rem;color:var(--mid);margin-top:2px">All rules · Tenses · Quick reference</div>
+
+    <div onclick="go('notes')" style="background:var(--white);border-radius:var(--r-md);padding:16px 18px;cursor:pointer;border:1px solid var(--border);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:14px">
+      <div style="width:44px;height:44px;background:var(--cream-2);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mid)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       </div>
-      <span style="color:var(--mid);font-size:1.2rem">›</span>
+      <div style="flex:1">
+        <div style="font-family:'Fraunces',serif;font-size:.98rem;font-weight:600;color:var(--ink);margin-bottom:2px">Grammar Reference</div>
+        <div style="font-size:.78rem;color:var(--mid)">All rules · Tenses · Quick lookup</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
   </div>
 </div>
@@ -417,76 +873,92 @@ textarea:focus { outline:none; border-color:var(--orange); }
 
 <!-- HOME -->
 <div id="page-home" style="display:block">
-<div class="page">
-  <!-- Welcome -->
-  <div style="background:linear-gradient(135deg,#0D1B3E,#1A2D5A);border-radius:16px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden">
-    <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:rgba(255,153,51,0.1);border-radius:50%"></div>
-    <div style="font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Namaste, Vijay ji!</div>
-    <div style="font-size:1.3rem;font-weight:800;color:#FF9933;margin-bottom:4px">What shall we practice today?</div>
-    <div style="font-size:.82rem;color:rgba(255,255,255,.6)" id="home-stats-line">Loading your progress...</div>
+<div class="page" style="padding-top:0">
+
+  <!-- Hero banner -->
+  <div style="background:var(--ink);margin:-14px -16px 16px;padding:20px 20px 22px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-30px;right:-30px;width:140px;height:140px;background:rgba(232,135,26,0.06);border-radius:50%"></div>
+    <div style="position:absolute;bottom:-20px;left:30%;width:80px;height:80px;background:rgba(26,86,160,0.08);border-radius:50%"></div>
+    <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.35);margin-bottom:6px">Namaste, Vijay ji 🙏</div>
+    <div style="font-family:'Fraunces',serif;font-size:1.4rem;font-weight:600;color:var(--saffron);line-height:1.3;margin-bottom:12px">What shall we<br>practice today?</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;text-align:center;flex:1;min-width:60px">
+        <div style="font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;color:var(--saffron)" id="hqs-streak">–</div>
+        <div style="font-size:.65rem;color:rgba(255,255,255,0.4);margin-top:1px;text-transform:uppercase;letter-spacing:.3px">Streak</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;text-align:center;flex:1;min-width:60px">
+        <div style="font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;color:var(--saffron)" id="hqs-correct">–</div>
+        <div style="font-size:.65rem;color:rgba(255,255,255,0.4);margin-top:1px;text-transform:uppercase;letter-spacing:.3px">Correct</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;text-align:center;flex:1;min-width:60px">
+        <div style="font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;color:var(--saffron)" id="hqs-pct">–</div>
+        <div style="font-size:.65rem;color:rgba(255,255,255,0.4);margin-top:1px;text-transform:uppercase;letter-spacing:.3px">Accuracy</div>
+      </div>
+    </div>
   </div>
 
-  <!-- Quick stats row -->
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px" id="home-quick-stats">
-    <div style="background:white;border-radius:12px;padding:12px 8px;text-align:center;border:1px solid var(--border)">
-      <div style="font-size:1.5rem;font-weight:800;color:var(--orange)" id="hqs-streak">–</div>
-      <div style="font-size:.68rem;color:var(--mid);margin-top:1px">Day Streak</div>
+  <!-- Daily Drill CTA -->
+  <div onclick="go('daily')" style="background:linear-gradient(135deg,#1E4D3A,#2D6B50);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:14px;cursor:pointer;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow-md)">
+    <div style="width:44px;height:44px;background:rgba(255,255,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
     </div>
-    <div style="background:white;border-radius:12px;padding:12px 8px;text-align:center;border:1px solid var(--border)">
-      <div style="font-size:1.5rem;font-weight:800;color:var(--orange)" id="hqs-correct">–</div>
-      <div style="font-size:.68rem;color:var(--mid);margin-top:1px">Correct</div>
-    </div>
-    <div style="background:white;border-radius:12px;padding:12px 8px;text-align:center;border:1px solid var(--border)">
-      <div style="font-size:1.5rem;font-weight:800;color:var(--orange)" id="hqs-pct">–</div>
-      <div style="font-size:.68rem;color:var(--mid);margin-top:1px">Accuracy</div>
-    </div>
-  </div>
-
-  <!-- Daily drill CTA -->
-  <div onclick="go('daily')" style="background:linear-gradient(135deg,#00695c,#00897b);border-radius:14px;padding:16px;margin-bottom:16px;cursor:pointer;display:flex;align-items:center;gap:12px">
-    <span style="font-size:2rem">⚡</span>
     <div style="flex:1">
-      <div style="font-size:1rem;font-weight:800;color:white">Today's Daily Drill</div>
-      <div style="font-size:.8rem;color:rgba(255,255,255,.7);margin-top:1px">5 quick questions · Keep your streak going</div>
+      <div style="font-family:'Fraunces',serif;font-size:1rem;font-weight:600;color:white;margin-bottom:2px">Daily Drill</div>
+      <div style="font-size:.78rem;color:rgba(255,255,255,0.65)">5 quick questions · Keep your streak</div>
     </div>
-    <span style="color:rgba(255,255,255,.6);font-size:1.3rem">›</span>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
   </div>
 
-  <!-- Nav cards -->
-  <div style="font-size:.78rem;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">All Sections</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-    <div onclick="go('chapters')" style="background:white;border-radius:12px;padding:14px;cursor:pointer;border:1px solid var(--border);border-top:3px solid #FF9933">
-      <div style="font-size:1.5rem;margin-bottom:6px">📚</div>
-      <div style="font-size:.9rem;font-weight:700;color:var(--dark)">Chapters</div>
-      <div style="font-size:.75rem;color:var(--mid);margin-top:2px">14 chapters · Grammar + examples + quiz</div>
+  <!-- Section grid -->
+  <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mid);margin-bottom:10px">Sections</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+
+    <div onclick="go('chapters')" style="background:var(--white);border-radius:var(--r-md);padding:16px;cursor:pointer;border:1px solid var(--border);box-shadow:var(--shadow-sm)">
+      <div style="width:36px;height:36px;background:#FFF3DC;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8871A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
+      <div style="font-family:'Fraunces',serif;font-size:.95rem;font-weight:600;color:var(--ink);margin-bottom:3px">Chapters</div>
+      <div style="font-size:.72rem;color:var(--mid)">14 chapters · Grammar + quiz</div>
     </div>
-    <div onclick="go('practice-hub')" style="background:white;border-radius:12px;padding:14px;cursor:pointer;border:1px solid var(--border);border-top:3px solid #6a1b9a">
-      <div style="font-size:1.5rem;margin-bottom:6px">✍️</div>
-      <div style="font-size:.9rem;font-weight:700;color:var(--dark)">Practice</div>
-      <div style="font-size:.75rem;color:var(--mid);margin-top:2px">Quiz · Translation · Homework · Drill</div>
+
+    <div onclick="go('practice-hub')" style="background:var(--white);border-radius:var(--r-md);padding:16px;cursor:pointer;border:1px solid var(--border);box-shadow:var(--shadow-sm)">
+      <div style="width:36px;height:36px;background:#EBF2FB;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A56A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div style="font-family:'Fraunces',serif;font-size:.95rem;font-weight:600;color:var(--ink);margin-bottom:3px">Practice</div>
+      <div style="font-size:.72rem;color:var(--mid)">Quiz · Translate · Homework</div>
     </div>
-    <div onclick="go('vocab')" style="background:white;border-radius:12px;padding:14px;cursor:pointer;border:1px solid var(--border);border-top:3px solid #e8651a">
-      <div style="font-size:1.5rem;margin-bottom:6px">🃏</div>
-      <div style="font-size:.9rem;font-weight:700;color:var(--dark)">Vocabulary</div>
-      <div style="font-size:.75rem;color:var(--mid);margin-top:2px">178 words · 9 categories</div>
+
+    <div onclick="go('vocab')" style="background:var(--white);border-radius:var(--r-md);padding:16px;cursor:pointer;border:1px solid var(--border);box-shadow:var(--shadow-sm)">
+      <div style="width:36px;height:36px;background:#EBF4EE;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4A7C59" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div style="font-family:'Fraunces',serif;font-size:.95rem;font-weight:600;color:var(--ink);margin-bottom:3px">Vocabulary</div>
+      <div style="font-size:.72rem;color:var(--mid)">178 words · Flashcards</div>
     </div>
-    <div onclick="go('dashboard')" style="background:white;border-radius:12px;padding:14px;cursor:pointer;border:1px solid var(--border);border-top:3px solid #2e7d32">
-      <div style="font-size:1.5rem;margin-bottom:6px">📊</div>
-      <div style="font-size:.9rem;font-weight:700;color:var(--dark)">Progress</div>
-      <div style="font-size:.75rem;color:var(--mid);margin-top:2px">Streak · Scores · Weak spots</div>
+
+    <div onclick="go('dashboard')" style="background:var(--white);border-radius:var(--r-md);padding:16px;cursor:pointer;border:1px solid var(--border);box-shadow:var(--shadow-sm)">
+      <div style="width:36px;height:36px;background:#FDECEA;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:10px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <div style="font-family:'Fraunces',serif;font-size:.95rem;font-weight:600;color:var(--ink);margin-bottom:3px">Progress</div>
+      <div style="font-size:.72rem;color:var(--mid)">Streak · Scores · Weak spots</div>
     </div>
   </div>
 
-  <!-- Quick tense reference -->
-  <div style="font-size:.78rem;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;margin-top:8px">Quick Tense Reference</div>
-  <div class="card">
+  <!-- Stats line -->
+  <div style="font-size:.75rem;color:var(--mid);text-align:center;padding:4px 0 8px" id="home-stats-line">Loading your progress...</div>
+
+  <!-- Quick tense card -->
+  <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mid);margin-bottom:10px">Quick Tense Reference</div>
+  <div class="card" style="padding:0;overflow:hidden">
     <table>
-      <tr><th>Tense</th><th>Pattern</th><th>Example</th></tr>
-      <tr><td>Habitual</td><td>root+ta/ti/te+hai</td><td>Main jaata hoon</td></tr>
-      <tr><td>Progressive</td><td>root+raha/rahi/rahe+hai</td><td>Main dekh raha hoon</td></tr>
-      <tr><td>Sakna</td><td>root+sakta/sakti+hai</td><td>Main bol sakta hoon</td></tr>
-      <tr><td>Chahna</td><td>infin+chahta/chahti+hoon</td><td>Main jaana chahta hoon</td></tr>
-      <tr><td>Future</td><td>root+unga/ega/egi/enge</td><td>Main karunga</td></tr>
+      <tr><th>Tense</th><th>Formula</th><th>Example</th></tr>
+      <tr><td>Present habit</td><td>root+ta/ti/te+hai</td><td>Main jaata hoon</td></tr>
+      <tr><td>Progressive</td><td>root+raha/rahi+hai</td><td>Main dekh raha hoon</td></tr>
+      <tr><td>Sakna (can)</td><td>root+sakta+hai</td><td>Main bol sakta hoon</td></tr>
+      <tr><td>Chahna (want)</td><td>infin+chahta+hoon</td><td>Main jaana chahta hoon</td></tr>
+      <tr><td>Future</td><td>root+unga/ega/enge</td><td>Main karunga</td></tr>
       <tr><td>Should</td><td>mujhe+infin+chahiye</td><td>Mujhe padhna chahiye</td></tr>
     </table>
   </div>
