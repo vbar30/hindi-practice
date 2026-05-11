@@ -1565,10 +1565,18 @@ textarea:focus { outline:none; border-color:var(--orange); }
 <!-- QUIZ -->
 <div id="page-quiz" style="display:none">
 <div class="page">
-  <div class="card" id="quiz-content">
-    <h2>🧠 Grammar Quiz</h2>
-    <div class="prog-wrap"><div class="prog-bar" id="qp" style="width:0%"></div></div>
-    <div class="counter" id="qc">-</div>
+  <div style="background:linear-gradient(135deg,#1565c0,#1976d2);border-radius:12px;padding:16px;margin-bottom:14px;color:white">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <span style="font-size:1.6rem">🧠</span>
+      <div>
+        <div style="font-size:1rem;font-weight:800">Grammar Quiz</div>
+        <div style="font-size:.78rem;opacity:.8">45 multiple choice — test your grammar rules</div>
+      </div>
+    </div>
+    <div class="prog-wrap" style="background:rgba(255,255,255,.2)"><div class="prog-bar" id="qp" style="width:0%;background:white"></div></div>
+    <div style="font-size:.78rem;margin-top:4px;opacity:.8" id="qc">-</div>
+  </div>
+  <div class="card" id="quiz-content" style="border-top:3px solid #1565c0">
     <div class="quiz-q" id="qq">-</div>
     <div class="quiz-opts" id="qo"></div>
     <div class="qfb" id="qf"></div>
@@ -1585,23 +1593,28 @@ textarea:focus { outline:none; border-color:var(--orange); }
 <!-- SENTENCE QUIZ -->
 <div id="page-sentence-quiz" style="display:none">
 <div class="page">
-  <div class="card">
-    <h2>🎯 Sentence Quiz</h2>
-    <p style="font-size:.85rem;color:var(--mid);margin-bottom:10px">See the sentence, pick the correct translation. All 160+ sentences from the guide.</p>
+  <div style="background:linear-gradient(135deg,#6a1b9a,#7b1fa2);border-radius:12px;padding:16px;margin-bottom:14px;color:white">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <span style="font-size:1.6rem">🎯</span>
+      <div>
+        <div style="font-size:1rem;font-weight:800">Sentence Quiz</div>
+        <div style="font-size:.78rem;opacity:.8">160+ sentences — English ↔ Hindi translations</div>
+      </div>
+    </div>
     <div style="display:flex;gap:8px;margin-bottom:10px">
-      <button class="btn btn-o" id="sq-mode-en" onclick="setSQMode('en')">English → Hindi</button>
-      <button class="btn btn-g" id="sq-mode-hi" onclick="setSQMode('hi')">Hindi → English</button>
+      <button style="flex:1;padding:7px;border-radius:8px;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);font-size:.82rem;font-weight:700;cursor:pointer;color:white;font-family:inherit" id="sq-mode-en" onclick="setSQMode('en')">English → Hindi</button>
+      <button style="flex:1;padding:7px;border-radius:8px;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);font-size:.82rem;font-weight:700;cursor:pointer;color:white;font-family:inherit" id="sq-mode-hi" onclick="setSQMode('hi')">Hindi → English</button>
     </div>
-    <div class="filters" id="sq-filters"></div>
+    <div class="filters" id="sq-filters" style="margin-bottom:8px"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-      <div class="counter" id="sq-counter">-</div>
-      <div style="font-size:.82rem;font-weight:700;color:var(--green)" id="sq-score-display">0 / 0</div>
+      <div style="font-size:.78rem;opacity:.8" id="sq-counter">-</div>
+      <div style="font-size:.82rem;font-weight:700;color:white" id="sq-score-display">0 / 0</div>
     </div>
-    <div class="prog-wrap"><div class="prog-bar" id="sq-prog" style="width:0%"></div></div>
+    <div class="prog-wrap" style="background:rgba(255,255,255,.2)"><div class="prog-bar" id="sq-prog" style="width:0%;background:white"></div></div>
   </div>
 
   <div id="sq-question-wrap">
-    <div class="card" id="sq-q-card">
+    <div class="card" id="sq-q-card" style="border-top:3px solid #6a1b9a">
       <div style="font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--orange);margin-bottom:6px" id="sq-cat-label">-</div>
       <div style="font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:4px;line-height:1.5" id="sq-question">-</div>
       <div style="font-size:.8rem;color:var(--mid)" id="sq-direction">Select the correct translation</div>
@@ -1630,12 +1643,17 @@ textarea:focus { outline:none; border-color:var(--orange); }
 <!-- HOMEWORK -->
 <div id="page-homework" style="display:none">
 <div class="page">
-  <div class="card">
-    <h2>📝 Homework Practice</h2>
-    <p style="font-size:.85rem;color:var(--mid);margin-bottom:12px">Type your Hindi translation, check the answer, then score yourself.</p>
-    
-    <!-- Set selector -->
-    <div class="filters" id="hw-set-filters"></div>
+  <div style="background:linear-gradient(135deg,#2e7d32,#388e3c);border-radius:12px;padding:16px;margin-bottom:14px;color:white">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <span style="font-size:1.6rem">📝</span>
+      <div>
+        <div style="font-size:1rem;font-weight:800">Homework Practice</div>
+        <div style="font-size:.78rem;opacity:.8">Type your Hindi translation — check and self-score</div>
+      </div>
+    </div>
+    <div class="filters" id="hw-set-filters" style="margin-bottom:0"></div>
+  </div>
+  <div class="card" style="border-top:3px solid #2e7d32">
 
     <!-- Score bar -->
     <div style="display:flex;justify-content:space-between;align-items:center;margin:10px 0 4px">
