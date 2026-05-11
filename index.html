@@ -132,6 +132,7 @@ textarea:focus { outline:none; border-color:var(--orange); }
   <button id="nb-practice" onclick="go('practice')">Translate</button>
   <button id="nb-flashcards" onclick="go('flashcards')">Vocab</button>
   <button id="nb-quiz" onclick="go('quiz')">Quiz</button>
+  <button id="nb-sentence-quiz" onclick="go('sentence-quiz')">Sentences</button>
   <button id="nb-homework" onclick="go('homework')">Homework</button>
   <button id="nb-daily" onclick="go('daily')">⚡ Daily</button>
 </nav>
@@ -1481,6 +1482,51 @@ textarea:focus { outline:none; border-color:var(--orange); }
 </div>
 </div>
 
+<!-- SENTENCE QUIZ -->
+<div id="page-sentence-quiz" style="display:none">
+<div class="page">
+  <div class="card">
+    <h2>🎯 Sentence Quiz</h2>
+    <p style="font-size:.85rem;color:var(--mid);margin-bottom:10px">See the sentence, pick the correct translation. All 160+ sentences from the guide.</p>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <button class="btn btn-o" id="sq-mode-en" onclick="setSQMode('en')">English → Hindi</button>
+      <button class="btn btn-g" id="sq-mode-hi" onclick="setSQMode('hi')">Hindi → English</button>
+    </div>
+    <div class="filters" id="sq-filters"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <div class="counter" id="sq-counter">-</div>
+      <div style="font-size:.82rem;font-weight:700;color:var(--green)" id="sq-score-display">0 / 0</div>
+    </div>
+    <div class="prog-wrap"><div class="prog-bar" id="sq-prog" style="width:0%"></div></div>
+  </div>
+
+  <div id="sq-question-wrap">
+    <div class="card" id="sq-q-card">
+      <div style="font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--orange);margin-bottom:6px" id="sq-cat-label">-</div>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:4px;line-height:1.5" id="sq-question">-</div>
+      <div style="font-size:.8rem;color:var(--mid)" id="sq-direction">Select the correct translation</div>
+    </div>
+
+    <div class="drill-opts" id="sq-opts"></div>
+    <div class="qfb" id="sq-feedback"></div>
+    <div style="margin-top:10px;display:none" id="sq-next-wrap">
+      <button class="btn btn-o" onclick="sqNext()">Next →</button>
+    </div>
+  </div>
+
+  <div id="sq-finish" style="display:none">
+    <div class="card" style="text-align:center;padding:28px">
+      <div style="font-size:2.5rem;margin-bottom:8px">🎉</div>
+      <div style="font-size:2.8rem;font-weight:800;color:var(--orange)" id="sq-final-score">-</div>
+      <div style="font-size:1rem;color:var(--green);font-weight:700;margin:4px 0 8px" id="sq-final-pct">-</div>
+      <div style="font-size:.9rem;color:var(--mid);margin-bottom:12px" id="sq-final-msg">-</div>
+      <div id="sq-missed-list" style="text-align:left;margin-bottom:16px;max-height:200px;overflow-y:auto"></div>
+      <button class="btn btn-o" onclick="startSQ()">🔄 Try Again</button>
+    </div>
+  </div>
+</div>
+</div>
+
 <!-- HOMEWORK -->
 <div id="page-homework" style="display:none">
 <div class="page">
@@ -1581,6 +1627,7 @@ function go(id) {
   if(id==='flashcards') initFlashcards();
   if(id==='quiz') initQuiz();
   if(id==='homework') initHomework();
+  if(id==='sentence-quiz') initSQ();
   if(id==='daily') initDrill();
 }
 
@@ -3105,6 +3152,236 @@ function showDrillDone() {
   document.getElementById('dp2').textContent=pct+'%';
   var msgs=['Keep going — every rep counts! 💪','Good effort — retry! 🔄','Solid! Nearly there 👍','Great work Vijay! 🎉','Shabaash! Perfect! 🇮🇳⭐'];
   document.getElementById('dm').textContent=pct<40?msgs[0]:pct<60?msgs[1]:pct<75?msgs[2]:pct<100?msgs[3]:msgs[4];
+}
+
+// ===== SENTENCE QUIZ =====
+const SQ_DATA = [
+  {en:"I am fine.",hi:"Main theek hoon.",cat:"Pronouns"},
+  {en:"She is at home.",hi:"Woh ghar mein hai.",cat:"Pronouns"},
+  {en:"We are in London.",hi:"Hum London mein hain.",cat:"Pronouns"},
+  {en:"How are you?",hi:"Aap kaise hain?",cat:"Pronouns"},
+  {en:"I am from London.",hi:"Main London se hoon.",cat:"Pronouns"},
+  {en:"The book is on the table.",hi:"Kitaab mez par hai.",cat:"Postpositions"},
+  {en:"Bring chai for me.",hi:"Mere liye chai lao.",cat:"Postpositions"},
+  {en:"We will meet after class.",hi:"Class ke baad milenge.",cat:"Postpositions"},
+  {en:"I don't have money.",hi:"Mere paas paisa nahi hai.",cat:"Postpositions"},
+  {en:"Tell me about India.",hi:"India ke baare mein batao.",cat:"Postpositions"},
+  {en:"Who is coming?",hi:"Kaun aa raha hai?",cat:"Questions"},
+  {en:"Why didn't you come?",hi:"Kyon nahi aaye?",cat:"Questions"},
+  {en:"Where are you?",hi:"Aap kahan hain?",cat:"Questions"},
+  {en:"When will you come?",hi:"Kab aaoge?",cat:"Questions"},
+  {en:"How much money do you need?",hi:"Kitna paisa chahiye?",cat:"Questions"},
+  {en:"Who will you give money to?",hi:"Kisko paisa doge?",cat:"Questions"},
+  {en:"Who are you talking to?",hi:"Kisse baat kar rahe ho?",cat:"Questions"},
+  {en:"I drink chai every morning.",hi:"Main har subah chai peeta hoon.",cat:"Habitual"},
+  {en:"She works in London.",hi:"Woh London mein kaam karti hai.",cat:"Habitual"},
+  {en:"We meet every Sunday.",hi:"Hum har Ravivar milte hain.",cat:"Habitual"},
+  {en:"I don't drink coffee.",hi:"Main coffee nahi peeta.",cat:"Habitual"},
+  {en:"I used to live in India.",hi:"Main Bharat mein rehta tha.",cat:"Habitual"},
+  {en:"She used to drink coffee.",hi:"Woh coffee peeti thi.",cat:"Habitual"},
+  {en:"He didn't use to eat meat.",hi:"Woh maas nahi khaata tha.",cat:"Habitual"},
+  {en:"I am watching TV.",hi:"Main TV dekh raha hoon.",cat:"Progressive"},
+  {en:"She is sleeping.",hi:"Woh so rahi hai.",cat:"Progressive"},
+  {en:"What is happening?",hi:"Kya ho raha hai?",cat:"Progressive"},
+  {en:"She was cooking food.",hi:"Woh khaana bana rahi thi.",cat:"Progressive"},
+  {en:"I was sleeping when she called.",hi:"Main so raha tha jab usne call kiya.",cat:"Progressive"},
+  {en:"What were you doing?",hi:"Aap kya kar rahe the?",cat:"Progressive"},
+  {en:"I talk to my wife.",hi:"Main apni patni se baat karta hoon.",cat:"Possessives"},
+  {en:"She calls her mum.",hi:"Woh apni maa ko call karti hai.",cat:"Possessives"},
+  {en:"He loves his wife.",hi:"Woh apni patni se pyaar karta hai.",cat:"Possessives"},
+  {en:"He talks to my wife.",hi:"Woh meri patni se baat karta hai.",cat:"Possessives"},
+  {en:"I can speak.",hi:"Main bol sakta hoon.",cat:"Sakna"},
+  {en:"She cannot come.",hi:"Woh aa nahi sakti.",cat:"Sakna"},
+  {en:"We can meet.",hi:"Hum mil sakte hain.",cat:"Sakna"},
+  {en:"She couldn't come yesterday.",hi:"Woh kal nahi aa sakti thi.",cat:"Sakna"},
+  {en:"I will be able to meet tomorrow.",hi:"Main kal mil sakunga.",cat:"Sakna"},
+  {en:"Can I ask you one question?",hi:"Kya main aapse ek sawaal pooch sakta hoon?",cat:"Sakna"},
+  {en:"Can you meet me in my office?",hi:"Kya aap mujhse mere office mein mil sakte hain?",cat:"Sakna"},
+  {en:"I want to go to India.",hi:"Main India jaana chahta hoon.",cat:"Chahna"},
+  {en:"She wants to sleep.",hi:"Woh sona chahti hai.",cat:"Chahna"},
+  {en:"I wanted to go.",hi:"Main jaana chahta tha.",cat:"Chahna"},
+  {en:"I would like to drink chai.",hi:"Main chai peena chahunga.",cat:"Chahna"},
+  {en:"I would like to meet you.",hi:"Main aapse milna chahunga.",cat:"Chahna"},
+  {en:"I don't want to go.",hi:"Main nahi jaana chahta.",cat:"Chahna"},
+  {en:"I will talk to my wife.",hi:"Main apni patni se baat karunga.",cat:"Future"},
+  {en:"I will go to India next year.",hi:"Main agle saal Bharat jaaunga.",cat:"Future"},
+  {en:"We will meet him.",hi:"Hum usse milenge.",cat:"Future"},
+  {en:"Who will come?",hi:"Kaun aayega?",cat:"Future"},
+  {en:"My dad will come.",hi:"Mere papa aayenge.",cat:"Future"},
+  {en:"There will be no problem.",hi:"Koi problem nahi hogi.",cat:"Future"},
+  {en:"I will give you chai.",hi:"Main aapko chai dunga.",cat:"Future"},
+  {en:"Please come inside.",hi:"Kripya andar aajiye.",cat:"Imperatives"},
+  {en:"Please speak again.",hi:"Kripya phir se boliye.",cat:"Imperatives"},
+  {en:"Please meet me in my office.",hi:"Kripya mujhse mere office mein miliye.",cat:"Imperatives"},
+  {en:"Please tell me your name.",hi:"Kripya mujhe apna naam bataiye.",cat:"Imperatives"},
+  {en:"Please give me 10 rupees.",hi:"Kripya mujhe das rupaye dijiye.",cat:"Imperatives"},
+  {en:"Please do your work.",hi:"Kripya apna kaam kijiye.",cat:"Imperatives"},
+  {en:"Please talk to your doctor.",hi:"Kripya apne doctor se baat kijiye.",cat:"Imperatives"},
+  {en:"Forgive me.",hi:"Maaf kijiye.",cat:"Imperatives"},
+  {en:"Eat your food.",hi:"Khaana khao.",cat:"Imperatives"},
+  {en:"Don't watch TV.",hi:"TV mat dekho.",cat:"Imperatives"},
+  {en:"Close the window.",hi:"Khidki band karo.",cat:"Imperatives"},
+  {en:"Sit down.",hi:"Baitho.",cat:"Imperatives"},
+  {en:"Get up.",hi:"Utho.",cat:"Imperatives"},
+  {en:"Please do not talk to her.",hi:"Kripya usse baat mat kijiye.",cat:"Imperatives"},
+  {en:"I meet my boss every day.",hi:"Main boss se milta hoon.",cat:"Se/Ko"},
+  {en:"I will talk to you tomorrow.",hi:"Main kal aapse baat karunga.",cat:"Se/Ko"},
+  {en:"I want to meet you.",hi:"Main aapse milna chahta hoon.",cat:"Se/Ko"},
+  {en:"Please tell me your name.",hi:"Kripya mujhe apna naam bataiye.",cat:"Se/Ko"},
+  {en:"Prakash teaches me Hindi.",hi:"Prakash mujhe Hindi padhata hai.",cat:"Se/Ko"},
+  {en:"Call your mum.",hi:"Apni maa ko call karo.",cat:"Se/Ko"},
+  {en:"She used to ask me a lot of questions.",hi:"Woh mujhse bahut sawaal poochti thi.",cat:"Se/Ko"},
+  {en:"Give them money.",hi:"Unhe paisa do.",cat:"Se/Ko"},
+  {en:"We will meet them.",hi:"Hum unse milenge.",cat:"Se/Ko"},
+  {en:"I like talking to my wife.",hi:"Mujhe apni patni se baat karna pasand hai.",cat:"Se/Ko"},
+  {en:"I like chai.",hi:"Mujhe chai pasand hai.",cat:"Indirect"},
+  {en:"She doesn't like coffee.",hi:"Usse coffee pasand nahi.",cat:"Indirect"},
+  {en:"Who likes chai?",hi:"Kisko chai pasand hai?",cat:"Indirect"},
+  {en:"I like to eat Indian food.",hi:"Mujhe Indian khaana khaana pasand hai.",cat:"Indirect"},
+  {en:"I like to meet my friend.",hi:"Mujhe apne dost se milna pasand hai.",cat:"Indirect"},
+  {en:"He likes to help people.",hi:"Usse logon ki madad karna pasand hai.",cat:"Indirect"},
+  {en:"I need chai.",hi:"Mujhe chai chahiye.",cat:"Indirect"},
+  {en:"My son needs food.",hi:"Mere bete ko kuch khaana chahiye.",cat:"Indirect"},
+  {en:"I should study.",hi:"Mujhe padhna chahiye.",cat:"Indirect"},
+  {en:"I don't need anything.",hi:"Mujhe kuch nahi chahiye.",cat:"Indirect"},
+  {en:"I need to go home.",hi:"Mujhe ghar jaana hai.",cat:"Indirect"},
+  {en:"Every day I have to do a lot of work.",hi:"Har din mujhe bahut kaam karna parta hai.",cat:"Indirect"},
+  {en:"We need to talk to her.",hi:"Hame usse baat karni hai.",cat:"Indirect"},
+  {en:"My house is bigger than your house.",hi:"Mera ghar aapke ghar se bada hai.",cat:"Comparatives"},
+  {en:"Hindi is easier than French.",hi:"Hindi French se aasaan hai.",cat:"Comparatives"},
+  {en:"He is taller than me.",hi:"Woh mujhse lamba hai.",cat:"Comparatives"},
+  {en:"London is the most expensive city in the UK.",hi:"London UK ka sabse mehnga shahar hai.",cat:"Comparatives"},
+  {en:"This is the best chai.",hi:"Yeh sabse achhi chai hai.",cat:"Comparatives"},
+  {en:"She is the most beautiful.",hi:"Woh sabse sundar hai.",cat:"Comparatives"},
+  {en:"Who is the youngest?",hi:"Sabse chota kaun hai?",cat:"Comparatives"},
+  {en:"I should drink water.",hi:"Mujhe paani peena chahiye.",cat:"Obligation"},
+  {en:"My son should study more.",hi:"Mere bete ko zyada padhna chahiye.",cat:"Obligation"},
+  {en:"What should I do now?",hi:"Mujhe ab kya karna chahiye?",cat:"Obligation"},
+  {en:"We should meet him tomorrow.",hi:"Hame kal usse milna chahiye.",cat:"Obligation"},
+  {en:"You should talk to him.",hi:"Aapko usse baat karni chahiye.",cat:"Obligation"},
+  {en:"She needs to go to her office.",hi:"Usse apne office jaana hai.",cat:"Obligation"},
+  {en:"We need to talk.",hi:"Hame baat karni hai.",cat:"Obligation"},
+  {en:"I must go.",hi:"Mujhe zaroor jaana chahiye.",cat:"Obligation"},
+  {en:"You must meet the doctor.",hi:"Aapko zaroor doctor se milna chahiye.",cat:"Obligation"},
+  {en:"I will definitely come.",hi:"Main zaroor aaunga.",cat:"Obligation"},
+  {en:"Of course!",hi:"Zaroor!",cat:"Obligation"},
+  {en:"We must finish the work.",hi:"Hame zaroor kaam khatam karna chahiye.",cat:"Obligation"},
+];
+
+const SQ_CATS = ['All', ...new Set(SQ_DATA.map(q=>q.cat))];
+var sqMode = 'en', sqCat = 'All', sqQueue = [], sqIdx = 0, sqScore = 0, sqAnswered = false;
+
+function initSQ() {
+  if (!document.querySelector('#sq-filters .fbtn')) {
+    var fb = document.getElementById('sq-filters');
+    SQ_CATS.forEach(function(c) {
+      var b = document.createElement('button');
+      b.className = 'fbtn' + (c==='All'?' on':'');
+      b.textContent = c;
+      b.onclick = function(){ setSQCat(c, this); };
+      fb.appendChild(b);
+    });
+  }
+  startSQ();
+}
+
+function setSQMode(m) {
+  sqMode = m;
+  document.getElementById('sq-mode-en').className = 'btn ' + (m==='en'?'btn-o':'btn-g');
+  document.getElementById('sq-mode-hi').className = 'btn ' + (m==='hi'?'btn-o':'btn-g');
+  startSQ();
+}
+
+function setSQCat(c, el) {
+  sqCat = c;
+  document.querySelectorAll('#sq-filters .fbtn').forEach(function(b){b.classList.remove('on');});
+  if(el) el.classList.add('on');
+  startSQ();
+}
+
+function getSQWords() {
+  return sqCat === 'All' ? SQ_DATA : SQ_DATA.filter(function(q){return q.cat===sqCat;});
+}
+
+function startSQ() {
+  var words = getSQWords();
+  sqQueue = words.slice().sort(function(){return Math.random()-.5;});
+  sqIdx = 0; sqScore = 0; sqAnswered = false;
+  document.getElementById('sq-finish').style.display = 'none';
+  document.getElementById('sq-question-wrap').style.display = 'block';
+  showSQCard();
+}
+
+function showSQCard() {
+  if (sqIdx >= sqQueue.length) { showSQFinish(); return; }
+  sqAnswered = false;
+  var q = sqQueue[sqIdx];
+  var qField = sqMode === 'en' ? 'en' : 'hi';
+  var aField = sqMode === 'en' ? 'hi' : 'en';
+  var correct = q[aField];
+
+  // Build wrong options
+  var pool = SQ_DATA.filter(function(x){return x[aField] !== correct;});
+  pool.sort(function(){return Math.random()-.5;});
+  var wrongs = pool.slice(0,3).map(function(x){return x[aField];});
+  var opts = [correct].concat(wrongs).sort(function(){return Math.random()-.5;});
+
+  document.getElementById('sq-cat-label').textContent = q.cat;
+  document.getElementById('sq-question').textContent = q[qField];
+  document.getElementById('sq-direction').textContent = sqMode==='en' ? 'Select the Hindi translation' : 'Select the English translation';
+  document.getElementById('sq-counter').textContent = (sqIdx+1) + ' of ' + sqQueue.length;
+  document.getElementById('sq-prog').style.width = (sqIdx/sqQueue.length*100) + '%';
+  document.getElementById('sq-score-display').textContent = sqScore + ' / ' + sqIdx;
+  document.getElementById('sq-feedback').textContent = '';
+  document.getElementById('sq-feedback').style.display = 'none';
+  document.getElementById('sq-next-wrap').style.display = 'none';
+
+  var letters = ['A','B','C','D'];
+  var html = opts.map(function(o,i){
+    return '<div class="drill-opt" id="sqopt-'+i+'" onclick="selectSQOpt('+i+',\''+o.replace(/'/g,"\\'").replace(/"/g,"&quot;")+'\',\''+correct.replace(/'/g,"\\'").replace(/"/g,"&quot;")+'\')" style="cursor:pointer">'
+      + '<span style="font-weight:700;color:var(--orange);margin-right:8px">'+letters[i]+'.</span>' + o + '</div>';
+  }).join('');
+  document.getElementById('sq-opts').innerHTML = html;
+}
+
+function selectSQOpt(i, selected, correct) {
+  if (sqAnswered) return;
+  sqAnswered = true;
+  var isOk = selected === correct;
+
+  for (var j=0; j<4; j++) {
+    var el = document.getElementById('sqopt-'+j);
+    if (!el) continue;
+    el.style.pointerEvents = 'none';
+    var txt = el.textContent.slice(2).trim();
+    if (txt === correct) { el.style.background='var(--green-light)'; el.style.borderColor='var(--green)'; el.style.color='var(--green)'; }
+  }
+  var selEl = document.getElementById('sqopt-'+i);
+  if (!isOk && selEl) { selEl.style.background='var(--red-light)'; selEl.style.borderColor='var(--red)'; selEl.style.color='var(--red)'; }
+
+  var fb = document.getElementById('sq-feedback');
+  fb.style.display = 'block';
+  fb.className = 'qfb ' + (isOk ? 'right show' : 'wrong show');
+  fb.textContent = isOk ? '✅ Correct!' : '❌ The correct answer is shown in green above.';
+
+  if (isOk) sqScore++;
+  document.getElementById('sq-score-display').textContent = sqScore + ' / ' + (sqIdx+1);
+  document.getElementById('sq-next-wrap').style.display = 'block';
+}
+
+function sqNext() { sqIdx++; showSQCard(); }
+
+function showSQFinish() {
+  document.getElementById('sq-question-wrap').style.display = 'none';
+  document.getElementById('sq-finish').style.display = 'block';
+  var total = sqQueue.length;
+  var pct = Math.round(sqScore/total*100);
+  document.getElementById('sq-final-score').textContent = sqScore + ' / ' + total;
+  document.getElementById('sq-final-pct').textContent = pct + '%';
+  var msgs = ['Keep drilling! 💪','Good effort! 🔄','Solid! Nearly there 👍','Bahut achha! 🎉','Shabaash! Perfect! 🇮🇳'];
+  document.getElementById('sq-final-msg').textContent = pct<40?msgs[0]:pct<60?msgs[1]:pct<75?msgs[2]:pct<100?msgs[3]:msgs[4];
+  var missed = sqQueue.filter(function(q,i){return i<total;}).slice(0, sqScore < total ? total : 0);
+  document.getElementById('sq-missed-list').innerHTML = '';
 }
 
 // ===== INIT ON LOAD =====
