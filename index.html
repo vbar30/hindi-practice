@@ -5033,7 +5033,7 @@ function renderChList() {
       + "<div class='ch-info'>"
       + "<div class='ch-num'>Chapter "+ch.num+" &middot; "+ch.lesson+"</div>"
       + "<div class='ch-title'>"+ch.title+"</div>"
-      + "<div class='ch-sub'>"+ch.examples.length+" examples &middot; "+ch.quiz.length+" quiz questions</div>"
+      + "<div class='ch-sub'>"+(ch.examples||[]).length+" examples &middot; "+(ch.quiz||[]).length+" quiz questions</div>"
       + "</div><div class='ch-arrow'>&#8250;</div></div>"
       + "<div class='ch-progress-bar'><div class='ch-progress-fill' style='width:"+pct+"%;background:"+ch.color+"'></div></div>"
       + "</div>";
@@ -5062,7 +5062,7 @@ function showChapter(num) {
 
   var examplesHtml = "<div class='card'>"
     + "<p style='font-size:.82rem;color:var(--mid);margin-bottom:10px'>Tap Show to reveal the Hindi translation. Cover and test yourself.</p>"
-    + ch.examples.map(function(e,i) {
+    + (ch.examples||ch.sentences||[]).map(function(e,i) {
         return "<div class='ch-sentence-item'>"
           + "<div class='en'>"+e.en+"</div>"
           + "<div class='hi' id='ch-hi-"+num+"-"+i+"'>"+e.hi+"</div>"
@@ -5072,8 +5072,8 @@ function showChapter(num) {
     + "</div>";
 
   var quizHtml = "<div class='card'><h2 style='margin-bottom:4px'>Chapter "+num+" Quiz</h2>"
-    + "<p style='font-size:.82rem;color:var(--mid);margin-bottom:12px'>"+ch.quiz.length+" questions &mdash; tap to answer</p>"
-    + ch.quiz.map(function(q,qi) {
+    + "<p style='font-size:.82rem;color:var(--mid);margin-bottom:12px'>"+(ch.quiz||[]).length+" questions &mdash; tap to answer</p>"
+    + (ch.quiz||[]).map(function(q,qi) {
         return "<div class='ch-mini-q' id='ch-q-"+num+"-"+qi+"'>"
           + "<div class='q'>Q"+(qi+1)+". "+q.q+"</div>"
           + q.opts.map(function(o,oi) {
@@ -5086,7 +5086,7 @@ function showChapter(num) {
 
   var memoriseHtml = "<div class='card' style='border-top:3px solid "+ch.color+"'>"
     + "<h2 style='margin-bottom:10px'>Key things to memorise</h2>"
-    + ch.memorise.map(function(m) {
+    + (ch.memorise||[]).map(function(m) {
         return "<div style='padding:8px 12px;background:"+ch.color+"15;border-radius:8px;margin-bottom:6px;font-size:.88rem;font-weight:600;border-left:3px solid "+ch.color+"'>"+m+"</div>";
       }).join("")
     + "</div>";
