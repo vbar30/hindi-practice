@@ -4929,7 +4929,14 @@ var CHAPTERS = [
       {en:"Today is colder than yesterday.",hi:"Aaj kal se thanda hai."},
       {en:"She is more hardworking than me.",hi:"Woh mujhse zyada mehnat karti hai."},
     ],
-    num:14, title:"Obligation — Should, Need To, Must", lesson:"Lessons 12-13",
+    quiz:[
+      {q:"Comparative formula — 'X is bigger than Y'?",opts:["X Y zyada bada hai","X Y se bada hai","X sabse bada hai","X Y ko bada hai"],ans:1,ex:"X + Y + SE + adjective + hai — SE is the than marker"},
+      {q:"'Than me' in Hindi?",opts:["mujhe","mujhse","mere","main se"],ans:1,ex:"Main + se = mujhse. Same SE form as MPPBBK."},
+      {q:"Superlative formula?",opts:["X Y se sabse adjective hai","X sabse adjective hai","X zyada adjective hai","X Y zyada adjective hai"],ans:1,ex:"X + SABSE + adjective + hai — no SE needed for superlative"},
+      {q:"'Than your son' in Hindi?",opts:["aapka beta se","aapke beta se","aapke bete se","aapko bete se"],ans:2,ex:"Possessive oblique + noun oblique + se: aapke bete se"},
+      {q:"Woh → ? before a postposition",opts:["woh","usse","us","uss"],ans:2,ex:"Woh → Us before postposition. Yeh → Is before postposition."},
+    ],
+    memorise:["Comparative = X + Y + SE + adjective","Superlative = X + SABSE + adjective","Than me=mujhse | than you=aapse | than him/her=usse","Than my son=mere bete se | your son=aapke bete se","Woh→Us before postposition | Yeh→Is before postposition","Zyada=more (two things) | Sabse=most (all things)"],num:14, title:"Obligation — Should, Need To, Must", lesson:"Lessons 12-13",
     color:"#c62828", icon:"⚡",
     grammar:[
       {rule:"SHOULD (soft) — chahiye + infinitive. Some choice. A gentle nudge.",
@@ -4995,7 +5002,14 @@ var CHAPTERS = [
       {en:"She doesn't like to wake up early but she has to.",hi:"Usse jaldi uthna pasand nahi, lekin usse uthna parta hai."},
       {en:"Next week I will have to go to London.",hi:"Agle hafte mujhe London jaana parega."},
     ],
-  },
+    quiz:[
+      {q:"Parna present tense (masculine)?",opts:["parna hai","parta hai","parti hai","parenge"],ans:1,ex:"Present: parta hai (masc) | parti hai (fem)"},
+      {q:"'I will have to go' — correct Hindi?",opts:["Mujhe jaana parta hai","Mujhe jaana parega","Mujhe jaana chahiye","Mujhe jaana hai"],ans:1,ex:"Future parna = parega (masc) | paregi (fem)"},
+      {q:"Parna agrees with...?",opts:["the subject","the infinitive","the tense","the object"],ans:1,ex:"Parna agrees with the INFINITIVE not the subject. Karna parta hai | baat karni parti hai"},
+      {q:"'She has to talk' — correct?",opts:["Usse baat karna parta hai","Usse baat karni parti hai","Woh baat karni parti hai","Usse baat karti hai"],ans:1,ex:"baat karni (fem) + parti hai (fem parna) + Usse (indirect)"},
+    ],
+    memorise:["Parna = EXTERNAL forced, no choice, YOU HAVE TO","Present: parta/parti hai | Past: parta/parti tha | Future: parega/paregi","Parna agrees with INFINITIVE not subject","karna parta hai (masc) | baat karni parti hai (fem)","Pressure dial: chahiye then +hai then zaroor+chahiye then parna","Parna also used positively for warm invitations"],
+  }
 ];
 
 var curChapter = null;
@@ -5011,7 +5025,7 @@ function renderChList() {
   document.getElementById("ch-detail-view").style.display = "none";
   var html = CHAPTERS.map(function(ch) {
     var done = chQuizScores[ch.num] || 0;
-    var total = ch.quiz.length;
+    var total = (ch.quiz || []).length;
     var pct = total > 0 ? Math.round(done/total*100) : 0;
     return "<div class='ch-card' onclick='showChapter("+ch.num+")'>"
       + "<div class='ch-header'>"
