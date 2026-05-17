@@ -677,7 +677,7 @@ p { color: var(--mid); font-size: .88rem; line-height: 1.5; }
 <div class="top-bar">
   <div>
     <div class="top-bar-title">🇮🇳 Vijay's Hindi</div>
-    <div class="top-bar-subtitle">Lessons 1–12 with Prakash ji</div>
+    <div class="top-bar-subtitle">Lessons 1–13 with Prakash ji</div>
   </div>
   <div class="top-streak" id="top-streak-pill">0 day streak 🔥</div>
 </div>
@@ -796,7 +796,7 @@ p { color: var(--mid); font-size: .88rem; line-height: 1.5; }
       </div>
       <div style="flex:1">
         <div style="font-family:'Fraunces',serif;font-size:.98rem;font-weight:600;color:var(--ink);margin-bottom:2px">Homework</div>
-        <div style="font-size:.78rem;color:var(--mid)">Prakash's sets · Lessons 1–12</div>
+        <div style="font-size:.78rem;color:var(--mid)">Prakash's sets · Lessons 1–13</div>
       </div>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
@@ -3380,6 +3380,36 @@ const homeworkSets = [
       { en: "You will have to find new work.", hi: "Aapko naya kaam dhoondhna parega." },
       { en: "I used to have to wear a uniform.", hi: "Mujhe uniform pahanna parta tha." },
     ]
+  }  ,
+  {
+    title: "Lesson 12 — Comparatives, Superlatives & Obligation",
+    sentences: [
+      { en: "I need money. Can you give me some money?", hi: "Mujhe rupiye chahiye. Kya aap mujhe kuch rupiye de sakte hain?" },
+      { en: "You should talk to him.", hi: "Aapko usse baat karni chahiye." },
+      { en: "What should I do now?", hi: "Mujhe ab kya karna chahiye?" },
+      { en: "My dad should do exercises every day.", hi: "Mere papa ko har din exercise karna chahiye." },
+      { en: "She needs help. Please help her.", hi: "Usse madad chahiye. Kripya uski madad kijiye." },
+      { en: "How much money should I give her?", hi: "Mujhe usse kitna paisa dena chahiye?" },
+      { en: "Do you need anything? Yes, I need some water.", hi: "Kya aapko kuch chahiye? Ji, mujhe kuch paani chahiye." },
+      { en: "He should talk to her brother.", hi: "Usse apne bhai se baat karni chahiye." },
+      { en: "They need some rest. They should take some rest.", hi: "Unhe kuch aaram chahiye. Unhe kuch aaram lena chahiye." },
+      { en: "Where should we meet her?", hi: "Hame usse kahan milna chahiye?" }
+    ]
+  },
+  {
+    title: "Lesson 13 — Parna (Have To / External Compulsion)",
+    sentences: [
+      { en: "Every day she has to wash dishes.", hi: "Usse har din bartan dhone parte hain." },
+      { en: "We will have to finish this work by tomorrow.", hi: "Hame yeh kaam kal tak khatam karna parega." },
+      { en: "She doesn't like to wake up early but she has to wake up every day.", hi: "Usse jaldi uthna pasand nahi, lekin usse uthna parta hai." },
+      { en: "This year, students will have to pay more fees.", hi: "Is saal chhatron ko zyada fees bhari paregi." },
+      { en: "My kids have to do lots of homework every day.", hi: "Mere bacchon ko har din bahut homework karna parta hai." },
+      { en: "My friend will have to find a new job.", hi: "Mere dost ko naya kaam dhoondhna parega." },
+      { en: "You will have to quit smoking.", hi: "Aapko smoking chodni paregi." },
+      { en: "We have to wear a mask every day.", hi: "Hame har din mask pahanna parta hai." },
+      { en: "How many rupees will we have to pay?", hi: "Hame kitne rupaye dene parenge?" },
+      { en: "You should go to India and see the Taj Mahal.", hi: "Aapko India jaana chahiye aur Taj Mahal dekhna chahiye." }
+    ]
   }
 ];
 
@@ -4651,6 +4681,10 @@ var CHAPTERS = [
        formula:"Woh MERI patni se baat karta hai. (He talks to MY wife — he is subject, not me)"},
       {rule:"Apna agrees with the OBJECT (possessed thing) gender/number, not the subject",
        formula:"Main apna kaam karta hoon. (masc kaam) | Main apni chai peeta hoon. (fem chai)"},
+      {rule:"OBLIQUE PLURAL — all nouns add -on before a postposition when plural. All genders.",
+       formula:"leher→lehron mein | ghar→gharon mein | beta→beton ke saath | baat→baaton mein"},
+      {rule:"Possessive agrees with the NOUN owned, not the owner. Uska/uski follows noun gender.",
+       formula:"uska kaam (kaam=masc) | uski madad (madad=fem) | even for a woman: uska kaam"},
     ],
     examples:[
       {en:"I talk to my wife.",hi:"Main apni patni se baat karta hoon."},
@@ -4838,6 +4872,10 @@ var CHAPTERS = [
        formula:"Mujhe chai pasand hai. (chai is liked by me — chai is the grammatical subject)"},
       {rule:"Five indirect structures — all follow the same logic: the person takes ko form",
        formula:"pasand (like) | chahiye-noun (need) | chahiye-verb (should) | +hai (have to) | parna (forced)"},
+      {rule:"Woh vs Usse vs Uski — three forms for he/she. Critical to distinguish.",
+       formula:"Woh=does action actively | Usse=indirect subject or KO object | Uska/Uski=possessive (agrees with noun)"},
+      {rule:"When SHE likes/needs/should — use USSE. When SHE actively does — use WOH.",
+       formula:"Usse madad chahiye (she needs help) vs Woh kaam karti hai (she works)"},
     ],
     examples:[
       {en:"I like chai.",hi:"Mujhe chai pasand hai."},
@@ -4864,65 +4902,99 @@ var CHAPTERS = [
     num:13, title:"Comparatives & Superlatives", lesson:"Lesson 12",
     color:"#1565c0", icon:"📊",
     grammar:[
-      {rule:"Comparative: X is bigger/smaller/better than Y. Hindi uses SE after the comparison word",
-       formula:"X + Y + SE + adjective + hai — Y se = than Y"},
-      {rule:"Superlative: the most/best/biggest. Hindi uses SABSE (from all) before the adjective",
-       formula:"X + SABSE + adjective + hai — sabse = the most"},
-      {rule:"Zyada = more. Behtar = better. Both are useful comparison helpers.",
-       formula:"Zyada mehnat karta hai (works harder) | Behtar hai (it is better)"},
+      {rule:"Comparative: X is bigger/smaller than Y. SE is the 'than' marker — same SE as MPPBBK",
+       formula:"X + Y + SE + (zyada) + adjective + hai"},
+      {rule:"Superlative: the most/best/biggest. SABSE before the adjective",
+       formula:"X + SABSE + adjective + hai"},
+      {rule:"Zyada vs Sabse: zyada = more (comparing two). Sabse = the most (comparing all)",
+       formula:"zyada + se | sabse (no se needed)"},
+      {rule:"Pronoun SE forms in comparatives — same as MPPBBK: mujhse/aapse/usse/humse/unse",
+       formula:"Woh mujhse lamba hai. (He is taller than me.)"},
+      {rule:"Possessive + noun before se: possessive goes oblique + noun goes oblique + se",
+       formula:"mere bete se / aapke bete se / uske bete se / meri beti se"},
+      {rule:"Yeh → Is before postposition. Woh → Us before postposition",
+       formula:"Yeh film us film se achhi hai. (This film is better than that.)"},
     ],
-    examples:[
-      {en:"My house is bigger than your house.",hi:"Mera ghar aapke ghar se bada hai."},
-      {en:"Hindi is easier than French.",hi:"Hindi French se aasaan hai."},
+    sentences:[
+      {en:"Hindi is easier than English.",hi:"Hindi English se zyada aasaan hai."},
+      {en:"London is the most expensive city in the UK.",hi:"London UK mein sabse mehnga shahar hai."},
+      {en:"My son is taller than your son.",hi:"Mera beta aapke bete se zyada lamba hai."},
+      {en:"She is more beautiful than her sister.",hi:"Woh apni behan se zyada khoobsurat hai."},
+      {en:"This film is better than that one.",hi:"Yeh film us film se achhi hai."},
+      {en:"I am younger than you.",hi:"Main aap se chota hoon."},
       {en:"He is taller than me.",hi:"Woh mujhse lamba hai."},
-      {en:"My son is younger than your son.",hi:"Mera beta aapke bete se chota hai."},
-      {en:"London is the most expensive city in the UK.",hi:"London UK ka sabse mehnga shahar hai."},
-      {en:"This is the best chai.",hi:"Yeh sabse achhi chai hai."},
-      {en:"Who is the youngest?",hi:"Sabse chota kaun hai?"},
-      {en:"She is the most beautiful.",hi:"Woh sabse sundar hai."},
-      {en:"He is the tallest in the class.",hi:"Woh class mein sabse lamba hai."},
+      {en:"2022 was the most difficult year.",hi:"2022 sabse mushkil saal tha."},
+      {en:"Russia is the biggest country in the world.",hi:"Russia duniya mein sabse bada desh hai."},
+      {en:"My house is bigger than your house.",hi:"Mera ghar aapke ghar se bada hai."},
+      {en:"Today is colder than yesterday.",hi:"Aaj kal se thanda hai."},
+      {en:"She is more hardworking than me.",hi:"Woh mujhse zyada mehnat karti hai."},
     ],
-    quiz:[
-      {q:"Comparative formula?",opts:["X sabse Y hai","X Y se adjective hai","X Y mein adjective hai","X Y ko adjective hai"],ans:1,ex:"X + Y + SE + adjective. Mera ghar aapke ghar SE bada hai."},
-      {q:"The most expensive in Hindi?",opts:["zyada mehnga","bahut mehnga","sabse mehnga","se mehnga"],ans:2,ex:"SABSE = the most. Sabse mehnga = most expensive."},
-      {q:"Better in Hindi?",opts:["achha","zyada achha / behtar","sabse achha","bahut achha"],ans:1,ex:"Behtar = better. Zyada achha also works."},
-      {q:"He is taller than me — correct?",opts:["Woh mujhe lamba hai.","Woh mujhse lamba hai.","Woh mere se lamba hai.","Woh mujh lamba hai."],ans:1,ex:"Me = mujhse (pronoun SE form). Woh MUJHSE lamba hai."},
-    ],
-    memorise:["Comparative: X + Y + SE + adjective","Superlative: SABSE + adjective","Sabse = of all / the most","Behtar = better","Zyada = more","Pronouns before se: mujhse (than me) | aapse (than you) | usse (than him/her)"]
-  },
-  {
-    num:14, title:"Obligation — Should, Need To, Must", lesson:"Lesson 12",
+    num:14, title:"Obligation — Should, Need To, Must", lesson:"Lessons 12-13",
     color:"#c62828", icon:"⚡",
     grammar:[
-      {rule:"Three levels of obligation — each uses a different structure and expresses different pressure",
-       formula:"Should: mujhe+infinitive+chahiye | Need to: mujhe+infinitive+hai | Must: zaroor+chahiye"},
-      {rule:"Parna = strongest external compulsion — being FORCED by outside circumstances",
-       formula:"parta/parti/parte + hai (present) | tha/thi/the (past) | parega/paregi (future)"},
-      {rule:"Zaroor = definitely/of course — used alone as a response OR to strengthen chahiye into must",
-       formula:"Zaroor! (Of course!) | Mujhe zaroor jaana chahiye (I absolutely must go)"},
+      {rule:"SHOULD (soft) — chahiye + infinitive. Some choice. A gentle nudge.",
+       formula:"Mujhe + infinitive + chahiye — Mujhe padhna chahiye. (I should study.)"},
+      {rule:"NEED TO (inner drive) — infinitive + hai. Coming from YOU, not outside.",
+       formula:"Mujhe + infinitive + hai — Mujhe ghar jaana hai. (I need to go home.)"},
+      {rule:"MUST (strong) — zaroor + chahiye. Very strong but still your choice.",
+       formula:"Mujhe + zaroor + infinitive + chahiye — Mujhe zaroor milna chahiye."},
+      {rule:"ALL obligation = indirect — subject always takes KO form",
+       formula:"Main→Mujhe | Aap→Aapko | Woh→Usse | Hum→Hame | Ve→Unhe"},
+      {rule:"Chahiye + NOUN = need a thing. Chahiye + INFINITIVE = should do something.",
+       formula:"Mujhe paani chahiye (need water) | Mujhe padhna chahiye (should study)"},
+      {rule:"Negative: nahi BEFORE chahiye | nahi BEFORE infinitive for need-to",
+       formula:"Mujhe padhna nahi chahiye | Mujhe ghar nahi jaana"},
     ],
-    examples:[
-      {en:"I should study.",hi:"Mujhe padhna chahiye."},
-      {en:"My son should study more.",hi:"Mere bete ko zyada padhna chahiye."},
+    sentences:[
+      {en:"I should study every day.",hi:"Mujhe har din padhna chahiye."},
+      {en:"You should talk to him.",hi:"Aapko usse baat karni chahiye."},
       {en:"What should I do now?",hi:"Mujhe ab kya karna chahiye?"},
-      {en:"We should buy vegetables.",hi:"Hame sabzi kharidni chahiye."},
+      {en:"My dad should do exercises every day.",hi:"Mere papa ko har din exercise karna chahiye."},
+      {en:"She needs help.",hi:"Usse madad chahiye."},
+      {en:"How much money should I give her?",hi:"Mujhe usse kitna paisa dena chahiye?"},
+      {en:"Do you need anything? Yes I need some water.",hi:"Kya aapko kuch chahiye? Ji, mujhe kuch paani chahiye."},
+      {en:"They need some rest. They should take some rest.",hi:"Unhe kuch aaram chahiye. Unhe kuch aaram lena chahiye."},
+      {en:"Where should we meet her?",hi:"Hame usse kahan milna chahiye?"},
       {en:"I need to go home.",hi:"Mujhe ghar jaana hai."},
-      {en:"We need to talk.",hi:"Hame baat karni hai."},
-      {en:"She needs to go to her office.",hi:"Usse apne office jaana hai."},
-      {en:"Every day I have to do a lot of work.",hi:"Har din mujhe bahut kaam karna parta hai."},
-      {en:"I must go.",hi:"Mujhe zaroor jaana chahiye."},
-      {en:"I will definitely come.",hi:"Main zaroor aaunga."},
-      {en:"Of course!",hi:"Zaroor!"},
-      {en:"You must come on time.",hi:"Aapko zaroor samay par aana chahiye."},
+      {en:"She needs to finish her work today.",hi:"Usse aaj uska kaam khatam karna hai."},
+      {en:"We need to finish this work.",hi:"Hame yeh kaam khatam karna hai."},
     ],
     quiz:[
-      {q:"Should formula?",opts:["mujhe+infinitive+hai","mujhe+infinitive+chahiye","mujhe+infinitive+parta hai","mujhe+zaroor+chahiye"],ans:1,ex:"Should = mujhe + infinitive + chahiye. Mujhe padhna chahiye."},
-      {q:"Need to (inner drive) formula?",opts:["mujhe+infinitive+chahiye","mujhe+infinitive+hai","mujhe+infinitive+parta hai","mujhe+zaroor+chahiye"],ans:1,ex:"Inner compulsion = mujhe + infinitive + hai. Mujhe ghar jaana hai."},
-      {q:"Zaroor alone means?",opts:["must","should","of course / definitely","need to"],ans:2,ex:"Zaroor! = Of course! / Definitely! Very common response in conversation."},
-      {q:"Parna expresses?",opts:["inner desire","soft suggestion","external/forced obligation","ability"],ans:2,ex:"Parna = forced from outside. Har din mujhe kaam karna PARTA hai."},
-      {q:"The four levels in order (softest to strongest)?",opts:["Must Should Need-to Parna","Should Need-to Must Parna","Should Must Need-to Parna","Need-to Should Must Parna"],ans:1,ex:"Should (chahiye) < Need to (+hai) < Must (zaroor+chahiye) < Have to (parna)."},
+      {q:"Should formula?",opts:["mujhe+infinitive+hai","mujhe+infinitive+chahiye","mujhe+infinitive+parta hai","mujhe+zaroor+chahiye"],ans:1,ex:"Should = chahiye + infinitive"},
+      {q:"Need to (inner drive) formula?",opts:["mujhe+infinitive+chahiye","mujhe+infinitive+hai","mujhe+infinitive+parta hai","mujhe+zaroor+chahiye"],ans:1,ex:"Inner compulsion = infinitive + hai"},
+      {q:"You should study — correct Hindi?",opts:["Aap padhna chahiye","Aapko padhna chahiye","Aap padho","Aapko padhna hai"],ans:1,ex:"Should = indirect = Aapko"},
     ],
-    memorise:["Should: mujhe+infinitive+chahiye","Need to (inner): mujhe+infinitive+hai","Must: mujhe+zaroor+infinitive+chahiye","Have to (forced): parna — parta/parti/parte+hai","Zaroor = definitely/of course","Sabzi kharidNI chahiye (feminine noun → -ni)","Gender matters: baat karNI / kaam karNA"]
+    memorise:["Should=chahiye+infinitive","Need to=infinitive+hai","Must=zaroor+chahiye","All=indirect=Mujhe/Aapko","Chahiye+noun=need | Chahiye+infinitive=should","Nahi before chahiye | Nahi before infinitive"],
+  },
+  {
+    num:15, title:"Parna — Have To (External Compulsion)", lesson:"Lesson 13",
+    color:"#880e4f", icon:"⚡",
+    grammar:[
+      {rule:"Parna = external compulsion — something or someone OUTSIDE forces you. No choice. Think: YOU HAVE TO.",
+       formula:"Mujhe + infinitive + parta/parti/parte + hai/tha/parega"},
+      {rule:"Parna agrees with the INFINITIVE not the subject. Karna (masc) → parta. Karni (fem) → parti.",
+       formula:"karna parta hai | baat karni parti hai | kaam karna parta tha"},
+      {rule:"Future parna: parega (masc) / paregi (fem). 'Will have to'",
+       formula:"Mujhe jaana parega. (I will have to go.)"},
+      {rule:"Negative parna: nahi BEFORE the infinitive",
+       formula:"Mujhe nahi jaana parta. (I don't have to go.)"},
+      {rule:"The 4 levels: Should=chahiye | Need to=+hai | Must=zaroor+chahiye | Have to=parna",
+       formula:"Pressure dial: low → high | some choice → NO choice"},
+    ],
+    sentences:[
+      {en:"Every day she has to wash dishes.",hi:"Usse har din bartan dhone parte hain."},
+      {en:"I have to pay a lot of tax in the UK.",hi:"UK mein mujhe bahut tax dena parta hai."},
+      {en:"Every day I have to work.",hi:"Har din mujhe kaam karna parta hai."},
+      {en:"I have to brush my teeth every day.",hi:"Mujhe har din daant brush karna parta hai."},
+      {en:"She will have to wake up early and clean.",hi:"Usse jaldi uthna parega aur saaf karna parega."},
+      {en:"We will have to finish this work today.",hi:"Hame aaj yeh kaam khatam karna parega."},
+      {en:"I will have to meet my doctor.",hi:"Mujhe apne doctor se milna parega."},
+      {en:"My son has to do a lot of homework.",hi:"Mere bete ko bahut homework karna parta hai."},
+      {en:"My friend will have to find a new job.",hi:"Mere dost ko naya kaam dhoondhna parega."},
+      {en:"How many rupees will we have to pay?",hi:"Hame kitne rupaye dene parenge?"},
+      {en:"She doesn't like to wake up early but she has to.",hi:"Usse jaldi uthna pasand nahi, lekin usse uthna parta hai."},
+      {en:"Next week I will have to go to London.",hi:"Agle hafte mujhe London jaana parega."},
+    ],
   },
 ];
 
